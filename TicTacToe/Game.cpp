@@ -1,5 +1,7 @@
 #include "Game.h"
 #include "Engine\Engine.h"
+#include "Engine\Logger.h"
+#include "Engine\GLSLProgram.h"
 
 Game::Game() :
 	screenWidth(800),
@@ -28,13 +30,19 @@ void Game::initSystems()
 
 	initShaders();
 
-	board.Init();
+	board.Init(simpleProgram);
+	cross.Init(simpleProgram);
+	nought.Init(simpleProgram);
 
 	fpsLimiter.Init(maxFps);
 }
 
 void Game::initShaders()
 {
+	simpleProgram = std::make_shared<Engine::GLSLProgram>();
+	simpleProgram->CompileShaders("Shaders/simpleShading.vert", "Shaders/simpleShading.frag");
+	simpleProgram->AddAttribute("vertexPosition");
+	simpleProgram->LinkShader();
 }
 
 void Game::gameLoop()
@@ -65,6 +73,8 @@ void Game::processInput()
 			gameState = GameState::Exit;
 			break;
 		case SDL_KEYDOWN:
+			if (evnt.key.keysym.sym == SDLK_ESCAPE)
+				gameState = GameState::Exit;
 			inputManager.PressKey(evnt.key.keysym.sym);
 			break;
 		case SDL_KEYUP:
@@ -99,6 +109,7 @@ void Game::processInput()
 	{
 		glm::vec2 mouseCoords = inputManager.GetMouseCoords();
 		mouseCoords = camera.ConvertScreenToWorld(mouseCoords);
+		Engine::log("At scale %.2fx coords are: %.2f, %.2f", camera.GetScale(), mouseCoords.x, mouseCoords.y);
 	}
 }
 
@@ -109,6 +120,8 @@ void Game::renderScene()
 
 	//actual drawing here
 	board.Render(camera);
+	cross.Render(camera, glm::vec2(-65,0));
+	nought.Render(camera, glm::vec2(0,0));
 
 	window.SwappBuffer();
 }

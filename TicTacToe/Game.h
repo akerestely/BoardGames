@@ -4,6 +4,8 @@
 #include "Engine\InputManager.h"
 #include "Engine\Timing.h"
 #include "Board.h"
+#include "Cross.h"
+#include "Nought.h"
 
 enum class GameState 
 { 
@@ -38,6 +40,9 @@ private:
 	uint maxFps;
 	float fps;
 
+	std::shared_ptr<Engine::GLSLProgram> simpleProgram;
 	Board board;
+	Cross cross;
+	Nought nought;
 };
 

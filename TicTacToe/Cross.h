@@ -8,14 +8,14 @@ namespace Engine
 	class Camera2D;
 }
 
-class Board
+class Cross
 {
 public:
-	Board();
-	~Board();
+	Cross();
+	~Cross();
 
 	void Init(const std::shared_ptr<Engine::GLSLProgram> &program);
-	void Render(Engine::Camera2D &camera);
+	void Render(const Engine::Camera2D &camera, const glm::vec2 &position = glm::vec2());
 
 private:
 	void buildModel();
