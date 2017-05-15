@@ -3,6 +3,7 @@
 #include "Engine\Camera2D.h"
 #include "Engine\InputManager.h"
 #include "Engine\Timing.h"
+#include "Board.h"
 
 enum class GameState 
 { 
@@ -36,5 +37,7 @@ private:
 
 	uint maxFps;
 	float fps;
+
+	Board board;
 };
 
