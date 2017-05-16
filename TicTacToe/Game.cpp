@@ -3,6 +3,7 @@
 #include "Engine\Logger.h"
 #include "Engine\GLSLProgram.h"
 
+
 Game::Game() :
 	screenWidth(800),
 	screenHeight(600),
@@ -31,8 +32,17 @@ void Game::initSystems()
 	initShaders();
 
 	board.Init(simpleProgram);
-	cross.Init(simpleProgram);
-	nought.Init(simpleProgram);
+	cross = std::make_shared<Cross>();
+	cross->Init(simpleProgram);
+	nought = std::make_shared<Nought>();
+	nought->Init(simpleProgram);
+
+	for (int i = -1; i <= 1; ++i)
+		for (int j = -1; j <= 1; ++j)
+		{
+			auto &boardTile = boardTiles[(i + 1) * 3 + j + 1];
+			boardTile.boundingBox.Set(65.f * i, 65.f * j, 60, 60);
+		}
 
 	fpsLimiter.Init(maxFps);
 }
@@ -121,11 +131,24 @@ void Game::processInput()
 	if (inputManager.IsKeyDown(SDLK_e))
 		camera.SetScale(camera.GetScale() - SCALE_SPEED);
 
-	if (inputManager.IsKeyDown(SDL_BUTTON_LEFT))
+	if (inputManager.IsKeyDownOnce(SDL_BUTTON_LEFT))
 	{
 		glm::vec2 mouseCoords = inputManager.GetMouseCoords();
 		mouseCoords = camera.ConvertScreenToWorld(mouseCoords);
 		Engine::log("At scale %.2fx coords are: %.2f, %.2f", camera.GetScale(), mouseCoords.x, mouseCoords.y);
+
+		// get clicked box
+		for (auto &boardTile : boardTiles)
+			if (boardTile.boundingBox.Contains(mouseCoords.x, mouseCoords.y))
+				if (boardTile.chessman)
+					boardTile.chessman.reset();
+				else
+				{
+					if (int(mouseCoords.x) % 2)
+						boardTile.chessman = cross;
+					else
+						boardTile.chessman = nought;
+				}
 	}
 }
 
@@ -136,8 +159,9 @@ void Game::renderScene()
 
 	//actual drawing here
 	board.Render(camera);
-	cross.Render(camera, glm::vec2(-65,0));
-	nought.Render(camera, glm::vec2(0,0));
+	for (auto &boardTile : boardTiles)
+		if (boardTile.chessman)
+			boardTile.chessman->Render(camera, boardTile.boundingBox.Center());
 
 	window.SwappBuffer();
 }

@@ -1,21 +1,14 @@
 #pragma once
-#include <memory>
+#include "IRenderable.h"
 
-// forward declarations
-namespace Engine
-{
-	class GLSLProgram;
-	class Camera2D;
-}
-
-class Cross
+class Cross : public IRenderable
 {
 public:
 	Cross();
 	~Cross();
 
 	void Init(const std::shared_ptr<Engine::GLSLProgram> &program);
-	void Render(const Engine::Camera2D &camera, const glm::vec2 &position = glm::vec2());
+	virtual void Render(const Engine::Camera2D &camera, const glm::vec2 &position = glm::vec2()) override;
 
 private:
 	void buildModel();

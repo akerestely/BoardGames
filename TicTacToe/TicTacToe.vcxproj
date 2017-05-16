@@ -173,6 +173,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Cross.h" />
     <ClInclude Include="Nought.h" />
+    <ClInclude Include="IRenderable.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\simpleShading.frag" />

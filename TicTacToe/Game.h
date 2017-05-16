@@ -1,9 +1,12 @@
 #pragma once
-#include "Engine\Window.h"
 #include "Engine\Camera2D.h"
 #include "Engine\InputManager.h"
+#include "Engine\Rectangle.h"
 #include "Engine\Timing.h"
+#include "Engine\Window.h"
+
 #include "Board.h"
+#include "IRenderable.h"
 #include "Cross.h"
 #include "Nought.h"
 
@@ -43,7 +46,14 @@ private:
 
 	std::shared_ptr<Engine::GLSLProgram> simpleProgram;
 	Board board;
-	Cross cross;
-	Nought nought;
+
+	std::shared_ptr<Cross> cross;
+	std::shared_ptr<Nought> nought;
+	struct BoardTile
+	{
+		rectf boundingBox;
+		std::shared_ptr<IRenderable> chessman;
+	};
+	BoardTile boardTiles[9];
 };
 
