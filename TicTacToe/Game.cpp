@@ -73,8 +73,6 @@ void Game::processInput()
 			gameState = GameState::Exit;
 			break;
 		case SDL_KEYDOWN:
-			if (evnt.key.keysym.sym == SDLK_ESCAPE)
-				gameState = GameState::Exit;
 			inputManager.PressKey(evnt.key.keysym.sym);
 			break;
 		case SDL_KEYUP:
@@ -87,10 +85,28 @@ void Game::processInput()
 			inputManager.ReleaseKey(evnt.button.button);
 			break;
 		case SDL_MOUSEMOTION:
-			inputManager.SetMouseCoords((float)evnt.motion.x, (float)evnt.motion.y);
+			if (SDL_GetRelativeMouseMode() == SDL_TRUE)
+				inputManager.SetMouseCoordsRel(evnt.motion.xrel, evnt.motion.yrel);
+			else
+				inputManager.SetMouseCoords(evnt.motion.x, evnt.motion.y);
+			break;
+		case SDL_WINDOWEVENT:
+			switch (evnt.window.event)
+			{
+			case SDL_WINDOWEVENT_RESIZED:
+				resize((uint)evnt.window.data1, (uint)evnt.window.data2);
+				break;
+			}
 			break;
 		}
 	}
+
+	if (inputManager.IsKeyDown(SDLK_ESCAPE))
+		gameState = GameState::Exit;
+	if (inputManager.IsKeyDownOnce(SDLK_F4))
+		window.Fullscreen(!window.IsFullscreen());
+	if (inputManager.IsKeyDownOnce(SDLK_v))
+		SDL_SetRelativeMouseMode(SDL_GetRelativeMouseMode() == SDL_TRUE ? SDL_FALSE : SDL_TRUE);
 
 	if (inputManager.IsKeyDown(SDLK_w))
 		camera.SetPosition(camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
@@ -124,4 +140,14 @@ void Game::renderScene()
 	nought.Render(camera, glm::vec2(0,0));
 
 	window.SwappBuffer();
+}
+
+void Game::resize(uint screenWidth, uint screenHeight)
+{
+	this->screenWidth = screenWidth;
+	this->screenHeight = screenHeight;
+
+	camera.Init(screenWidth, screenHeight);
+
+	printf("Screen is now: %dx%d pixels\n", screenWidth, screenHeight);
 }

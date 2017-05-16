@@ -26,10 +26,11 @@ private:
 	void gameLoop();
 	void processInput();
 	void renderScene();
+	void resize(uint screenWidth, uint screenHeight);
 
 private:
 	Engine::Window window;
-	int screenWidth, screenHeight;
+	uint screenWidth, screenHeight;
 	GameState gameState;
 
 	Engine::Camera2D camera;
