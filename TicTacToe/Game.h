@@ -5,14 +5,17 @@
 #include "Engine\Timing.h"
 #include "Engine\Window.h"
 
-#include "Board.h"
+#include "BoardRenderer.h"
 #include "IRenderable.h"
 #include "Cross.h"
 #include "Nought.h"
+#include "Judger.h"
+#include "Player.h"
 
 enum class GameState 
 { 
-	Play, 
+	Play,
+	Pause,
 	Exit 
 };
 
@@ -45,7 +48,7 @@ private:
 	float fps;
 
 	std::shared_ptr<Engine::GLSLProgram> simpleProgram;
-	Board board;
+	BoardRenderer boardRenderer;
 
 	std::shared_ptr<Cross> cross;
 	std::shared_ptr<Nought> nought;
@@ -53,7 +56,15 @@ private:
 	{
 		rectf boundingBox;
 		std::shared_ptr<IRenderable> chessman;
+		Position boardIndexPos;
 	};
 	BoardTile boardTiles[9];
+
+	Judger judger;
+	std::shared_ptr<Player> player1;
+	std::shared_ptr<Player> player2;
+
+	uint lastTurnTime = 0;
+	uint delayNextTurn = 0; //ms
 };
 

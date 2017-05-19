@@ -2,7 +2,7 @@
 #include "Engine\Engine.h"
 #include "Engine\Logger.h"
 #include "Engine\GLSLProgram.h"
-
+#include "HumanPlayer.h"
 
 Game::Game() :
 	screenWidth(800),
@@ -18,6 +18,9 @@ void Game::Run()
 	initSystems();
 
 	gameLoop();
+
+	player1->SavePolicy();
+	player2->SavePolicy();
 }
 
 Game::~Game()
@@ -29,9 +32,16 @@ void Game::initSystems()
 	Engine::Init();
 	window.Create("TicTacToe", screenWidth, screenHeight, 0);
 
+	player1 = std::make_shared<Player>(IState::Winner::FirstPlayer);
+	player1->LoadPolicy();
+	player2 = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
+	player2->LoadPolicy();
+
+	judger.InitGame(player1, player2);
+
 	initShaders();
 
-	board.Init(simpleProgram);
+	boardRenderer.Init(simpleProgram);
 	cross = std::make_shared<Cross>();
 	cross->Init(simpleProgram);
 	nought = std::make_shared<Nought>();
@@ -42,6 +52,7 @@ void Game::initSystems()
 		{
 			auto &boardTile = boardTiles[(i + 1) * 3 + j + 1];
 			boardTile.boundingBox.Set(65.f * i, 65.f * j, 60, 60);
+			boardTile.boardIndexPos = Position(i + 1, j+1);
 		}
 
 	fpsLimiter.Init(maxFps);
@@ -64,6 +75,32 @@ void Game::gameLoop()
 		processInput();
 
 		camera.Update();
+
+		uint thisTurnTime = SDL_GetTicks();
+		if (gameState != GameState::Pause && thisTurnTime - lastTurnTime > delayNextTurn)
+		{
+			if (judger.HasGameEnded())
+				judger.InitGame(player1, player2);
+
+			if (judger.PlayTurn())
+			{
+				auto &board = judger.GetBoard();
+				for (uint i = 0; i < board.Rows(); ++i)
+					for (uint j = 0; j < board.Cols(); ++j)
+					{
+						auto &boardTile = boardTiles[i * board.Cols() + j];
+						if (board[i][j] == TicTacToeChessmans::Cross)
+							boardTile.chessman = cross;
+						else if (board[i][j] == TicTacToeChessmans::Nought)
+							boardTile.chessman = nought;
+						else
+							boardTile.chessman.reset();
+					}
+			}
+
+			lastTurnTime = SDL_GetTicks();
+		}
+
 		renderScene();
 
 		fps = fpsLimiter.End();
@@ -131,6 +168,21 @@ void Game::processInput()
 	if (inputManager.IsKeyDown(SDLK_e))
 		camera.SetScale(camera.GetScale() - SCALE_SPEED);
 
+	const uint kDelayIncrement = 25;
+	if (inputManager.IsKeyDownOnce(SDLK_KP_PLUS))
+		delayNextTurn += kDelayIncrement;
+	if (inputManager.IsKeyDownOnce(SDLK_KP_MINUS))
+		if (delayNextTurn > kDelayIncrement)
+			delayNextTurn -= kDelayIncrement;
+		else
+			delayNextTurn = 0;
+
+	if (inputManager.IsKeyDownOnce(SDLK_SPACE))
+		if (gameState == GameState::Play)
+			gameState = GameState::Pause;
+		else
+			gameState = GameState::Play;
+
 	if (inputManager.IsKeyDownOnce(SDL_BUTTON_LEFT))
 	{
 		glm::vec2 mouseCoords = inputManager.GetMouseCoords();
@@ -140,15 +192,11 @@ void Game::processInput()
 		// get clicked box
 		for (auto &boardTile : boardTiles)
 			if (boardTile.boundingBox.Contains(mouseCoords.x, mouseCoords.y))
-				if (boardTile.chessman)
-					boardTile.chessman.reset();
-				else
-				{
-					if (int(mouseCoords.x) % 2)
-						boardTile.chessman = cross;
-					else
-						boardTile.chessman = nought;
-				}
+			{
+				HumanPlayer *pPlayer = dynamic_cast<HumanPlayer*>(judger.GetCrtPlayer().get());
+				if(pPlayer)
+					pPlayer->BufferAction(boardTile.boardIndexPos);
+			}
 	}
 }
 
@@ -158,7 +206,7 @@ void Game::renderScene()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//actual drawing here
-	board.Render(camera);
+	boardRenderer.Render(camera);
 	for (auto &boardTile : boardTiles)
 		if (boardTile.chessman)
 			boardTile.chessman->Render(camera, boardTile.boundingBox.Center());

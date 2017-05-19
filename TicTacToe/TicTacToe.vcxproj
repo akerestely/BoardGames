@@ -162,18 +162,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="BoardRenderer.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HumanPlayer.cpp" />
+    <ClCompile Include="Judger.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Cross.cpp" />
     <ClCompile Include="Nought.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="TicTacToeState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BoardRenderer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Cross.h" />
+    <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="IState.h" />
+    <ClInclude Include="Judger.h" />
     <ClInclude Include="Nought.h" />
     <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="TicTacToeState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\simpleShading.frag" />
