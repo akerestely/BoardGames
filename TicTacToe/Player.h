@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <string>
 #include <fstream>
+#include <xfunctional>
 
 class Player
 {
@@ -34,11 +35,26 @@ public:
 		}
 		else
 		{
-			auto itVec = std::max_element(possibleNextStates.begin(), possibleNextStates.end(),
-				[&](const std::shared_ptr<IState> &state1, const std::shared_ptr<IState> &state2) {
-				return getEstimation(state1) < getEstimation(state2);
-			});
-			nextState = *itVec;
+			if (1)	// +creative -optim
+			{
+				std::multimap<TEstimation, std::shared_ptr<TicTacToeState>, std::greater<TEstimation>> sorted;
+				for (const auto &state : possibleNextStates)
+					sorted.insert(std::make_pair(getEstimation(state), state));
+
+				auto bounds = sorted.equal_range(sorted.begin()->first);
+				uint count = std::distance(bounds.first, bounds.second);
+				std::uniform_int_distribution<uint> uniformDist(0, count - 1);
+				std::advance(bounds.first, uniformDist(randEngine));
+				nextState = bounds.first->second;
+			}
+			else	// -creative +optim
+			{
+				auto itVec = std::max_element(possibleNextStates.begin(), possibleNextStates.end(),
+					[&](const std::shared_ptr<IState> &state1, const std::shared_ptr<IState> &state2) {
+					return getEstimation(state1) < getEstimation(state2);
+				});
+				nextState = *itVec;
+			}
 		}
 
 		// clear work vector
@@ -58,6 +74,8 @@ public:
 		float target = 0.0f;
 		if (state->GetWinner() == symbol)
 			target = 1.0f;
+		else if (state->GetWinner() == IState::Winner::None)
+			target = 0.5f;
 
 		for (auto it = lastStates.rbegin(); it != lastStates.rend(); ++it)
 		{
@@ -76,7 +94,8 @@ public:
 		fileName += std::to_string(int(symbol));
 		std::ofstream out(fileName);
 		for (auto &pair : estimations)
-			out << pair.first << ' ' << pair.second << std::endl;
+			if(pair.second != 0.0f && pair.second != 1.0f && pair.second != 0.5f)
+				out << pair.first << ' ' << pair.second << std::endl;
 	}
 
 	void LoadPolicy(std::string fileName = "optimal_policy_")
