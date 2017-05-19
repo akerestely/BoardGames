@@ -8,11 +8,11 @@ namespace Engine
 	class Camera2D;
 }
 
-class Board
+class BoardRenderer
 {
 public:
-	Board();
-	~Board();
+	BoardRenderer();
+	~BoardRenderer();
 
 	void Init(const std::shared_ptr<Engine::GLSLProgram> &program);
 	void Render(Engine::Camera2D &camera);
