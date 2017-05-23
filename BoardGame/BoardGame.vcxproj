@@ -23,6 +23,7 @@
     <ClInclude Include="BoardRenderer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="IPlayer.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IState.h" />
     <ClInclude Include="Judger.h" />

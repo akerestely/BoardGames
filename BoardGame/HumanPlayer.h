@@ -1,15 +1,11 @@
 #pragma once
-#include "Player.h"
+#include "IPlayer.h"
 #include "Board.h"
 #include "../TicTacToe/TicTacToeState.h"
 
-class HumanPlayer : public Player
+class HumanPlayer : public IPlayer
 {
 public:
-	HumanPlayer(IState::Winner symbol) : Player(symbol)
-	{
-	}
-
 	virtual std::shared_ptr<IState> TakeAction(const std::shared_ptr<IState> &crtState) override
 	{
 		if (!bufferedAction)
@@ -21,16 +17,10 @@ public:
 		return nextState;
 	}
 
-	virtual void FeedReward(const std::shared_ptr<IState> &state) override
-	{
-
-	}
-
 	void BufferAction(const Position &clickedTile)
 	{
 		bufferedAction = std::make_shared<Position>(clickedTile);
 	}
-
 
 private:
 	std::shared_ptr<Position> bufferedAction;

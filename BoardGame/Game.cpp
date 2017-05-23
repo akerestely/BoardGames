@@ -3,34 +3,20 @@
 #include "Engine\Logger.h"
 #include "Engine\GLSLProgram.h"
 
-#include "Player.h"
+#include "IRenderable.h"
 #include "HumanPlayer.h"
-#include "../TicTacToe/Cross.h"
-#include "../TicTacToe/Nought.h"
 
 Game::Game() : IGame()
 {
-	m_windowTitle = "TicTacToe";
 }
 
 void Game::onInit()
 {
-	initShaders();
+	onInitRendering();
+
 	m_camera.Init(m_screenWidth, m_screenHeight);
 
-	m_player1 = std::make_shared<Player>(IState::Winner::FirstPlayer);
-	m_player1->LoadPolicy();
-	m_player2 = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
-	m_player2->LoadPolicy();
-
-	m_judger.InitGame(m_player1, m_player2);
-
-
-	m_boardRenderer.Init(m_simpleProgram);
-	m_cross = std::make_shared<Cross>();
-	m_cross->Init(m_simpleProgram);
-	m_nought = std::make_shared<Nought>();
-	m_nought->Init(m_simpleProgram);
+	m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer));
 
 	for (int i = -1; i <= 1; ++i)
 		for (int j = -1; j <= 1; ++j)
@@ -46,11 +32,13 @@ void Game::onUpdate()
 	processInput();
 	m_camera.Update();
 
-	if (m_bUpdate && getTime() - m_lastTurnTime > m_delayNextTurn)
+	if (m_judger.HasGameEnded())
 	{
-		if (m_judger.HasGameEnded())
-			m_judger.InitGame(m_player1, m_player2);
-
+		onRoundEnded();
+		m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer));
+	}
+	else if (m_bUpdate && getTime() - m_lastTurnTime > m_delayNextTurn)
+	{
 		if (m_judger.PlayTurn())
 		{
 			auto &board = m_judger.GetBoard();
@@ -58,10 +46,8 @@ void Game::onUpdate()
 				for (uint j = 0; j < board.Cols(); ++j)
 				{
 					auto &boardTile = m_boardTiles[i * board.Cols() + j];
-					if (board[i][j] == TicTacToeChessmans::Cross)
-						boardTile.chessman = m_cross;
-					else if (board[i][j] == TicTacToeChessmans::Nought)
-						boardTile.chessman = m_nought;
+					if (board[i][j] != TicTacToeChessmans::None)
+						boardTile.chessman = getChessman(int(board[i][j]));
 					else
 						boardTile.chessman.reset();
 				}
@@ -81,16 +67,6 @@ void Game::onRender()
 
 void Game::onDestroy()
 {
-	m_player1->SavePolicy();
-	m_player2->SavePolicy();
-}
-
-void Game::initShaders()
-{
-	m_simpleProgram = std::make_shared<Engine::GLSLProgram>();
-	m_simpleProgram->CompileShaders("Shaders/simpleShading.vert", "Shaders/simpleShading.frag");
-	m_simpleProgram->AddAttribute("vertexPosition");
-	m_simpleProgram->LinkShader();
 }
 
 void Game::processInput()

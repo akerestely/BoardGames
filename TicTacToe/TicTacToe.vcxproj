@@ -165,6 +165,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Cross.cpp" />
     <ClCompile Include="Nought.cpp" />
+    <ClCompile Include="TicTacToeGame.cpp" />
     <ClCompile Include="TicTacToeState.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="Cross.h" />
     <ClInclude Include="Nought.h" />
+    <ClInclude Include="TicTacToeGame.h" />
     <ClInclude Include="TicTacToeState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

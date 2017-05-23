@@ -11,14 +11,12 @@
 class Judger
 {
 public:
-	Judger(bool checkRepeatingRounds = true, bool giveFeedback = true) : 
-		checkRepeatingRounds(checkRepeatingRounds),
-		giveFeedback(giveFeedback)
+	Judger(bool checkRepeatingRounds = true) : 
+		checkRepeatingRounds(checkRepeatingRounds)
 	{
-
 	}
 
-	void InitGame(std::shared_ptr<Player> player1, std::shared_ptr<Player> player2)
+	void InitGame(std::shared_ptr<IPlayer> player1, std::shared_ptr<IPlayer> player2)
 	{
 		crtPlayer = player1;
 		nextPlayer = player2;
@@ -44,10 +42,7 @@ public:
 
 		// check winning condition
 		if (currentState->IsEnd())
-		{
-			if (giveFeedback)
-				GiveReward();
-			
+		{			
 			winner = currentState->GetWinner();
 			gameEnded = true;
 			return true;
@@ -56,9 +51,6 @@ public:
 		// check draw condition
 		if (checkRepeatingRounds && areLastRoundsRepeating())
 		{
-			if (giveFeedback)
-				GiveReward();
-
 			winner = IState::Winner::None;
 			gameEnded = true;
 			return true;
@@ -75,17 +67,11 @@ public:
 		return winner;
 	}
 
-	const std::shared_ptr<Player>& GetCrtPlayer() const { return crtPlayer; }
+	const std::shared_ptr<IPlayer>& GetCrtPlayer() const { return crtPlayer; }
 
 	Board<TicTacToeChessmans> GetBoard() const { return static_cast<TicTacToeState*>(currentState.get())->GetBoard(); }
 
 private:
-	void GiveReward()
-	{
-		crtPlayer->FeedReward(currentState);
-		nextPlayer->FeedReward(currentState);
-	}
-
 	// check if 3 consecutive full rounds are the same
 	bool areLastRoundsRepeating()
 	{
@@ -112,15 +98,13 @@ private:
 	}
 
 private:
-	std::shared_ptr<Player> crtPlayer;
-	std::shared_ptr<Player> nextPlayer;
+	std::shared_ptr<IPlayer> crtPlayer;
+	std::shared_ptr<IPlayer> nextPlayer;
 	std::shared_ptr<IState> currentState;
 	std::deque<IState::THash> lastStatesHashes;
 	
 	IState::Winner winner;
 	bool gameEnded : 1;
 	bool checkRepeatingRounds : 1;
-
-	bool giveFeedback : 1;
 };
 

@@ -7,7 +7,7 @@
 #include "Judger.h"
 
 struct IRenderable;
-class Player;
+struct IPlayer;
 
 class Game : public Engine::IGame
 {
@@ -15,23 +15,27 @@ public:
 	Game();
 
 private:
-	virtual void onInit() override;
-	virtual void onUpdate() override;
-	virtual void onRender() override;
-	virtual void onDestroy() override;
+	virtual void onInit() override final;
+	virtual void onUpdate() override final;
+	virtual void onRender() override final;
+	virtual void onDestroy() override final;
 
-	void initShaders();
+	virtual void onInitRendering() {};
+	virtual std::shared_ptr<IPlayer> getPlayer(IState::Winner type) = 0;
+	virtual std::shared_ptr<IRenderable> getChessman(int type) = 0;
+	virtual void onRoundEnded() {};
+
 	void processInput();
+
+protected:
+	Judger m_judger;
+
+	BoardRenderer m_boardRenderer;
 
 private:
 	Engine::Camera2D m_camera;
 	bool m_bUpdate = true;
 
-	std::shared_ptr<Engine::GLSLProgram> m_simpleProgram;
-	BoardRenderer m_boardRenderer;
-
-	std::shared_ptr<IRenderable> m_cross;
-	std::shared_ptr<IRenderable> m_nought;
 	struct BoardTile
 	{
 		rectf boundingBox;
@@ -39,10 +43,6 @@ private:
 		Position boardIndexPos;
 	};
 	BoardTile m_boardTiles[9];
-
-	Judger m_judger;
-	std::shared_ptr<Player> m_player1;
-	std::shared_ptr<Player> m_player2;
 
 	uint m_lastTurnTime = 0;	//ms
 	uint m_delayNextTurn = 0;	//ms

@@ -1,9 +1,8 @@
-#include "BoardGame/Game.h"
-
+#include "TicTacToeGame.h"
 
 int main(int argc, char* argv[])
 {
-	Game game;
+	TicTacToeGame game;
 	game.Run();
 
 	return 0;

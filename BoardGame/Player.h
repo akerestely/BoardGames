@@ -1,6 +1,6 @@
 #pragma once
 #include "IState.h"
-#include <memory>
+#include "IPlayer.h"
 #include <map>
 #include <random>
 
@@ -11,7 +11,7 @@
 #include <fstream>
 #include <xfunctional>
 
-class Player
+class Player : public IPlayer
 {
 public:
 	Player(IState::Winner symbol) :
@@ -20,9 +20,7 @@ public:
 	{
 	}
 
-	virtual ~Player() = default;
-
-	virtual std::shared_ptr<IState> TakeAction(const std::shared_ptr<IState> &crtState)
+	virtual std::shared_ptr<IState> TakeAction(const std::shared_ptr<IState> &crtState) override
 	{
 		TicTacToeState* pCrtState = static_cast<TicTacToeState*>(crtState.get());
 		pCrtState->GetPossibleNextStates(possibleNextStates);
@@ -66,15 +64,15 @@ public:
 		return nextState;
 	}
 
-	virtual void FeedReward(const std::shared_ptr<IState> &state)
+	virtual void FeedReward(IState::Winner winner)
 	{
 		if (lastStates.size() == 0)
 			return;
 
 		float target = 0.0f;
-		if (state->GetWinner() == symbol)
+		if (winner == symbol)
 			target = 1.0f;
-		else if (state->GetWinner() == IState::Winner::None)
+		else if (winner == IState::Winner::None)
 			target = 0.5f;
 
 		for (auto it = lastStates.rbegin(); it != lastStates.rend(); ++it)
