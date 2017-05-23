@@ -1,7 +1,7 @@
 #pragma once
 #include "Player.h"
 #include "Board.h"
-#include "TicTacToeState.h"
+#include "../TicTacToe/TicTacToeState.h"
 
 class HumanPlayer : public Player
 {

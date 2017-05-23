@@ -5,7 +5,7 @@
 #include <random>
 
 // in cpp
-#include "TicTacToeState.h"
+#include "../TicTacToe/TicTacToeState.h"
 #include <algorithm>
 #include <string>
 #include <fstream>

@@ -5,8 +5,8 @@
 
 #include "Player.h"
 #include "HumanPlayer.h"
-#include "Cross.h"
-#include "Nought.h"
+#include "../TicTacToe/Cross.h"
+#include "../TicTacToe/Nought.h"
 
 Game::Game() : IGame()
 {

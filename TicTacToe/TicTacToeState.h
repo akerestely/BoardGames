@@ -1,5 +1,5 @@
 #pragma once
-#include "State.h"
+#include "BoardGame/State.h"
 #include <memory>
 
 enum class TicTacToeChessmans

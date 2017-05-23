@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "BoardGame/Game.h"
 
 
 int main(int argc, char* argv[])

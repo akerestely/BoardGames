@@ -6,7 +6,7 @@
 #include "IState.h"
 
 // TODO: remove inculde
-#include "TicTacToeState.h"
+#include "../TicTacToe/TicTacToeState.h"
 
 class Judger
 {

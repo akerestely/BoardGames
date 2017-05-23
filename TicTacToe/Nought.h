@@ -1,5 +1,5 @@
 #pragma once
-#include "IRenderable.h"
+#include "BoardGame/IRenderable.h"
 
 class Nought : public IRenderable
 {
