@@ -166,7 +166,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="Judger.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="Cross.cpp" />
     <ClCompile Include="Nought.cpp" />
     <ClCompile Include="Player.cpp" />

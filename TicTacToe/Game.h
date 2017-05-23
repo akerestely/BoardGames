@@ -1,70 +1,50 @@
 #pragma once
+#include "Engine\IGame.h"
 #include "Engine\Camera2D.h"
-#include "Engine\InputManager.h"
 #include "Engine\Rectangle.h"
-#include "Engine\Timing.h"
-#include "Engine\Window.h"
 
 #include "BoardRenderer.h"
-#include "IRenderable.h"
-#include "Cross.h"
-#include "Nought.h"
 #include "Judger.h"
-#include "Player.h"
 
-enum class GameState 
-{ 
-	Play,
-	Pause,
-	Exit 
-};
+class IRenderable;
+class Player;
 
-class Game
+class Game : public Engine::IGame
 {
 public:
 	Game();
-	void Run();
-	~Game();
 
 private:
-	void initSystems();
+	virtual void onInit() override;
+	virtual void onUpdate() override;
+	virtual void onRender() override;
+	virtual void onDestroy() override;
+
 	void initShaders();
-	void gameLoop();
 	void processInput();
-	void renderScene();
-	void resize(uint screenWidth, uint screenHeight);
 
 private:
-	Engine::Window window;
-	uint screenWidth, screenHeight;
-	GameState gameState;
+	Engine::Camera2D m_camera;
+	bool m_bUpdate = true;
 
-	Engine::Camera2D camera;
+	std::shared_ptr<Engine::GLSLProgram> m_simpleProgram;
+	BoardRenderer m_boardRenderer;
 
-	Engine::InputManager inputManager;
-	Engine::FpsLimiter fpsLimiter;
-
-	uint maxFps;
-	float fps;
-
-	std::shared_ptr<Engine::GLSLProgram> simpleProgram;
-	BoardRenderer boardRenderer;
-
-	std::shared_ptr<Cross> cross;
-	std::shared_ptr<Nought> nought;
+	std::shared_ptr<IRenderable> m_cross;
+	std::shared_ptr<IRenderable> m_nought;
 	struct BoardTile
 	{
 		rectf boundingBox;
 		std::shared_ptr<IRenderable> chessman;
 		Position boardIndexPos;
 	};
-	BoardTile boardTiles[9];
+	BoardTile m_boardTiles[9];
 
-	Judger judger;
-	std::shared_ptr<Player> player1;
-	std::shared_ptr<Player> player2;
+	Judger m_judger;
+	std::shared_ptr<Player> m_player1;
+	std::shared_ptr<Player> m_player2;
 
-	uint lastTurnTime = 0;
-	uint delayNextTurn = 0; //ms
+	uint m_lastTurnTime = 0;	//ms
+	uint m_delayNextTurn = 0;	//ms
 };
 

@@ -2,224 +2,140 @@
 #include "Engine\Engine.h"
 #include "Engine\Logger.h"
 #include "Engine\GLSLProgram.h"
+
+#include "Player.h"
 #include "HumanPlayer.h"
+#include "Cross.h"
+#include "Nought.h"
 
-Game::Game() :
-	screenWidth(800),
-	screenHeight(600),
-	gameState(GameState::Play),
-	maxFps(60)
+Game::Game() : IGame()
 {
-	camera.Init(screenWidth, screenHeight);
+	m_windowTitle = "TicTacToe";
 }
 
-void Game::Run()
+void Game::onInit()
 {
-	initSystems();
-
-	gameLoop();
-
-	player1->SavePolicy();
-	player2->SavePolicy();
-}
-
-Game::~Game()
-{
-}
-
-void Game::initSystems()
-{
-	Engine::Init();
-	window.Create("TicTacToe", screenWidth, screenHeight, 0);
-
-	player1 = std::make_shared<Player>(IState::Winner::FirstPlayer);
-	player1->LoadPolicy();
-	player2 = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
-	player2->LoadPolicy();
-
-	judger.InitGame(player1, player2);
-
 	initShaders();
+	m_camera.Init(m_screenWidth, m_screenHeight);
 
-	boardRenderer.Init(simpleProgram);
-	cross = std::make_shared<Cross>();
-	cross->Init(simpleProgram);
-	nought = std::make_shared<Nought>();
-	nought->Init(simpleProgram);
+	m_player1 = std::make_shared<Player>(IState::Winner::FirstPlayer);
+	m_player1->LoadPolicy();
+	m_player2 = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
+	m_player2->LoadPolicy();
+
+	m_judger.InitGame(m_player1, m_player2);
+
+
+	m_boardRenderer.Init(m_simpleProgram);
+	m_cross = std::make_shared<Cross>();
+	m_cross->Init(m_simpleProgram);
+	m_nought = std::make_shared<Nought>();
+	m_nought->Init(m_simpleProgram);
 
 	for (int i = -1; i <= 1; ++i)
 		for (int j = -1; j <= 1; ++j)
 		{
-			auto &boardTile = boardTiles[(i + 1) * 3 + j + 1];
+			auto &boardTile = m_boardTiles[(i + 1) * 3 + j + 1];
 			boardTile.boundingBox.Set(65.f * i, 65.f * j, 60, 60);
-			boardTile.boardIndexPos = Position(i + 1, j+1);
+			boardTile.boardIndexPos = Position(i + 1, j + 1);
+		}
+}
+
+void Game::onUpdate()
+{
+	processInput();
+	m_camera.Update();
+
+	if (m_bUpdate && SDL_GetTicks() - m_lastTurnTime > m_delayNextTurn)
+	{
+		if (m_judger.HasGameEnded())
+			m_judger.InitGame(m_player1, m_player2);
+
+		if (m_judger.PlayTurn())
+		{
+			auto &board = m_judger.GetBoard();
+			for (uint i = 0; i < board.Rows(); ++i)
+				for (uint j = 0; j < board.Cols(); ++j)
+				{
+					auto &boardTile = m_boardTiles[i * board.Cols() + j];
+					if (board[i][j] == TicTacToeChessmans::Cross)
+						boardTile.chessman = m_cross;
+					else if (board[i][j] == TicTacToeChessmans::Nought)
+						boardTile.chessman = m_nought;
+					else
+						boardTile.chessman.reset();
+				}
 		}
 
-	fpsLimiter.Init(maxFps);
+		m_lastTurnTime = SDL_GetTicks();
+	}
+}
+
+void Game::onRender()
+{
+	m_boardRenderer.Render(m_camera);
+	for (auto &boardTile : m_boardTiles)
+		if (boardTile.chessman)
+			boardTile.chessman->Render(m_camera, boardTile.boundingBox.Center());
+}
+
+void Game::onDestroy()
+{
+	m_player1->SavePolicy();
+	m_player2->SavePolicy();
 }
 
 void Game::initShaders()
 {
-	simpleProgram = std::make_shared<Engine::GLSLProgram>();
-	simpleProgram->CompileShaders("Shaders/simpleShading.vert", "Shaders/simpleShading.frag");
-	simpleProgram->AddAttribute("vertexPosition");
-	simpleProgram->LinkShader();
-}
-
-void Game::gameLoop()
-{
-	while (gameState != GameState::Exit)
-	{
-		fpsLimiter.Begin();
-
-		processInput();
-
-		camera.Update();
-
-		uint thisTurnTime = SDL_GetTicks();
-		if (gameState != GameState::Pause && thisTurnTime - lastTurnTime > delayNextTurn)
-		{
-			if (judger.HasGameEnded())
-				judger.InitGame(player1, player2);
-
-			if (judger.PlayTurn())
-			{
-				auto &board = judger.GetBoard();
-				for (uint i = 0; i < board.Rows(); ++i)
-					for (uint j = 0; j < board.Cols(); ++j)
-					{
-						auto &boardTile = boardTiles[i * board.Cols() + j];
-						if (board[i][j] == TicTacToeChessmans::Cross)
-							boardTile.chessman = cross;
-						else if (board[i][j] == TicTacToeChessmans::Nought)
-							boardTile.chessman = nought;
-						else
-							boardTile.chessman.reset();
-					}
-			}
-
-			lastTurnTime = SDL_GetTicks();
-		}
-
-		renderScene();
-
-		fps = fpsLimiter.End();
-	}
+	m_simpleProgram = std::make_shared<Engine::GLSLProgram>();
+	m_simpleProgram->CompileShaders("Shaders/simpleShading.vert", "Shaders/simpleShading.frag");
+	m_simpleProgram->AddAttribute("vertexPosition");
+	m_simpleProgram->LinkShader();
 }
 
 void Game::processInput()
 {
-	SDL_Event evnt;
-	const float CAMERA_SPEED = 5.0f;
+	const float m_camera_SPEED = 5.0f;
 	const float SCALE_SPEED = 0.1f;
-	while (SDL_PollEvent(&evnt))
-	{
-		switch (evnt.type)
-		{
-		case SDL_QUIT:
-			gameState = GameState::Exit;
-			break;
-		case SDL_KEYDOWN:
-			inputManager.PressKey(evnt.key.keysym.sym);
-			break;
-		case SDL_KEYUP:
-			inputManager.ReleaseKey(evnt.key.keysym.sym);
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			inputManager.PressKey(evnt.button.button);
-			break;
-		case SDL_MOUSEBUTTONUP:
-			inputManager.ReleaseKey(evnt.button.button);
-			break;
-		case SDL_MOUSEMOTION:
-			if (SDL_GetRelativeMouseMode() == SDL_TRUE)
-				inputManager.SetMouseCoordsRel(evnt.motion.xrel, evnt.motion.yrel);
-			else
-				inputManager.SetMouseCoords(evnt.motion.x, evnt.motion.y);
-			break;
-		case SDL_WINDOWEVENT:
-			switch (evnt.window.event)
-			{
-			case SDL_WINDOWEVENT_RESIZED:
-				resize((uint)evnt.window.data1, (uint)evnt.window.data2);
-				break;
-			}
-			break;
-		}
-	}
 
-	if (inputManager.IsKeyDown(SDLK_ESCAPE))
-		gameState = GameState::Exit;
-	if (inputManager.IsKeyDownOnce(SDLK_F4))
-		window.Fullscreen(!window.IsFullscreen());
-	if (inputManager.IsKeyDownOnce(SDLK_v))
-		SDL_SetRelativeMouseMode(SDL_GetRelativeMouseMode() == SDL_TRUE ? SDL_FALSE : SDL_TRUE);
-
-	if (inputManager.IsKeyDown(SDLK_w))
-		camera.SetPosition(camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
-	if (inputManager.IsKeyDown(SDLK_s))
-		camera.SetPosition(camera.GetPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
-	if (inputManager.IsKeyDown(SDLK_a))
-		camera.SetPosition(camera.GetPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
-	if (inputManager.IsKeyDown(SDLK_d))
-		camera.SetPosition(camera.GetPosition() + glm::vec2(CAMERA_SPEED, -0.0f));
-	if (inputManager.IsKeyDown(SDLK_q))
-		camera.SetScale(camera.GetScale() + SCALE_SPEED);
-	if (inputManager.IsKeyDown(SDLK_e))
-		camera.SetScale(camera.GetScale() - SCALE_SPEED);
+	if (m_inputManager.IsKeyDown(SDLK_w))
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, m_camera_SPEED));
+	if (m_inputManager.IsKeyDown(SDLK_s))
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, -m_camera_SPEED));
+	if (m_inputManager.IsKeyDown(SDLK_a))
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(-m_camera_SPEED, 0.0f));
+	if (m_inputManager.IsKeyDown(SDLK_d))
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(m_camera_SPEED, -0.0f));
+	if (m_inputManager.IsKeyDown(SDLK_q))
+		m_camera.SetScale(m_camera.GetScale() + SCALE_SPEED);
+	if (m_inputManager.IsKeyDown(SDLK_e))
+		m_camera.SetScale(m_camera.GetScale() - SCALE_SPEED);
 
 	const uint kDelayIncrement = 25;
-	if (inputManager.IsKeyDownOnce(SDLK_KP_PLUS))
-		delayNextTurn += kDelayIncrement;
-	if (inputManager.IsKeyDownOnce(SDLK_KP_MINUS))
-		if (delayNextTurn > kDelayIncrement)
-			delayNextTurn -= kDelayIncrement;
+	if (m_inputManager.IsKeyDownOnce(SDLK_KP_PLUS))
+		m_delayNextTurn += kDelayIncrement;
+	if (m_inputManager.IsKeyDownOnce(SDLK_KP_MINUS))
+		if (m_delayNextTurn > kDelayIncrement)
+			m_delayNextTurn -= kDelayIncrement;
 		else
-			delayNextTurn = 0;
+			m_delayNextTurn = 0;
 
-	if (inputManager.IsKeyDownOnce(SDLK_SPACE))
-		if (gameState == GameState::Play)
-			gameState = GameState::Pause;
-		else
-			gameState = GameState::Play;
+	if (m_inputManager.IsKeyDownOnce(SDLK_SPACE))
+		m_bUpdate = !m_bUpdate;
 
-	if (inputManager.IsKeyDownOnce(SDL_BUTTON_LEFT))
+	if (m_inputManager.IsKeyDownOnce(SDL_BUTTON_LEFT))
 	{
-		glm::vec2 mouseCoords = inputManager.GetMouseCoords();
-		mouseCoords = camera.ConvertScreenToWorld(mouseCoords);
-		Engine::log("At scale %.2fx coords are: %.2f, %.2f", camera.GetScale(), mouseCoords.x, mouseCoords.y);
+		glm::vec2 mouseCoords = m_inputManager.GetMouseCoords();
+		mouseCoords = m_camera.ConvertScreenToWorld(mouseCoords);
+		Engine::log("At scale %.2fx coords are: %.2f, %.2f", m_camera.GetScale(), mouseCoords.x, mouseCoords.y);
 
 		// get clicked box
-		for (auto &boardTile : boardTiles)
+		for (auto &boardTile : m_boardTiles)
 			if (boardTile.boundingBox.Contains(mouseCoords.x, mouseCoords.y))
 			{
-				HumanPlayer *pPlayer = dynamic_cast<HumanPlayer*>(judger.GetCrtPlayer().get());
+				HumanPlayer *pPlayer = dynamic_cast<HumanPlayer*>(m_judger.GetCrtPlayer().get());
 				if(pPlayer)
 					pPlayer->BufferAction(boardTile.boardIndexPos);
 			}
 	}
-}
-
-void Game::renderScene()
-{
-	glClearDepth(1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//actual drawing here
-	boardRenderer.Render(camera);
-	for (auto &boardTile : boardTiles)
-		if (boardTile.chessman)
-			boardTile.chessman->Render(camera, boardTile.boundingBox.Center());
-
-	window.SwappBuffer();
-}
-
-void Game::resize(uint screenWidth, uint screenHeight)
-{
-	this->screenWidth = screenWidth;
-	this->screenHeight = screenHeight;
-
-	camera.Init(screenWidth, screenHeight);
-
-	printf("Screen is now: %dx%d pixels\n", screenWidth, screenHeight);
 }
