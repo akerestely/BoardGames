@@ -26,7 +26,7 @@ void BoardRenderer::Render(Engine::Camera2D &camera)
 {
 	program->Use();
 	//update uniforms
-	glUniform4f(program->GetUniformLocation("color"), 0.75, 0.9, 0.9, 1);
+	glUniform4f(program->GetUniformLocation("color"), 0.75f, 0.9f, 0.9f, 1.0f);
 	glUniformMatrix4fv(program->GetUniformLocation("MVP"), 1, GL_FALSE, &camera.GetCameraMatrix()[0][0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
