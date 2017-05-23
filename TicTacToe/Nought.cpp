@@ -16,7 +16,7 @@ Nought::~Nought()
 {
 }
 
-void Nought::Init(const std::shared_ptr<Engine::GLSLProgram>& program)
+void Nought::Init(const std::shared_ptr<Engine::GLSLProgram> &program)
 {
 	this->program = program;
 	buildModel();
@@ -26,7 +26,7 @@ void Nought::Render(const Engine::Camera2D &camera, const glm::vec2 &position /*
 {
 	program->Use();
 	//update uniforms
-	glUniform4f(program->GetUniformLocation("color"), 0.5, 0.5, 0.7, 1);
+	glUniform4f(program->GetUniformLocation("color"), 0.5f, 0.5f, 0.7f, 1.0f);
 	glm::mat4 mpv = glm::translate(camera.GetCameraMatrix(), glm::vec3(position.x, position.y, 0));
 	glUniformMatrix4fv(program->GetUniformLocation("MVP"), 1, GL_FALSE, &mpv[0][0]);
 
@@ -41,7 +41,7 @@ void Nought::Render(const Engine::Camera2D &camera, const glm::vec2 &position /*
 void Nought::buildModel()
 {
 	//construct vertex data
-	const float PI = 3.141592653589793;
+	const float PI = 3.141592653589793f;
 	const uint slices = 40;
 	float step = 2 * PI / (slices);
 	const float radius = 20;

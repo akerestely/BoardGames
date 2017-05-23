@@ -26,7 +26,7 @@ void Cross::Render(const Engine::Camera2D &camera, const glm::vec2 &position /*=
 {
 	program->Use();
 	//update uniforms
-	glUniform4f(program->GetUniformLocation("color"), 0.2, 0.3, 0.3, 1);
+	glUniform4f(program->GetUniformLocation("color"), 0.2f, 0.3f, 0.3f, 1.0f);
 	glm::mat4 mpv = glm::translate(camera.GetCameraMatrix(), glm::vec3(position.x, position.y, 0));
 	glUniformMatrix4fv(program->GetUniformLocation("MVP"), 1, GL_FALSE, &mpv[0][0]);
 
