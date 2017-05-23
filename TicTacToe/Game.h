@@ -6,7 +6,7 @@
 #include "BoardRenderer.h"
 #include "Judger.h"
 
-class IRenderable;
+struct IRenderable;
 class Player;
 
 class Game : public Engine::IGame

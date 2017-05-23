@@ -46,7 +46,7 @@ void Game::onUpdate()
 	processInput();
 	m_camera.Update();
 
-	if (m_bUpdate && SDL_GetTicks() - m_lastTurnTime > m_delayNextTurn)
+	if (m_bUpdate && getTime() - m_lastTurnTime > m_delayNextTurn)
 	{
 		if (m_judger.HasGameEnded())
 			m_judger.InitGame(m_player1, m_player2);
@@ -67,7 +67,7 @@ void Game::onUpdate()
 				}
 		}
 
-		m_lastTurnTime = SDL_GetTicks();
+		m_lastTurnTime = getTime();
 	}
 }
 
@@ -98,32 +98,32 @@ void Game::processInput()
 	const float m_camera_SPEED = 5.0f;
 	const float SCALE_SPEED = 0.1f;
 
-	if (m_inputManager.IsKeyDown(SDLK_w))
+	if (m_inputManager.IsKeyDown(Engine::Key::W))
 		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, m_camera_SPEED));
-	if (m_inputManager.IsKeyDown(SDLK_s))
+	if (m_inputManager.IsKeyDown(Engine::Key::S))
 		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, -m_camera_SPEED));
-	if (m_inputManager.IsKeyDown(SDLK_a))
+	if (m_inputManager.IsKeyDown(Engine::Key::A))
 		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(-m_camera_SPEED, 0.0f));
-	if (m_inputManager.IsKeyDown(SDLK_d))
+	if (m_inputManager.IsKeyDown(Engine::Key::D))
 		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(m_camera_SPEED, -0.0f));
-	if (m_inputManager.IsKeyDown(SDLK_q))
+	if (m_inputManager.IsKeyDown(Engine::Key::Q))
 		m_camera.SetScale(m_camera.GetScale() + SCALE_SPEED);
-	if (m_inputManager.IsKeyDown(SDLK_e))
+	if (m_inputManager.IsKeyDown(Engine::Key::E))
 		m_camera.SetScale(m_camera.GetScale() - SCALE_SPEED);
 
 	const uint kDelayIncrement = 25;
-	if (m_inputManager.IsKeyDownOnce(SDLK_KP_PLUS))
+	if (m_inputManager.IsKeyDownOnce(Engine::Key::NumpadPlus))
 		m_delayNextTurn += kDelayIncrement;
-	if (m_inputManager.IsKeyDownOnce(SDLK_KP_MINUS))
+	if (m_inputManager.IsKeyDownOnce(Engine::Key::NumpadMinus))
 		if (m_delayNextTurn > kDelayIncrement)
 			m_delayNextTurn -= kDelayIncrement;
 		else
 			m_delayNextTurn = 0;
 
-	if (m_inputManager.IsKeyDownOnce(SDLK_SPACE))
+	if (m_inputManager.IsKeyDownOnce(Engine::Key::Space))
 		m_bUpdate = !m_bUpdate;
 
-	if (m_inputManager.IsKeyDownOnce(SDL_BUTTON_LEFT))
+	if (m_inputManager.IsKeyDownOnce(Engine::Key::LeftMouseButton))
 	{
 		glm::vec2 mouseCoords = m_inputManager.GetMouseCoords();
 		mouseCoords = m_camera.ConvertScreenToWorld(mouseCoords);
