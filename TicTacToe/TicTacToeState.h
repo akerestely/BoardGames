@@ -1,6 +1,5 @@
 #pragma once
 #include "BoardGame/State.h"
-#include <memory>
 
 enum class TicTacToeChessmans
 {
@@ -25,7 +24,7 @@ public:
 	{
 	}
 
-	std::shared_ptr<TicTacToeState> GetNextState(const Position &pos)
+	std::shared_ptr<TicTacToeState> GetNextState(const Position &pos) const
 	{
 		if (pos.Invalid() || board[pos] != TicTacToeChessmans::None)
 			return std::shared_ptr<TicTacToeState>();
@@ -48,7 +47,7 @@ public:
 		return nextState;
 	}
 
-	std::shared_ptr<TicTacToeState> GetNextState(const Move &move)
+	std::shared_ptr<IState> GetNextState(const Move &move) const
 	{
 		if (move.to.Invalid() || board[move.to] != TicTacToeChessmans::None)
 			return std::shared_ptr<TicTacToeState>();
@@ -60,10 +59,12 @@ public:
 		else
 			nextState->nextPlayer = Winner::FirstPlayer;
 
+		nextState->Invalidate();
+
 		return nextState;
 	}
 
-	void GetPossibleNextStates(std::vector<std::shared_ptr<TicTacToeState>> &states)
+	virtual void GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &states) const override
 	{
 		uint n = board.Rows();
 		uint m = board.Cols();

@@ -1,5 +1,6 @@
 #pragma once
-#include "Engine/BaseTypes.h"
+#include <vector>
+#include <memory>
 
 struct IState
 {
@@ -15,4 +16,6 @@ struct IState
 	virtual THash GetHash() = 0;
 	virtual bool IsEnd() = 0;
 	virtual Winner GetWinner() = 0;
+
+	virtual void GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &states) const = 0;
 };

@@ -44,6 +44,10 @@ public:
 	{
 		return data[pos.i * nCols + pos.j];
 	}
+	const TComponents& operator [](const Position &pos) const
+	{
+		return data[pos.i * nCols + pos.j];
+	}
 
 	//const std::vector<TComponents>& Data() const { return data; }
 
