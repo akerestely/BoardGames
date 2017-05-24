@@ -1,8 +1,8 @@
 #include "Engine/BaseTypes.h"
+#include "glm/glm.hpp"
 #include "TicTacToeBoard.h"
 
 #include <vector>
-#include "glm/glm.hpp"
 #include "gl/glew.h"
 
 #include "Engine/GLSLProgram.h"
@@ -22,12 +22,13 @@ void TicTacToeBoard::Init(const std::shared_ptr<Engine::GLSLProgram> &program)
 	buildModel();
 }
 
-void TicTacToeBoard::Render(Engine::Camera2D &camera)
+void TicTacToeBoard::Render(const Engine::Camera2D &camera, const glm::vec2 &position/* = glm::vec2()*/)
 {
 	program->Use();
 	//update uniforms
 	glUniform4f(program->GetUniformLocation("color"), 0.75f, 0.9f, 0.9f, 1.0f);
-	glUniformMatrix4fv(program->GetUniformLocation("MVP"), 1, GL_FALSE, &camera.GetCameraMatrix()[0][0]);
+	glm::mat4 mpv = glm::translate(camera.GetCameraMatrix(), glm::vec3(position.x, position.y, 0));
+	glUniformMatrix4fv(program->GetUniformLocation("MVP"), 1, GL_FALSE, &mpv[0][0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);

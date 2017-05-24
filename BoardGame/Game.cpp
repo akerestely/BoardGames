@@ -1,7 +1,7 @@
 #include "Game.h"
-#include "Engine\Engine.h"
-#include "Engine\Logger.h"
-#include "Engine\GLSLProgram.h"
+#include "Engine/Engine.h"
+#include "Engine/Logger.h"
+#include "Engine/GLSLProgram.h"
 
 #include "IRenderable.h"
 #include "HumanPlayer.h"
@@ -15,7 +15,6 @@ void Game::onInit()
 	onInitRendering();
 
 	m_camera.Init(m_screenWidth, m_screenHeight);
-
 	m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer));
 
 	for (int i = -1; i <= 1; ++i)
@@ -59,7 +58,7 @@ void Game::onUpdate()
 
 void Game::onRender()
 {
-	m_boardRenderer.Render(m_camera);
+	getBoard()->Render(m_camera);
 	for (auto &boardTile : m_boardTiles)
 		if (boardTile.chessman)
 			boardTile.chessman->Render(m_camera, boardTile.boundingBox.Center());

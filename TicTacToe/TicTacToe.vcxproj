@@ -163,7 +163,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="BoardRenderer.cpp" />
+    <ClCompile Include="TicTacToeBoard.cpp" />
     <ClCompile Include="Cross.cpp" />
     <ClCompile Include="Nought.cpp" />
     <ClCompile Include="TicTacToeGame.cpp" />
@@ -174,7 +174,7 @@
     <None Include="Shaders\simpleShading.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BoardRenderer.h" />
+    <ClInclude Include="TicTacToeBoard.h" />
     <ClInclude Include="Cross.h" />
     <ClInclude Include="Nought.h" />
     <ClInclude Include="TicTacToeGame.h" />

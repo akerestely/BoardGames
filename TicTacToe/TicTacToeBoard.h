@@ -1,21 +1,14 @@
 #pragma once
-#include <memory>
+#include "BoardGame/IRenderable.h"
 
-// forward declarations
-namespace Engine
-{
-	class GLSLProgram;
-	class Camera2D;
-}
-
-class TicTacToeBoard
+class TicTacToeBoard : public IRenderable
 {
 public:
 	TicTacToeBoard();
 	~TicTacToeBoard();
 
-	void Init(const std::shared_ptr<Engine::GLSLProgram> &program);
-	void Render(Engine::Camera2D &camera);
+	virtual void Init(const std::shared_ptr<Engine::GLSLProgram> &program) override;
+	virtual void Render(const Engine::Camera2D &camera, const glm::vec2 &position = glm::vec2()) override;
 
 private:
 	void buildModel();

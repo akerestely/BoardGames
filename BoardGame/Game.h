@@ -1,9 +1,8 @@
 #pragma once
-#include "Engine\IGame.h"
-#include "Engine\Camera2D.h"
-#include "Engine\Rectangle.h"
+#include "Engine/IGame.h"
+#include "Engine/Camera2D.h"
+#include "Engine/Rectangle.h"
 
-#include "BoardRenderer.h"
 #include "Judger.h"
 
 struct IRenderable;
@@ -21,6 +20,7 @@ private:
 	virtual void onDestroy() override final;
 
 	virtual void onInitRendering() {};
+	virtual std::shared_ptr<IRenderable> getBoard() = 0;
 	virtual std::shared_ptr<IPlayer> getPlayer(IState::Winner type) = 0;
 	virtual std::shared_ptr<IRenderable> getChessman(int type) = 0;
 	virtual void onRoundEnded() {};
@@ -30,7 +30,6 @@ private:
 protected:
 	Judger m_judger;
 
-	BoardRenderer m_boardRenderer;
 
 private:
 	Engine::Camera2D m_camera;
