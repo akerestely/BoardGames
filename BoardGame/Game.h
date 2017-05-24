@@ -23,17 +23,15 @@ private:
 	virtual std::shared_ptr<IRenderable> getBoard() = 0;
 	virtual std::shared_ptr<IPlayer> getPlayer(IState::Winner type) = 0;
 	virtual std::shared_ptr<IRenderable> getChessman(int type) = 0;
-	virtual void onRoundEnded() {};
+	virtual void onRoundEnded(const Judger &judger) {};
 
 	void processInput();
-
-protected:
-	Judger m_judger;
-
 
 private:
 	Engine::Camera2D m_camera;
 	bool m_bUpdate = true;
+
+	Judger m_judger;
 
 	struct BoardTile
 	{

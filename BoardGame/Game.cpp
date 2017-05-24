@@ -33,7 +33,7 @@ void Game::onUpdate()
 
 	if (m_judger.HasGameEnded())
 	{
-		onRoundEnded();
+		onRoundEnded(m_judger);
 		m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer));
 	}
 	else if (m_bUpdate && getTime() - m_lastTurnTime > m_delayNextTurn)

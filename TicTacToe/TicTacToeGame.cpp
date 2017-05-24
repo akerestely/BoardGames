@@ -59,10 +59,10 @@ std::shared_ptr<IRenderable> TicTacToeGame::getChessman(int type)
 	}
 }
 
-void TicTacToeGame::onRoundEnded()
+void TicTacToeGame::onRoundEnded(const Judger &judger)
 {
-	m_player1->FeedReward(m_judger.GetWinner());
-	m_player2->FeedReward(m_judger.GetWinner());
+	m_player1->FeedReward(judger.GetWinner());
+	m_player2->FeedReward(judger.GetWinner());
 }
 
 void TicTacToeGame::initShaders()
