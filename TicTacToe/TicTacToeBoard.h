@@ -8,11 +8,11 @@ namespace Engine
 	class Camera2D;
 }
 
-class BoardRenderer
+class TicTacToeBoard
 {
 public:
-	BoardRenderer();
-	~BoardRenderer();
+	TicTacToeBoard();
+	~TicTacToeBoard();
 
 	void Init(const std::shared_ptr<Engine::GLSLProgram> &program);
 	void Render(Engine::Camera2D &camera);

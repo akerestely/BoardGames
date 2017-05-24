@@ -33,6 +33,9 @@
     <ClCompile Include="TicTacToeGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BoardRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\simpleShading.frag">
@@ -53,6 +56,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TicTacToeGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoardRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,5 @@
 #include "Engine/BaseTypes.h"
-#include "BoardRenderer.h"
+#include "TicTacToeBoard.h"
 
 #include <vector>
 #include "glm/glm.hpp"
@@ -8,21 +8,21 @@
 #include "Engine/GLSLProgram.h"
 #include "Engine/Camera2D.h"
 
-BoardRenderer::BoardRenderer()
+TicTacToeBoard::TicTacToeBoard()
 {
 }
 
-BoardRenderer::~BoardRenderer()
+TicTacToeBoard::~TicTacToeBoard()
 {
 }
 
-void BoardRenderer::Init(const std::shared_ptr<Engine::GLSLProgram> &program)
+void TicTacToeBoard::Init(const std::shared_ptr<Engine::GLSLProgram> &program)
 {
 	this->program = program;
 	buildModel();
 }
 
-void BoardRenderer::Render(Engine::Camera2D &camera)
+void TicTacToeBoard::Render(Engine::Camera2D &camera)
 {
 	program->Use();
 	//update uniforms
@@ -37,7 +37,7 @@ void BoardRenderer::Render(Engine::Camera2D &camera)
 	program->UnUse();
 }
 
-void BoardRenderer::buildModel()
+void TicTacToeBoard::buildModel()
 {
 	//construct vertex data
 	std::vector<glm::vec2> vertices;

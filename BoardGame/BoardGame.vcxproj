@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
-    <ClInclude Include="BoardRenderer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="IPlayer.h" />
@@ -31,7 +30,6 @@
     <ClInclude Include="State.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BoardRenderer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="Judger.cpp" />
