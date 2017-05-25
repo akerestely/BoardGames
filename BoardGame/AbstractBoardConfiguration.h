@@ -2,7 +2,7 @@
 #include "IBoardConfiguration.h"
 
 template <class TChessman>
-class BoardConfiguration : public IBoardConfiguration
+class AbstractBoardConfiguration : public IBoardConfiguration
 {
 	virtual void Update(const std::shared_ptr<IState> &state) override final
 	{

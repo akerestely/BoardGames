@@ -20,9 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
-    <ClInclude Include="BoardConfiguration.h" />
+    <ClInclude Include="AbstractBoardConfiguration.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="AbstractHumanPlayer.h" />
     <ClInclude Include="IBoardConfiguration.h" />
     <ClInclude Include="IPlayer.h" />
     <ClInclude Include="IRenderable.h" />
@@ -33,7 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HumanPlayer.cpp" />
+    <ClCompile Include="AbstractHumanPlayer.cpp" />
     <ClCompile Include="Judger.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="State.cpp" />

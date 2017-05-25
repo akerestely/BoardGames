@@ -1,8 +1,8 @@
 #pragma once
-#include "BoardGame/BoardConfiguration.h"
+#include "BoardGame/AbstractBoardConfiguration.h"
 #include "TicTacToeState.h"
 
-class TicTacToeBoardConfig : public BoardConfiguration<TicTacToeChessmans>
+class TicTacToeBoardConfig : public AbstractBoardConfiguration<TicTacToeChessmans>
 {
 public:
 	TicTacToeBoardConfig(std::shared_ptr<IRenderable> cross, std::shared_ptr<IRenderable> nought);

@@ -4,7 +4,7 @@
 #include "Engine/GLSLProgram.h"
 
 #include "IRenderable.h"
-#include "HumanPlayer.h"
+#include "AbstractHumanPlayer.h"
 #include "IBoardConfiguration.h"
 
 Game::Game() : IGame()
@@ -90,7 +90,7 @@ void Game::processInput()
 
 		// get clicked box
 
-		HumanPlayer *pPlayer = dynamic_cast<HumanPlayer*>(m_judger.GetCrtPlayer().get());
+		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCrtPlayer().get());
 		if (pPlayer)
 		{
 			Position pos = m_boardConfig->GetTilePosition(mouseCoords);

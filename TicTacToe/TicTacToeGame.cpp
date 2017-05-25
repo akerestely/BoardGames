@@ -2,7 +2,7 @@
 
 #include "Engine/GLSLProgram.h"
 #include "BoardGame/Player.h"
-#include "BoardGame/HumanPlayer.h"
+#include "BoardGame/AbstractHumanPlayer.h"
 
 #include "Cross.h"
 #include "Nought.h"
@@ -30,7 +30,7 @@ void TicTacToeGame::onInitRendering()
 	m_player1->LoadPolicy();
 	m_player2 = std::make_shared<Player>(IState::Winner::SecondPlayer);
 	m_player2->LoadPolicy();
-	m_humanPlayer = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
+	m_humanPlayer = std::make_shared<AbstractHumanPlayer>(IState::Winner::SecondPlayer);
 }
 
 std::shared_ptr<IRenderable> TicTacToeGame::getBoard()

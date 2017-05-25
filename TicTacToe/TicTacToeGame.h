@@ -2,7 +2,7 @@
 #include "BoardGame/Game.h"
 
 class Player;
-class HumanPlayer;
+class AbstractHumanPlayer;
 class TicTacToeBoard;
 
 namespace Engine
@@ -28,7 +28,7 @@ private:
 private:
 	std::shared_ptr<Player> m_player1;
 	std::shared_ptr<Player> m_player2;
-	std::shared_ptr<HumanPlayer> m_humanPlayer;
+	std::shared_ptr<AbstractHumanPlayer> m_humanPlayer;
 
 	std::shared_ptr<IRenderable> m_cross;
 	std::shared_ptr<IRenderable> m_nought;

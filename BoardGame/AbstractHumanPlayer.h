@@ -1,14 +1,18 @@
 #pragma once
 #include "IPlayer.h"
 #include "Board.h"
-#include "../TicTacToe/TicTacToeState.h"
+#include "IState.h"
 
-class HumanPlayer : public IPlayer
+struct Move;
+
+class AbstractHumanPlayer : public IPlayer
 {
 public:
-	HumanPlayer(IState::Winner symbol) :
+
+	AbstractHumanPlayer(IState::Winner symbol) :
 		m_symbol(symbol)
 	{
+
 	}
 
 	virtual std::shared_ptr<IState> TakeAction(const std::shared_ptr<IState> &crtState) override
@@ -32,14 +36,13 @@ public:
 	{
 		m_bufferedAction = std::make_shared<Position>(clickedTile);
 	}
-
 	void BufferAction(const Position &clickedTile, const Position &releasedTile)
 	{
 		m_bufferedMove = std::make_shared<Move>(Move({ clickedTile, releasedTile }));
 	}
 
 private:
-	IState::Winner m_symbol;
+	const IState::Winner &m_symbol;
 	std::shared_ptr<Position> m_bufferedAction;
 	std::shared_ptr<Move> m_bufferedMove;
 };
