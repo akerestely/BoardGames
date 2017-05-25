@@ -19,7 +19,8 @@ private:
 	virtual void onInitRendering() override;
 	virtual std::shared_ptr<IRenderable> getBoard() override;
 	virtual std::shared_ptr<IPlayer> getPlayer(IState::Winner type) override;
-	virtual std::shared_ptr<IRenderable> getChessman(int type) override;
+	virtual std::shared_ptr<IState> getStartingState() override;
+	virtual std::shared_ptr<IBoardConfiguration> getBoardConfiguration() override;
 	virtual void onRoundEnded(const Judger &judger) override;
 
 	void initShaders();

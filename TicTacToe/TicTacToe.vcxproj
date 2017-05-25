@@ -166,6 +166,7 @@
     <ClCompile Include="TicTacToeBoard.cpp" />
     <ClCompile Include="Cross.cpp" />
     <ClCompile Include="Nought.cpp" />
+    <ClCompile Include="TicTacToeBoardConfiguration.cpp" />
     <ClCompile Include="TicTacToeGame.cpp" />
     <ClCompile Include="TicTacToeState.cpp" />
   </ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="TicTacToeBoard.h" />
     <ClInclude Include="Cross.h" />
     <ClInclude Include="Nought.h" />
+    <ClInclude Include="TicTacToeBoardConfiguration.h" />
     <ClInclude Include="TicTacToeGame.h" />
     <ClInclude Include="TicTacToeState.h" />
   </ItemGroup>

@@ -8,6 +8,7 @@
 #include "Nought.h"
 #include "TicTacToeState.h"
 #include "TicTacToeBoard.h"
+#include "TicTacToeBoardConfiguration.h"
 
 TicTacToeGame::TicTacToeGame()
 {
@@ -48,15 +49,14 @@ std::shared_ptr<IPlayer> TicTacToeGame::getPlayer(IState::Winner type)
 	}
 }
 
-std::shared_ptr<IRenderable> TicTacToeGame::getChessman(int type)
+std::shared_ptr<IState> TicTacToeGame::getStartingState()
 {
-	switch (TicTacToeChessmans(type))
-	{
-	case TicTacToeChessmans::Cross:		return m_cross;
-	case TicTacToeChessmans::Nought:	return m_nought;
+	return std::make_shared<TicTacToeState>();
+}
 
-	default:							return std::shared_ptr<IRenderable>();
-	}
+std::shared_ptr<IBoardConfiguration> TicTacToeGame::getBoardConfiguration()
+{
+	return std::make_shared<TicTacToeBoardConfig>(m_cross, m_nought);
 }
 
 void TicTacToeGame::onRoundEnded(const Judger &judger)

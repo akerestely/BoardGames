@@ -20,8 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BoardConfiguration.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="IBoardConfiguration.h" />
     <ClInclude Include="IPlayer.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IState.h" />

@@ -2,11 +2,8 @@
 #include <memory>
 #include <deque>
 
-#include "Player.h"
+#include "IPlayer.h"
 #include "IState.h"
-
-// TODO: remove inculde
-#include "../TicTacToe/TicTacToeState.h"
 
 class Judger
 {
@@ -16,12 +13,12 @@ public:
 	{
 	}
 
-	void InitGame(std::shared_ptr<IPlayer> player1, std::shared_ptr<IPlayer> player2)
+	void InitGame(std::shared_ptr<IPlayer> player1, std::shared_ptr<IPlayer> player2, std::shared_ptr<IState> startingState)
 	{
 		crtPlayer = player1;
 		nextPlayer = player2;
 
-		currentState = std::make_shared<TicTacToeState>();
+		currentState = startingState;
 
 		gameEnded = false;
 		winner = IState::Winner::None;
@@ -69,7 +66,7 @@ public:
 
 	const std::shared_ptr<IPlayer>& GetCrtPlayer() const { return crtPlayer; }
 
-	Board<TicTacToeChessmans> GetBoard() const { return static_cast<TicTacToeState*>(currentState.get())->GetBoard(); }
+	const std::shared_ptr<IState>& GetCrtState() const { return currentState; }
 
 private:
 	// check if 3 consecutive full rounds are the same

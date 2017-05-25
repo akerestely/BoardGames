@@ -5,6 +5,7 @@
 
 #include "IRenderable.h"
 #include "HumanPlayer.h"
+#include "IBoardConfiguration.h"
 
 Game::Game() : IGame()
 {
@@ -15,15 +16,9 @@ void Game::onInit()
 	onInitRendering();
 
 	m_camera.Init(m_screenWidth, m_screenHeight);
-	m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer));
-
-	for (int i = -1; i <= 1; ++i)
-		for (int j = -1; j <= 1; ++j)
-		{
-			auto &boardTile = m_boardTiles[(i + 1) * 3 + j + 1];
-			boardTile.boundingBox.Set(65.f * i, 65.f * j, 60, 60);
-			boardTile.boardIndexPos = Position(i + 1, j + 1);
-		}
+	m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
+	m_boardConfig = getBoardConfiguration();
+	m_boardConfig->Init();
 }
 
 void Game::onUpdate()
@@ -34,22 +29,13 @@ void Game::onUpdate()
 	if (m_judger.HasGameEnded())
 	{
 		onRoundEnded(m_judger);
-		m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer));
+		m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
 	}
 	else if (m_bUpdate && getTime() - m_lastTurnTime > m_delayNextTurn)
 	{
 		if (m_judger.PlayTurn())
 		{
-			auto &board = m_judger.GetBoard();
-			for (uint i = 0; i < board.Rows(); ++i)
-				for (uint j = 0; j < board.Cols(); ++j)
-				{
-					auto &boardTile = m_boardTiles[i * board.Cols() + j];
-					if (board[i][j] != TicTacToeChessmans::None)
-						boardTile.chessman = getChessman(int(board[i][j]));
-					else
-						boardTile.chessman.reset();
-				}
+			m_boardConfig->Update(m_judger.GetCrtState());
 		}
 
 		m_lastTurnTime = getTime();
@@ -59,9 +45,7 @@ void Game::onUpdate()
 void Game::onRender()
 {
 	getBoard()->Render(m_camera);
-	for (auto &boardTile : m_boardTiles)
-		if (boardTile.chessman)
-			boardTile.chessman->Render(m_camera, boardTile.boundingBox.Center());
+	m_boardConfig->Render(m_camera);
 }
 
 void Game::onDestroy()
@@ -105,12 +89,13 @@ void Game::processInput()
 		Engine::log("At scale %.2fx coords are: %.2f, %.2f", m_camera.GetScale(), mouseCoords.x, mouseCoords.y);
 
 		// get clicked box
-		for (auto &boardTile : m_boardTiles)
-			if (boardTile.boundingBox.Contains(mouseCoords.x, mouseCoords.y))
-			{
-				HumanPlayer *pPlayer = dynamic_cast<HumanPlayer*>(m_judger.GetCrtPlayer().get());
-				if(pPlayer)
-					pPlayer->BufferAction(boardTile.boardIndexPos);
-			}
+
+		HumanPlayer *pPlayer = dynamic_cast<HumanPlayer*>(m_judger.GetCrtPlayer().get());
+		if (pPlayer)
+		{
+			Position pos = m_boardConfig->GetTilePosition(mouseCoords);
+			if(!pos.Invalid())
+				pPlayer->BufferAction(pos);
+		}
 	}
 }

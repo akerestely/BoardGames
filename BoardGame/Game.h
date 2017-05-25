@@ -7,6 +7,8 @@
 
 struct IRenderable;
 struct IPlayer;
+struct IState;
+class IBoardConfiguration;
 
 class Game : public Engine::IGame
 {
@@ -22,7 +24,8 @@ private:
 	virtual void onInitRendering() {};
 	virtual std::shared_ptr<IRenderable> getBoard() = 0;
 	virtual std::shared_ptr<IPlayer> getPlayer(IState::Winner type) = 0;
-	virtual std::shared_ptr<IRenderable> getChessman(int type) = 0;
+	virtual std::shared_ptr<IState> getStartingState() = 0;
+	virtual std::shared_ptr<IBoardConfiguration> getBoardConfiguration() = 0;
 	virtual void onRoundEnded(const Judger &judger) {};
 
 	void processInput();
@@ -33,13 +36,7 @@ private:
 
 	Judger m_judger;
 
-	struct BoardTile
-	{
-		rectf boundingBox;
-		std::shared_ptr<IRenderable> chessman;
-		Position boardIndexPos;
-	};
-	BoardTile m_boardTiles[9];
+	std::shared_ptr<IBoardConfiguration> m_boardConfig;
 
 	uint m_lastTurnTime = 0;	//ms
 	uint m_delayNextTurn = 0;	//ms
