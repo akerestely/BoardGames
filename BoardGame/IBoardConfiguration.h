@@ -13,6 +13,8 @@ namespace Engine
 class IBoardConfiguration
 {
 public:
+	virtual ~IBoardConfiguration() = default;
+
 	virtual void Init() = 0;
 	virtual void Update(const std::shared_ptr<IState> &state) = 0;
 	void Render(const Engine::Camera2D &camera)
