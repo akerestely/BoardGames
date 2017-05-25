@@ -30,7 +30,7 @@ void TicTacToeGame::onInitRendering()
 	m_player1->LoadPolicy();
 	m_player2 = std::make_shared<Player>(IState::Winner::SecondPlayer);
 	m_player2->LoadPolicy();
-	m_humanPlayer = std::make_shared<HumanPlayer>();
+	m_humanPlayer = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
 }
 
 std::shared_ptr<IRenderable> TicTacToeGame::getBoard()

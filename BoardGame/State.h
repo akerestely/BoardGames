@@ -2,6 +2,12 @@
 #include "IState.h"
 #include "Board.h"
 
+struct Move
+{
+	Position from;
+	Position to;
+};
+
 template<class TChessman>
 class State : public IState
 {
@@ -125,7 +131,43 @@ public:
 
 	virtual const Board<TChessman> &GetBoard() const { return board; }
 
+	std::shared_ptr<State<TChessman>> GetNextState(const Position &pos, TChessman chessman) const
+	{
+		if (pos.Invalid() || board[pos] != TChessman::None)
+			return std::shared_ptr<State<TChessman>>();
+
+		auto nextState = Produce(*this);
+		nextState->board[pos] = chessman;
+		if (nextPlayer == Winner::FirstPlayer)
+			nextState->nextPlayer = Winner::SecondPlayer;
+		else
+			nextState->nextPlayer = Winner::FirstPlayer;
+
+		nextState->Invalidate();
+
+		return nextState;
+	}
+
+	std::shared_ptr<State<TChessman>> GetNextState(const Move &move) const
+	{
+		if (move.from.Invalid() || move.to.Invalid() || board[move.to] != TicTacToeChessmans::None)
+			return std::shared_ptr<State<TChessman>>();
+
+		auto nextState = std::make_shared<State<TChessman>>(*this);
+		std::swap(nextState->board[move.from], nextState->board[move.to]);
+		if (nextPlayer == Winner::FirstPlayer)
+			nextState->nextPlayer = Winner::SecondPlayer;
+		else
+			nextState->nextPlayer = Winner::FirstPlayer;
+
+		nextState->Invalidate();
+
+		return nextState;
+	}
+
 protected:
+	virtual std::shared_ptr<State<TChessman>> Produce(const State<TChessman> &fromState) const = 0;
+
 	void Invalidate()
 	{
 		computedHash = false;

@@ -13,68 +13,32 @@ enum class TicTacToeChessmans
 class TicTacToeState : public State<TicTacToeChessmans>
 {
 public:
-	struct Move
-	{
-		Position from;
-		Position to;
-	};
-
-public:
 	TicTacToeState() : State(3, 3)
 	{
 	}
 
-	std::shared_ptr<TicTacToeState> GetNextState(const Position &pos) const
-	{
-		if (pos.Invalid() || board[pos] != TicTacToeChessmans::None)
-			return std::shared_ptr<TicTacToeState>();
-
-		auto nextState = std::make_shared<TicTacToeState>(*this);
-		switch (nextPlayer)
-		{
-		case Winner::FirstPlayer:
-			nextState->board[pos] = TicTacToeChessmans::Cross;
-			nextState->nextPlayer = Winner::SecondPlayer;
-			break;
-		case Winner::SecondPlayer:
-			nextState->board[pos] = TicTacToeChessmans::Nought;
-			nextState->nextPlayer = Winner::FirstPlayer;
-			break;
-		}
-
-		nextState->Invalidate();
-
-		return nextState;
-	}
-
-	std::shared_ptr<IState> GetNextState(const Move &move) const
-	{
-		if (move.to.Invalid() || board[move.to] != TicTacToeChessmans::None)
-			return std::shared_ptr<TicTacToeState>();
-
-		auto nextState = std::make_shared<TicTacToeState>(*this);
-		std::swap(nextState->board[move.from], nextState->board[move.to]);
-		if (nextPlayer == Winner::FirstPlayer)
-			nextState->nextPlayer = Winner::SecondPlayer;
-		else
-			nextState->nextPlayer = Winner::FirstPlayer;
-
-		nextState->Invalidate();
-
-		return nextState;
-	}
-
 	virtual void GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &states) const override
 	{
+		TicTacToeChessmans chessman;
+		if (nextPlayer == Winner::FirstPlayer)
+			chessman = TicTacToeChessmans::Cross;
+		else
+			chessman = TicTacToeChessmans::Nought;
+
 		uint n = board.Rows();
 		uint m = board.Cols();
 		for (uint i = 0; i < n; ++i)
 			for (uint j = 0; j < m; ++j)
 				if (board[i][j] == TicTacToeChessmans::None)
-					states.push_back(this->GetNextState(Position(i,j)));
+					states.push_back(this->GetNextState(Position(i,j), chessman));
 	}
 
 private:
+	virtual std::shared_ptr<State<TicTacToeChessmans>> Produce(const State<TicTacToeChessmans> &fromState) const override
+	{
+		return std::make_shared<TicTacToeState>(static_cast<const TicTacToeState&>(fromState));
+	}
+
 	virtual THash getChessmanValue(TicTacToeChessmans chessman) override
 	{
 		switch (chessman)
