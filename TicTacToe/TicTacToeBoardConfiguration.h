@@ -9,6 +9,7 @@ public:
 
 	virtual void Init() override;
 
+private:
 	virtual std::shared_ptr<IRenderable>getChessman(TicTacToeChessmans type) const override;
 
 private:
