@@ -35,15 +35,6 @@ void TicTacToeBoard::buildModel()
 	//construct vertex data
 	std::vector<glm::vec2> vertices;
 	// grid
-// 	vertices.emplace_back(-100, -100);
-// 	vertices.emplace_back( 100, -100);
-// 	vertices.emplace_back( 100,  100);
-// 	vertices.emplace_back(-100,  100);
-// 	vertices.emplace_back(-95, -95);
-// 	vertices.emplace_back( 95, -95);
-// 	vertices.emplace_back( 95,  95);
-// 	vertices.emplace_back(-95,  95);
-
 	vertices.emplace_back(-30, -95);
 	vertices.emplace_back(-35, -95);
 	vertices.emplace_back(-35,  95);
@@ -66,20 +57,12 @@ void TicTacToeBoard::buildModel()
 
 	//assign triangle indices
 	std::vector<uint> indices;
-	// grid
 	indices.insert(indices.begin(), {
-// 		0, 1, 5, 0, 5, 4,
-// 		1, 2, 6, 1, 6, 5,
-// 		2, 3, 7, 2, 7, 6,
-// 		3, 0, 4, 3, 4, 7,
-
-		 8,  9, 10,  8, 10, 11,
+		0, 1, 2, 0, 2, 3,
+		4, 5, 6, 4, 6, 7,
+		8, 9, 10, 8, 10, 11,
 		12, 13, 14, 12, 14, 15,
-		16, 17, 18, 16, 18, 19,
-		20, 21, 22, 20, 22, 23,
 	});
-	for (auto &i : indices)
-		i -= 8;
 	iboSize = indices.size();
 
 	//upload to GPU
