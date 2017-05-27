@@ -8,14 +8,6 @@
 #include "Engine/GLSLProgram.h"
 #include "Engine/Camera2D.h"
 
-TicTacToeBoard::TicTacToeBoard()
-{
-}
-
-TicTacToeBoard::~TicTacToeBoard()
-{
-}
-
 void TicTacToeBoard::Init(const std::shared_ptr<Engine::GLSLProgram> &program)
 {
 	this->program = program;
