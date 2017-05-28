@@ -25,7 +25,7 @@ private:
 	virtual void onInit() override final;
 	virtual void onUpdate() override final;
 	virtual void onRender() override final;
-	virtual void onDestroy() override final;
+	virtual void onDestroy() override;
 
 	virtual void onInitRendering() {};
 	virtual std::shared_ptr<IRenderable> getBoard() = 0;

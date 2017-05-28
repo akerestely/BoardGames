@@ -23,6 +23,7 @@ private:
 	virtual std::shared_ptr<IState> getStartingState() override;
 	virtual std::shared_ptr<IBoardConfiguration> getBoardConfiguration() override;
 	virtual void onRoundEnded(const Judger &judger) override;
+	virtual void onDestroy() override;
 
 	virtual void onKeyUp(void *pkey) override;
 

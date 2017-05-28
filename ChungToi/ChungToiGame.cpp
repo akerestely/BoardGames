@@ -72,7 +72,14 @@ std::shared_ptr<IBoardConfiguration> ChungToiGame::getBoardConfiguration()
 
 void ChungToiGame::onRoundEnded(const Judger &judger)
 {
+	m_player1->FeedReward(judger.GetWinner());
+	m_player2->FeedReward(judger.GetWinner());
+}
 
+void ChungToiGame::onDestroy()
+{
+	m_player1->SavePolicy();
+	m_player2->SavePolicy();
 }
 
 void ChungToiGame::onKeyUp(void *pkey)

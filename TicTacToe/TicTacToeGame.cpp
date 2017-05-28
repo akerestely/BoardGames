@@ -65,6 +65,12 @@ void TicTacToeGame::onRoundEnded(const Judger &judger)
 	m_player2->FeedReward(judger.GetWinner());
 }
 
+void TicTacToeGame::onDestroy()
+{
+	m_player1->SavePolicy();
+	m_player2->SavePolicy();
+}
+
 void TicTacToeGame::initShaders()
 {
 	m_simpleProgram = std::make_shared<Engine::GLSLProgram>();
