@@ -163,6 +163,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="HumanPlayer.cpp" />
+    <ClCompile Include="MillBoard.cpp" />
+    <ClCompile Include="MillBoardConfiguration.cpp" />
+    <ClCompile Include="MillGame.cpp" />
+    <ClCompile Include="MillState.cpp" />
+    <ClCompile Include="Piece.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="MillBoard.h" />
+    <ClInclude Include="MillBoardConfiguration.h" />
+    <ClInclude Include="MillGame.h" />
+    <ClInclude Include="MillState.h" />
+    <ClInclude Include="Piece.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\simpleShading.frag" />
+    <None Include="Shaders\simpleShading.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

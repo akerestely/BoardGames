@@ -1,7 +1,9 @@
+#include "MillGame.h"
+
 int main(int argc, char* argv[])
 {
-// 	MillGame game;
-// 	game.Run();
+	MillGame game;
+	game.Run();
 
 	return 0;
 }
