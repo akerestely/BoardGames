@@ -39,7 +39,9 @@ void ChungToiGame::onInitRendering()
 	m_player1->LoadPolicy();
 	m_player2 = std::make_shared<Player>(IState::Winner::SecondPlayer);
 	m_player2->LoadPolicy();
-	m_humanPlayer = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
+
+	IState::Winner humanPlayerSymbol = IState::Winner::SecondPlayer;
+	m_humanPlayer = std::make_shared<HumanPlayer>(humanPlayerSymbol);
 }
 
 std::shared_ptr<IRenderable> ChungToiGame::getBoard()
@@ -71,6 +73,18 @@ std::shared_ptr<IBoardConfiguration> ChungToiGame::getBoardConfiguration()
 void ChungToiGame::onRoundEnded(const Judger &judger)
 {
 
+}
+
+void ChungToiGame::onKeyUp(void *pkey)
+{
+	Game::onKeyUp(pkey);
+
+	Engine::Key key = *static_cast<Engine::Key*>(pkey);
+	switch (key)
+	{
+	case Engine::Key::R:
+		m_humanPlayer->BufferRotation();
+	}
 }
 
 void ChungToiGame::initShaders()

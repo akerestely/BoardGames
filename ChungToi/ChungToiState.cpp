@@ -25,7 +25,7 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 	uint n = board.Rows();
 	uint m = board.Cols();
 
-	if (nextPlayerHasChessmans())
+	if (NextPlayerHasChessmans())
 	{
 		for (uint i = 0; i < n; ++i)
 			for (uint j = 0; j < m; ++j)
@@ -84,7 +84,7 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 	}
 }
 
-bool ChungToiState::nextPlayerHasChessmans() const
+bool ChungToiState::NextPlayerHasChessmans() const
 {
 	uint sum = 0;
 	uint n = board.Rows();

@@ -16,6 +16,11 @@ class Game : public Engine::IGame
 public:
 	Game();
 
+protected:
+	virtual void onKeyDown(void *pkey);
+	virtual void onKeyUp(void *pkey);
+	virtual void onMouseMove(void *pVec2i);
+
 private:
 	virtual void onInit() override final;
 	virtual void onUpdate() override final;
@@ -27,12 +32,11 @@ private:
 	virtual std::shared_ptr<IPlayer> getPlayer(IState::Winner type) = 0;
 	virtual std::shared_ptr<IState> getStartingState() = 0;
 	virtual std::shared_ptr<IBoardConfiguration> getBoardConfiguration() = 0;
+	virtual void onTurnBegining(std::shared_ptr<IPlayer> crtPlayer, std::shared_ptr<IState> crtState) {};
+	virtual void onTurnEnding(std::shared_ptr<IPlayer> crtPlayer, std::shared_ptr<IState> crtState) {};
 	virtual void onRoundEnded(const Judger &judger) {};
 
 	void processInput();
-	void onKeyDown(void *pkey);
-	void onKeyUp(void *pkey);
-	void onMouseMove(void *pVec2i);
 
 private:
 	Engine::Camera2D m_camera;

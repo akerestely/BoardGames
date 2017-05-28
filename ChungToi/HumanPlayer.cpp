@@ -1,19 +1,67 @@
 #include "Engine/BaseTypes.h"
 #include "HumanPlayer.h"
+
 #include "ChungToiState.h"
+
+ChungToiChessmans rotatedChessman(ChungToiChessmans chessman)
+{
+	switch (chessman)
+	{
+	case ChungToiChessmans::WhiteCardinal:
+		return ChungToiChessmans::WhiteDiagonal;
+	case ChungToiChessmans::WhiteDiagonal:
+		return ChungToiChessmans::WhiteCardinal;
+	case ChungToiChessmans::RedCardinal:
+		return ChungToiChessmans::RedDiagonal;
+	case ChungToiChessmans::RedDiagonal:
+		return ChungToiChessmans::RedCardinal;
+	}
+
+	return ChungToiChessmans::None;
+}
 
 std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &crtState)
 {
-	if (!m_bufferedAction)
-		return std::shared_ptr<IState>();
+	ChungToiChessmans chessman = ChungToiChessmans::None;
+	ChungToiState *pCrtState = static_cast<ChungToiState*>(crtState.get());
 
-	ChungToiChessmans chessman;
-	if (m_symbol == IState::Winner::FirstPlayer)
-		chessman = ChungToiChessmans::WhiteCardinal;
+	std::shared_ptr<State<ChungToiChessmans>> nextState;
+	if (m_bufferedAction)
+	{
+		if (pCrtState->NextPlayerHasChessmans())
+		{
+			// set default
+			if (m_symbol == IState::Winner::FirstPlayer)
+				chessman = ChungToiChessmans::WhiteCardinal;
+			else
+				chessman = ChungToiChessmans::RedCardinal;
+
+			// rotate if needed
+			if (m_bBufferedRotation)
+				chessman = rotatedChessman(chessman);
+		}
+		else
+			// rotate the current selected
+			chessman = rotatedChessman(pCrtState->GetBoard()[*m_bufferedAction]);
+
+		// generate state
+		nextState = static_cast<ChungToiState*>(crtState.get())->GetNextState(*m_bufferedAction, chessman);
+	}
+	else if (m_bufferedMove)
+	{
+		if(!m_bBufferedRotation)
+		// simple move
+			nextState = static_cast<ChungToiState*>(crtState.get())->GetNextState(*m_bufferedMove);
+		else
+		{
+			// move and rotate based on dragged
+			chessman = rotatedChessman(pCrtState->GetBoard()[m_bufferedMove->from]);
+			nextState = static_cast<ChungToiState*>(crtState.get())->GetNextState(*m_bufferedMove, chessman);
+		};
+	}
 	else
-		chessman = ChungToiChessmans::RedDiagonal;
-
-	auto nextState = static_cast<ChungToiState*>(crtState.get())->GetNextState(*m_bufferedAction, chessman);
+		// no buffered move
+		return std::shared_ptr<IState>();
 
 	// validate
 	if (nextState)
@@ -32,7 +80,15 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 			nextState.reset();
 	}
 
+	// set buffered actions as consumed
 	m_bufferedAction.reset();
+	m_bufferedMove.reset();
+	m_bBufferedRotation = false;
 
 	return nextState;
+}
+
+void HumanPlayer::BufferRotation()
+{
+	m_bBufferedRotation = !m_bBufferedRotation;
 }

@@ -2,7 +2,7 @@
 #include "BoardGame/Game.h"
 
 class Player;
-class AbstractHumanPlayer;
+class HumanPlayer;
 class ChungToiBoard;
 class Piece;
 
@@ -24,12 +24,14 @@ private:
 	virtual std::shared_ptr<IBoardConfiguration> getBoardConfiguration() override;
 	virtual void onRoundEnded(const Judger &judger) override;
 
+	virtual void onKeyUp(void *pkey) override;
+
 	void initShaders();
 
 private:
 	std::shared_ptr<Player> m_player1;
 	std::shared_ptr<Player> m_player2;
-	std::shared_ptr<AbstractHumanPlayer> m_humanPlayer;
+	std::shared_ptr<HumanPlayer> m_humanPlayer;
 
 	std::shared_ptr<ChungToiBoard> m_board;
 	std::shared_ptr<Piece> m_pieces[4];

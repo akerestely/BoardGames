@@ -20,9 +20,9 @@ public:
 	ChungToiState();
 
 	virtual void GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &states) const override;
+	bool NextPlayerHasChessmans() const;
 
 private:
-	bool nextPlayerHasChessmans() const;
 	IState::Winner getChessmanPlayer(ChungToiChessmans chessman) const;
 	bool canMoveTo(const Position &position) const;
 

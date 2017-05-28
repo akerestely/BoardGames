@@ -40,9 +40,14 @@ void Game::onUpdate()
 	}
 	else if (m_bUpdate && getTime() - m_lastTurnTime > m_delayNextTurn)
 	{
+		auto crtPlayer = m_judger.GetCrtPlayer();
+		auto crtState = m_judger.GetCrtState();
+
+		onTurnBegining(crtPlayer, crtState);
 		if (m_judger.PlayTurn())
 		{
 			m_boardConfig->Update(m_judger.GetCrtState());
+			onTurnEnding(crtPlayer, crtState);
 		}
 
 		m_lastTurnTime = getTime();
@@ -130,6 +135,8 @@ void Game::onKeyUp(void *pkey)
 				else
 					pPlayer->BufferAction(m_clickedTilePosIndex, releaseTilePosIndex);
 			}
+
+			m_clickedTilePosIndex = Position();
 		}
 	}
 }
