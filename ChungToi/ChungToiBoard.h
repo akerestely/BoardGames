@@ -11,7 +11,7 @@ private:
 	void buildModel();
 
 private:
-	std::shared_ptr<Engine::GLSLProgram> program;
-	uint vboId, iboId;
-	uint iboSize;
+	std::shared_ptr<Engine::GLSLProgram> m_program;
+	uint m_vboId, m_iboId;
+	uint m_iboSize;
 };

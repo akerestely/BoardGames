@@ -4,6 +4,7 @@
 class Player;
 class AbstractHumanPlayer;
 class ChungToiBoard;
+class Piece;
 
 namespace Engine
 {
@@ -31,5 +32,6 @@ private:
 	std::shared_ptr<AbstractHumanPlayer> m_humanPlayer;
 
 	std::shared_ptr<ChungToiBoard> m_board;
+	std::shared_ptr<Piece> m_pieces[4];
 	std::shared_ptr<Engine::GLSLProgram> m_simpleProgram;
 };

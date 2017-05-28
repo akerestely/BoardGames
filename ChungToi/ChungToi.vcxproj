@@ -164,11 +164,19 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="ChungToiBoard.cpp" />
+    <ClCompile Include="ChungToiBoardConfiguration.cpp" />
     <ClCompile Include="ChungToiGame.cpp" />
+    <ClCompile Include="ChungToiState.cpp" />
+    <ClCompile Include="HumanPlayer.cpp" />
+    <ClCompile Include="Piece.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChungToiBoard.h" />
+    <ClInclude Include="ChungToiBoardConfiguration.h" />
     <ClInclude Include="ChungToiGame.h" />
+    <ClInclude Include="ChungToiState.h" />
+    <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="Piece.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\simpleShading.frag" />
