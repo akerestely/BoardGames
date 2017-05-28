@@ -133,7 +133,7 @@ public:
 
 	std::shared_ptr<State<TChessman>> GetNextState(const Position &pos, TChessman chessman) const
 	{
-		if (pos.Invalid() || board[pos] != TChessman::None)
+		if (pos.Invalid())
 			return std::shared_ptr<State<TChessman>>();
 
 		auto nextState = Produce(*this);
@@ -150,10 +150,10 @@ public:
 
 	std::shared_ptr<State<TChessman>> GetNextState(const Move &move) const
 	{
-		if (move.from.Invalid() || move.to.Invalid() || board[move.to] != TicTacToeChessmans::None)
+		if (move.from.Invalid() || move.to.Invalid())
 			return std::shared_ptr<State<TChessman>>();
 
-		auto nextState = std::make_shared<State<TChessman>>(*this);
+		auto nextState = Produce(*this);
 		std::swap(nextState->board[move.from], nextState->board[move.to]);
 		if (nextPlayer == Winner::FirstPlayer)
 			nextState->nextPlayer = Winner::SecondPlayer;
@@ -165,6 +165,13 @@ public:
 		return nextState;
 	}
 
+	std::shared_ptr<State<TChessman>> GetNextState(const Move &move, TChessman chessman) const
+	{
+		auto nextState = State<TChessman>::GetNextState(move);
+		if(nextState)
+			nextState->board[move.to] = chessman;
+		return nextState;
+	}
 protected:
 	virtual std::shared_ptr<State<TChessman>> Produce(const State<TChessman> &fromState) const = 0;
 
