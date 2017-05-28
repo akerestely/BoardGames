@@ -20,6 +20,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChungToi", "ChungToi\ChungT
 		{EEB6890B-5024-48BA-A281-76D696A91442} = {EEB6890B-5024-48BA-A281-76D696A91442}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mill", "Mill\Mill.vcxproj", "{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EEB6890B-5024-48BA-A281-76D696A91442} = {EEB6890B-5024-48BA-A281-76D696A91442}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -60,6 +65,14 @@ Global
 		{BFF5E813-E929-4AC4-98C4-C0EAE56EA5D7}.Release|x64.Build.0 = Release|x64
 		{BFF5E813-E929-4AC4-98C4-C0EAE56EA5D7}.Release|x86.ActiveCfg = Release|Win32
 		{BFF5E813-E929-4AC4-98C4-C0EAE56EA5D7}.Release|x86.Build.0 = Release|Win32
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Debug|x64.ActiveCfg = Debug|x64
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Debug|x64.Build.0 = Debug|x64
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Debug|x86.ActiveCfg = Debug|Win32
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Debug|x86.Build.0 = Debug|Win32
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Release|x64.ActiveCfg = Release|x64
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Release|x64.Build.0 = Release|x64
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Release|x86.ActiveCfg = Release|Win32
+		{6EF3F2AA-CD37-44CE-A3CE-5A879E684A7C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
