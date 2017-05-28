@@ -18,7 +18,7 @@ void MillBoard::Render(const Engine::Camera2D &camera, const glm::vec2 &position
 {
 	m_program->Use();
 	//update uniforms
-	glUniform4f(m_program->GetUniformLocation("color"), 222.f / 255.f, 184.f / 255.f, 135.f / 255.f, 1.0f);
+	glUniform4f(m_program->GetUniformLocation("color"), 139.f / 255.f, 69.f / 255.f, 19.f / 255.f, 1.0f);
 	glm::mat4 mpv = glm::translate(camera.GetCameraMatrix(), glm::vec3(position.x, position.y, 0));
 	glUniformMatrix4fv(m_program->GetUniformLocation("MVP"), 1, GL_FALSE, &mpv[0][0]);
 
@@ -34,49 +34,55 @@ void MillBoard::buildModel()
 {
 	//construct vertex data
 	std::vector<glm::vec2> vertices;
-	// grid
-	vertices.emplace_back(-100, -100);
-	vertices.emplace_back(100, -100);
-	vertices.emplace_back(100, 100);
-	vertices.emplace_back(-100, 100);
-	vertices.emplace_back(-95, -95);
-	vertices.emplace_back(95, -95);
-	vertices.emplace_back(95, 95);
-	vertices.emplace_back(-95, 95);
-
-	vertices.emplace_back(-30, -95);
-	vertices.emplace_back(-35, -95);
-	vertices.emplace_back(-35, 95);
-	vertices.emplace_back(-30, 95);
-
-	vertices.emplace_back(30, -95);
-	vertices.emplace_back(35, -95);
-	vertices.emplace_back(35, 95);
-	vertices.emplace_back(30, 95);
-
-	vertices.emplace_back(-95, -30);
-	vertices.emplace_back(95, -30);
-	vertices.emplace_back(95, -35);
-	vertices.emplace_back(-95, -35);
-
-	vertices.emplace_back(-95, 30);
-	vertices.emplace_back(95, 30);
-	vertices.emplace_back(95, 35);
-	vertices.emplace_back(-95, 35);
+	// outer
+	vertices.emplace_back(-183,  183);
+	vertices.emplace_back(-183, -183);
+	vertices.emplace_back(-177, -183);
+	vertices.emplace_back(-177,  183);
+	vertices.emplace_back(-183, -183);
+	vertices.emplace_back( 183, -183);
+	vertices.emplace_back( 183, -177);
+	vertices.emplace_back(-183, -177);
+	vertices.emplace_back(183,  183);
+	vertices.emplace_back(183, -183);
+	vertices.emplace_back(177, -183);
+	vertices.emplace_back(177,  183);
+	vertices.emplace_back(-183, 183);
+	vertices.emplace_back( 183, 183);
+	vertices.emplace_back( 183, 177);
+	vertices.emplace_back(-183, 177);
+	// middle, and inner
+	uint nVertPerLayer = vertices.size();
+	const uint kWidth = 60;
+	for(uint i = 1; i <= 2; ++i)
+		for (uint j = 0; j < nVertPerLayer; ++j)
+		{
+			auto &vert = vertices[j];
+			vertices.emplace_back(vert.x - glm::sign(vert.x) * kWidth * i, vert.y - glm::sign(vert.y) * kWidth * i);
+		}
+	// 'cross'
+	vertices.emplace_back(-183, 3);
+	vertices.emplace_back(-183, -3);
+	vertices.emplace_back(-63, -3);
+	vertices.emplace_back(-63, 3);
+	vertices.emplace_back(183, 3);
+	vertices.emplace_back(183, -3);
+	vertices.emplace_back(63, -3);
+	vertices.emplace_back(63, 3);
+	vertices.emplace_back(3, 183);
+	vertices.emplace_back(-3, 183);
+	vertices.emplace_back(-3, 63);
+	vertices.emplace_back(3, 63);
+	vertices.emplace_back(3, -183);
+	vertices.emplace_back(-3, -183);
+	vertices.emplace_back(-3, -63);
+	vertices.emplace_back(3, -63);
 
 	//assign triangle indices
-	std::vector<uint> indices;
-	indices.insert(indices.begin(), {
-		0, 1, 5, 0, 5, 4,
-		1, 2, 6, 1, 6, 5,
-		2, 3, 7, 2, 7, 6,
-		3, 0, 4, 3, 4, 7,
+	std::vector<uint> indices;	
+	for (uint i = 0, sIndex = 0; i < 16; ++i, sIndex += 4)
+		indices.insert(indices.end(), { sIndex, sIndex + 1, sIndex + 2, sIndex, sIndex + 2, sIndex + 3 });
 
-		8,  9, 10,  8, 10, 11,
-		12, 13, 14, 12, 14, 15,
-		16, 17, 18, 16, 18, 19,
-		20, 21, 22, 20, 22, 23,
-	});
 	m_iboSize = indices.size();
 
 	//upload to GPU
