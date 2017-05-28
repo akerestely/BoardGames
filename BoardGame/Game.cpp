@@ -6,6 +6,7 @@
 #include "IRenderable.h"
 #include "AbstractHumanPlayer.h"
 #include "IBoardConfiguration.h"
+#include "State.h"
 
 Game::Game() : IGame()
 {
@@ -14,6 +15,12 @@ Game::Game() : IGame()
 void Game::onInit()
 {
 	onInitRendering();
+
+	using namespace std::placeholders;
+
+ 	m_inputManager.Register(Engine::EventType::ButtonDown, std::bind(&Game::onKeyDown, this, _1));
+ 	m_inputManager.Register(Engine::EventType::ButtonUp, std::bind(&Game::onKeyUp, this, _1));
+ 	m_inputManager.Register(Engine::EventType::MouseMotion, std::bind(&Game::onMouseMove, this, _1));
 
 	m_camera.Init(m_screenWidth, m_screenHeight);
 	m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
@@ -54,48 +61,81 @@ void Game::onDestroy()
 
 void Game::processInput()
 {
-	const float m_camera_SPEED = 5.0f;
-	const float SCALE_SPEED = 0.1f;
+	const float kCameraSpeed = 5.0f;
+	const float kScaleSpeed = 0.1f;
 
 	if (m_inputManager.IsKeyDown(Engine::Key::W))
-		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, m_camera_SPEED));
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, kCameraSpeed));
 	if (m_inputManager.IsKeyDown(Engine::Key::S))
-		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, -m_camera_SPEED));
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(0.0f, -kCameraSpeed));
 	if (m_inputManager.IsKeyDown(Engine::Key::A))
-		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(-m_camera_SPEED, 0.0f));
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(-kCameraSpeed, 0.0f));
 	if (m_inputManager.IsKeyDown(Engine::Key::D))
-		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(m_camera_SPEED, -0.0f));
+		m_camera.SetPosition(m_camera.GetPosition() + glm::vec2(kCameraSpeed, -0.0f));
 	if (m_inputManager.IsKeyDown(Engine::Key::Q))
-		m_camera.SetScale(m_camera.GetScale() + SCALE_SPEED);
+		m_camera.SetScale(m_camera.GetScale() + kScaleSpeed);
 	if (m_inputManager.IsKeyDown(Engine::Key::E))
-		m_camera.SetScale(m_camera.GetScale() - SCALE_SPEED);
+		m_camera.SetScale(m_camera.GetScale() - kScaleSpeed);
+}
+
+void Game::onKeyDown(void *pkey)
+{
+	Engine::Key key = *static_cast<Engine::Key*>(pkey);
 
 	const uint kDelayIncrement = 25;
-	if (m_inputManager.IsKeyDownOnce(Engine::Key::NumpadPlus))
+
+	switch (key)
+	{
+	case Engine::Key::NumpadPlus:
 		m_delayNextTurn += kDelayIncrement;
-	if (m_inputManager.IsKeyDownOnce(Engine::Key::NumpadMinus))
+		break;
+	case Engine::Key::NumpadMinus:
 		if (m_delayNextTurn > kDelayIncrement)
 			m_delayNextTurn -= kDelayIncrement;
 		else
 			m_delayNextTurn = 0;
-
-	if (m_inputManager.IsKeyDownOnce(Engine::Key::Space))
+		break;
+	case Engine::Key::Space:
 		m_bUpdate = !m_bUpdate;
-
-	if (m_inputManager.IsKeyDownOnce(Engine::Key::LeftMouseButton))
-	{
-		glm::vec2 mouseCoords = m_inputManager.GetMouseCoords();
-		mouseCoords = m_camera.ConvertScreenToWorld(mouseCoords);
-		Engine::log("At scale %.2fx coords are: %.2f, %.2f", m_camera.GetScale(), mouseCoords.x, mouseCoords.y);
+		break;
+	case Engine::Key::LeftMouseButton:
+		glm::vec2 wordPos = m_camera.ConvertScreenToWorld(m_inputManager.GetMouseCoords());
+		Engine::log("At scale %.2fx coords are: %.2f, %.2f", m_camera.GetScale(), wordPos.x, wordPos.y);
 
 		// get clicked box
+		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCrtPlayer().get());
+		if (pPlayer)
+			m_clickedTilePosIndex = m_boardConfig->GetTilePosition(wordPos);
+
+		break;
+	}
+}
+
+void Game::onKeyUp(void *pkey)
+{
+	Engine::Key key = *static_cast<Engine::Key*>(pkey);
+	switch (key)
+	{
+	case Engine::Key::LeftMouseButton:
+		glm::vec2 wordPos = m_camera.ConvertScreenToWorld(m_inputManager.GetMouseCoords());
 
 		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCrtPlayer().get());
 		if (pPlayer)
 		{
-			Position pos = m_boardConfig->GetTilePosition(mouseCoords);
-			if(!pos.Invalid())
-				pPlayer->BufferAction(pos);
+			Position releaseTilePosIndex = m_boardConfig->GetTilePosition(wordPos);
+			if (!releaseTilePosIndex.Invalid())
+			{
+				if (m_clickedTilePosIndex == releaseTilePosIndex)
+					pPlayer->BufferAction(releaseTilePosIndex);
+				else
+					pPlayer->BufferAction(m_clickedTilePosIndex, releaseTilePosIndex);
+			}
 		}
 	}
+}
+
+void Game::onMouseMove(void *pVec2i)
+{
+	glm::ivec2 &mouseCoord = *static_cast<glm::ivec2*>(pVec2i);
+	glm::vec2 wordPos = m_camera.ConvertScreenToWorld(mouseCoord);
 }

@@ -3,6 +3,7 @@
 #include "Engine/Camera2D.h"
 #include "Engine/Rectangle.h"
 
+#include "Board.h"
 #include "Judger.h"
 
 struct IRenderable;
@@ -29,6 +30,9 @@ private:
 	virtual void onRoundEnded(const Judger &judger) {};
 
 	void processInput();
+	void onKeyDown(void *pkey);
+	void onKeyUp(void *pkey);
+	void onMouseMove(void *pVec2i);
 
 private:
 	Engine::Camera2D m_camera;
@@ -40,5 +44,7 @@ private:
 
 	uint m_lastTurnTime = 0;	//ms
 	uint m_delayNextTurn = 0;	//ms
+
+	Position m_clickedTilePosIndex;
 };
 
