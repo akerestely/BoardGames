@@ -33,21 +33,33 @@ void Game::onUpdate()
 	processInput();
 	m_camera.Update();
 
-	if (m_judger.HasGameEnded())
+	if (canUpdate() && getTime() - m_lastTurnTime > m_delayNextTurn)
 	{
-		onRoundEnded(m_judger);
-		m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
-	}
-	else if (m_bUpdate && getTime() - m_lastTurnTime > m_delayNextTurn)
-	{
-		auto crtPlayer = m_judger.GetCrtPlayer();
-		auto crtState = m_judger.GetCrtState();
-
-		onTurnBegining(crtPlayer, crtState);
-		if (m_judger.PlayTurn())
+		if (m_judger.HasGameEnded())
 		{
-			m_boardConfig->Update(m_judger.GetCrtState());
-			onTurnEnding(crtPlayer, crtState);
+			m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
+		}
+		else
+		{
+			auto crtPlayer = m_judger.GetCrtPlayer();
+			auto crtState = m_judger.GetCrtState();
+
+			onTurnBegining(crtPlayer, crtState);
+			if (m_judger.PlayTurn())
+			{
+				m_boardConfig->Update(m_judger.GetCrtState());
+				onTurnEnding(crtPlayer, crtState);
+			}
+
+			if (m_judger.HasGameEnded())
+			{
+				// if a player is human, pause to show results
+				if (dynamic_cast<AbstractHumanPlayer*>(getPlayer(IState::Winner::FirstPlayer).get()) ||
+					dynamic_cast<AbstractHumanPlayer*>(getPlayer(IState::Winner::SecondPlayer).get()))
+					m_bPausedAutomatically = true;
+
+				onRoundEnded(m_judger);
+			}
 		}
 
 		m_lastTurnTime = getTime();
@@ -83,9 +95,21 @@ void Game::processInput()
 		m_camera.SetScale(m_camera.GetScale() - kScaleSpeed);
 }
 
+bool Game::canUpdate()
+{
+	return !m_bPausedManually && !m_bPausedAutomatically;
+}
+
 void Game::onKeyDown(void *pkey)
 {
 	Engine::Key key = *static_cast<Engine::Key*>(pkey);
+
+	// any key can stop automatic pause
+	if (m_bPausedAutomatically)
+	{
+		m_bPausedAutomatically = false;
+		return;
+	}
 
 	const uint kDelayIncrement = 25;
 
@@ -101,7 +125,7 @@ void Game::onKeyDown(void *pkey)
 			m_delayNextTurn = 0;
 		break;
 	case Engine::Key::Space:
-		m_bUpdate = !m_bUpdate;
+		m_bPausedManually = !m_bPausedManually;
 		break;
 	case Engine::Key::LeftMouseButton:
 		glm::vec2 wordPos = m_camera.ConvertScreenToWorld(m_inputManager.GetMouseCoords());
@@ -119,6 +143,7 @@ void Game::onKeyDown(void *pkey)
 void Game::onKeyUp(void *pkey)
 {
 	Engine::Key key = *static_cast<Engine::Key*>(pkey);
+
 	switch (key)
 	{
 	case Engine::Key::LeftMouseButton:

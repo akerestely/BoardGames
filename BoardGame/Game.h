@@ -37,10 +37,12 @@ private:
 	virtual void onRoundEnded(const Judger &judger) {};
 
 	void processInput();
+	bool canUpdate();
 
 private:
 	Engine::Camera2D m_camera;
-	bool m_bUpdate = true;
+	bool m_bPausedManually = false;
+	bool m_bPausedAutomatically = false;
 
 	Judger m_judger;
 
