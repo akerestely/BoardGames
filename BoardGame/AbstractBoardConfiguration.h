@@ -11,7 +11,19 @@ class AbstractBoardConfiguration : public IBoardConfiguration
 		for (uint i = 0; i < board.Rows(); ++i)
 			for (uint j = 0; j < board.Cols(); ++j)
 			{
-				auto &boardTile = m_boardTiles[i * board.Cols() + j];
+				BoardTile *pBoard = nullptr;
+				Position searchedPosition = { i, j };
+				for(auto &boardTile : m_boardTiles)
+					if (boardTile.boardIndexPos == searchedPosition)
+					{
+						pBoard = &boardTile;
+						break;
+					}
+
+				if (!pBoard )
+					continue;
+
+				auto &boardTile = *pBoard;
 				if (board[i][j] != TChessman::None)
 					boardTile.chessman = getChessman(board[i][j]);
 				else
