@@ -49,9 +49,9 @@ void Nought::buildModel()
 
 	std::vector<glm::vec2> vertices;
 	vertices.reserve(slices * 2);
-	for (float alpha = 0; alpha <= 2 * PI; alpha += step)
+	for (float alpha = 0; alpha < 2 * PI; alpha += step)
 		vertices.emplace_back(radius * cos(alpha), radius * sin(alpha));
-	for (float alpha = 0; alpha <= 2 * PI; alpha += step)
+	for (float alpha = 0; alpha < 2 * PI; alpha += step)
 		vertices.emplace_back((radius - width) * cos(alpha), (radius - width) * sin(alpha));
 
 	//assign triangle indices
