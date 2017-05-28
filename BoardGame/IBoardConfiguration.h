@@ -36,6 +36,12 @@ public:
 protected:
 	struct BoardTile
 	{
+		BoardTile(const rectf &boundingBox, const Position &boardIndexPos, const std::shared_ptr<IRenderable> chessman = std::shared_ptr<IRenderable>()) :
+			boundingBox(boundingBox),
+			chessman(chessman),
+			boardIndexPos(boardIndexPos)
+		{}
+
 		rectf boundingBox;
 		std::shared_ptr<IRenderable> chessman;
 		Position boardIndexPos;

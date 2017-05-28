@@ -10,15 +10,25 @@ MillBoardConfiguration::MillBoardConfiguration(std::shared_ptr<IRenderable> whit
 
 void MillBoardConfiguration::Init()
 {
-	m_boardTiles.resize(9);
+	m_boardTiles.reserve(3 * 8);
 
-	for (int i = -1; i <= 1; ++i)
-		for (int j = -1; j <= 1; ++j)
-		{
-			auto &boardTile = m_boardTiles[(i + 1) * 3 + j + 1];
-			boardTile.boundingBox.Set(65.f * i, 65.f * j, 60, 60);
-			boardTile.boardIndexPos = Position(i + 1, j + 1);
-		}
+	const glm::vec2 kRef(-180, 180);
+	const float kWidth = 60;
+	rectf box;
+	box.Set(0, 0, kWidth, kWidth);
+	const uint kLayers = 3;
+	for (uint iLayer = kLayers; iLayer > 0; --iLayer)
+	{
+		for (uint i = 0; i < 3; ++i)
+			for (uint j = 0; j < 3; ++j)
+			{
+				if(i == j && j == 1)
+					continue;
+
+				Position indexPos(kLayers - iLayer + i * iLayer, kLayers - iLayer + j * iLayer);
+				m_boardTiles.emplace_back(box.CenterOn(kRef.x + indexPos.j * kWidth, kRef.y - indexPos.i * kWidth), indexPos);
+			}
+	}
 }
 
 std::shared_ptr<IRenderable> MillBoardConfiguration::getChessman(MillChessmans type) const
