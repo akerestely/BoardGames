@@ -148,7 +148,6 @@ uint ChungToiState::getChessmanValue(ChungToiChessmans chessman)
 void ChungToiState::computeEnd()
 {
 	std::vector<int> results(8, 0);
-	uint chessmanCount = 0;
 
 	// check rows, cols, and diagonals
 	uint n = board.Rows();
@@ -180,8 +179,6 @@ void ChungToiState::computeEnd()
 				// secondary diagonal
 				if (i == m - 1 - j)
 					results[7] += sumVal;
-
-				++chessmanCount;
 			}
 		}
 	}
@@ -201,14 +198,6 @@ void ChungToiState::computeEnd()
 			isEnd = true;
 			return;
 		}
-	}
-
-	// check if it's a tie
-	if (chessmanCount == n*m)
-	{
-		winner = Winner::None;
-		isEnd = true;
-		return;
 	}
 
 	isEnd = false;
