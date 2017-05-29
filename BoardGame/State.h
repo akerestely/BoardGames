@@ -31,7 +31,7 @@ public:
 			THash crtHash;
 			uint n = board.Rows();
 			uint m = board.Cols();
-			uint chessmanCount = 10;// getChessmanValue(Chessmans::Count);
+			THash chessmanCount = getChessmanValue(TChessman::Count);
 
 			// normal traversal
 			crtHash = 0;

@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include "InfInt.h"
 
 struct IState
 {
-	using THash = uint;
+	using THash = InfInt;
 	enum class Winner
 	{
 		None,

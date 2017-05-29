@@ -24,6 +24,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="AbstractHumanPlayer.h" />
     <ClInclude Include="IBoardConfiguration.h" />
+    <ClInclude Include="InfInt.h" />
     <ClInclude Include="IPlayer.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IState.h" />
