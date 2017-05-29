@@ -31,13 +31,23 @@ public:
 			THash crtHash;
 			uint n = board.Rows();
 			uint m = board.Cols();
-			THash chessmanCount = getChessmanValue(TChessman::Count);
+			uint chessmanCount = getChessmanValue(TChessman::Count);
+			uint partialHash;
+			uint partialHashMultiplier = pow(chessmanCount, m);
 
 			// normal traversal
 			crtHash = 0;
 			for (uint i = 0; i < n; ++i)
+			{
+				partialHash = 0;
 				for (uint j = 0; j < m; ++j)
-					crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+				{
+					partialHash *= chessmanCount;
+					partialHash += getChessmanValue(board[i][j]);
+				}
+				crtHash *= partialHashMultiplier;
+				crtHash += partialHash;
+			}
 			if (crtHash > hash)
 				hash = crtHash;
 
@@ -46,24 +56,48 @@ public:
 				// rotated 90 deg
 				crtHash = 0;
 				for (uint j = m - 1; ~j; --j)
+				{
+					partialHash = 0;
 					for (uint i = 0; i < n; ++i)
-						crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+					{
+						partialHash *= chessmanCount;
+						partialHash += getChessmanValue(board[i][j]);
+					}
+					crtHash *= partialHashMultiplier;
+					crtHash += partialHash;
+				}
 				if (crtHash > hash)
 					hash = crtHash;
 
 				// rotated 180 deg
 				crtHash = 0;
 				for (uint i = n - 1; ~i; --i)
+				{
+					partialHash = 0;
 					for (uint j = m - 1; ~j; --j)
-						crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+					{
+						partialHash *= chessmanCount;
+						partialHash += getChessmanValue(board[i][j]);
+					}
+					crtHash *= partialHashMultiplier;
+					crtHash += partialHash;
+				}
 				if (crtHash > hash)
 					hash = crtHash;
 
 				// rotated 270(i.e. -90) deg
 				crtHash = 0;
 				for (uint j = 0; j < m; ++j)
+				{
+					partialHash = 0;
 					for (uint i = n - 1; ~i; --i)
-						crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+					{
+						partialHash *= chessmanCount;
+						partialHash += getChessmanValue(board[i][j]);
+					}
+					crtHash *= partialHashMultiplier;
+					crtHash += partialHash;
+				}
 				if (crtHash > hash)
 					hash = crtHash;
 			}
@@ -73,16 +107,32 @@ public:
 				// symmetry by vertical axis
 				crtHash = 0;
 				for (uint i = 0; i < n; ++i)
+				{
+					partialHash = 0;
 					for (uint j = m - 1; ~j; --j)
-						crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+					{
+						partialHash *= chessmanCount;
+						partialHash += getChessmanValue(board[i][j]);
+					}
+					crtHash *= partialHashMultiplier;
+					crtHash += partialHash;
+				}
 				if (crtHash > hash)
 					hash = crtHash;
 
 				// symmetry by horizontal axis
 				crtHash = 0;
 				for (uint i = n - 1; ~i; --i)
+				{
+					partialHash = 0;
 					for (uint j = 0; j < m; ++j)
-						crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+					{
+						partialHash *= chessmanCount;
+						partialHash += getChessmanValue(board[i][j]);
+					}
+					crtHash *= partialHashMultiplier;
+					crtHash += partialHash;
+				}
 				if (crtHash > hash)
 					hash = crtHash;
 			}
@@ -92,20 +142,35 @@ public:
 				// symmetry by primary diagonal
 				crtHash = 0;
 				for (uint j = 0; j < m; ++j)
+				{
+					partialHash = 0;
 					for (uint i = 0; i < n; ++i)
-						crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+					{
+						partialHash *= chessmanCount; 
+						partialHash += getChessmanValue(board[i][j]);
+					}
+					crtHash *= partialHashMultiplier;
+					crtHash += partialHash;
+				}
 				if (crtHash > hash)
 					hash = crtHash;
 
 				// symmetry by secondary diagonal
 				crtHash = 0;
 				for (uint j = m - 1; ~j; --j)
+				{
+					partialHash = 0;
 					for (uint i = n - 1; ~i; --i)
-						crtHash = crtHash * chessmanCount + getChessmanValue(board[i][j]);
+					{
+						partialHash *= chessmanCount;
+						partialHash += getChessmanValue(board[i][j]);
+					}
+					crtHash *= partialHashMultiplier;
+					crtHash += partialHash;
+				}
 				if (crtHash > hash)
 					hash = crtHash;
 			}
-
 			computedHash = true;
 		}
 
@@ -183,7 +248,7 @@ protected:
 	}
 
 private:
-	virtual THash getChessmanValue(TChessman chessman) = 0;
+	virtual uint getChessmanValue(TChessman chessman) = 0;
 	virtual void computeEnd() = 0;
 
 protected:

@@ -58,7 +58,7 @@ std::shared_ptr<State<MillChessmans>> MillState::Produce(const State<MillChessma
 	return std::make_shared<MillState>(static_cast<const MillState&>(fromState));
 }
 
-IState::THash MillState::getChessmanValue(MillChessmans chessman)
+uint MillState::getChessmanValue(MillChessmans chessman)
 {
 	switch (chessman)
 	{

@@ -25,7 +25,7 @@ private:
 	bool canMoveTo(const Position &position) const;
 
 	virtual std::shared_ptr<State<MillChessmans>> Produce(const State<MillChessmans> &fromState) const override;
-	virtual THash getChessmanValue(MillChessmans chessman) override;
+	virtual uint getChessmanValue(MillChessmans chessman) override;
 	virtual void computeEnd() override;
 };
 

@@ -124,7 +124,7 @@ std::shared_ptr<State<ChungToiChessmans>> ChungToiState::Produce(const State<Chu
 	return std::make_shared<ChungToiState>(static_cast<const ChungToiState&>(fromState));
 }
 
-IState::THash ChungToiState::getChessmanValue(ChungToiChessmans chessman)
+uint ChungToiState::getChessmanValue(ChungToiChessmans chessman)
 {
 	switch (chessman)
 	{

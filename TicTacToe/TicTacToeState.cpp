@@ -27,7 +27,7 @@ std::shared_ptr<State<TicTacToeChessmans>> TicTacToeState::Produce(const State<T
 	return std::make_shared<TicTacToeState>(static_cast<const TicTacToeState&>(fromState));
 }
 
-IState::THash TicTacToeState::getChessmanValue(TicTacToeChessmans chessman)
+uint TicTacToeState::getChessmanValue(TicTacToeChessmans chessman)
 {
 	switch (chessman)
 	{
