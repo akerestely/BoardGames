@@ -8,15 +8,16 @@ TicTacToeBoardConfig::TicTacToeBoardConfig(std::shared_ptr<IRenderable> cross, s
 
 void TicTacToeBoardConfig::Init()
 {
-	m_boardTiles.resize(9);
+	const float kTileWidth = 60;
+	const float kDistBetweenTiles = 5;
+	const float kDistBetweenTilesCenter = kTileWidth + kDistBetweenTiles;
 
+	m_boardTiles.reserve(9);
+	rectf box;
+	box.Set(0, 0, kTileWidth, kTileWidth);
 	for (int i = -1; i <= 1; ++i)
 		for (int j = -1; j <= 1; ++j)
-		{
-			auto &boardTile = m_boardTiles[(i + 1) * 3 + j + 1];
-			boardTile.boundingBox.Set(65.f * i, 65.f * j, 60, 60);
-			boardTile.boardIndexPos = Position(i + 1, j + 1);
-		}
+			m_boardTiles.emplace_back(box.CenterOn(kDistBetweenTilesCenter * j, -kDistBetweenTilesCenter * i), Position(i + 1, j + 1));
 }
 
 std::shared_ptr<IRenderable> TicTacToeBoardConfig::getChessman(TicTacToeChessmans type) const
