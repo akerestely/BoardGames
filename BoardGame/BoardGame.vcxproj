@@ -38,6 +38,9 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="State.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="BoardGame.natvis" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EEB6890B-5024-48BA-A281-76D696A91442}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  
+  <Type Name="Board&lt;*&gt;">
+    <DisplayString>{{ Rows={nRows} Columns={nCols} }}</DisplayString>
+    <Expand>
+      <CustomListItems>
+        <Variable Name="cur" InitialValue="&amp;(data[0])"/>
+        <Size>nRows</Size>
+        <Loop>
+          <Item>cur,[nCols]na</Item>
+          <Exec>cur+=nCols</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>
