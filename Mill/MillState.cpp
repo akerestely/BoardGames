@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-MillState::MillState() : State(3, 3)
+MillState::MillState() : State(7, 7)
 {
 
 }
