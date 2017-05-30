@@ -37,7 +37,6 @@
     <ClCompile Include="AbstractHumanPlayer.cpp" />
     <ClCompile Include="Judger.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="BoardGame.natvis" />

@@ -14,6 +14,10 @@ class State : public IState
 public:
 	State(uint boardRows, uint boardCols, bool hashSymmetryDiagonal = true, bool hashSymmetryCardinal = true, bool hashRoatations = true) :
 		nextPlayer(Winner::FirstPlayer),
+		winner(Winner::None),
+		isEnd(false),
+		computedHash(false),
+		computedEnd(false),
 		board(boardRows, boardCols),
 		hashRoatations(hashRoatations),
 		hashSymmetryCardinal(hashSymmetryCardinal),
@@ -33,7 +37,7 @@ public:
 			uint m = board.Cols();
 			uint chessmanCount = getChessmanValue(TChessman::Count);
 			uint partialHash;
-			uint partialHashMultiplier = pow(chessmanCount, m);
+			uint partialHashMultiplier = (uint)pow(chessmanCount, m);
 
 			// normal traversal
 			crtHash = 0;

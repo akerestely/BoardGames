@@ -62,9 +62,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="State.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AbstractHumanPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
