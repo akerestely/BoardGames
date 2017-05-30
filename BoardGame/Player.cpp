@@ -80,14 +80,17 @@ void Player::FeedReward(IState::Winner winner)
 
 void Player::SavePolicy(std::string fileName /*= "optimal_policy_"*/)
 {
-	if (m_estimations.empty())
-		return;
-
 	fileName += std::to_string(int(m_symbol));
 	std::ofstream out(fileName);
 	for (auto &pair : m_estimations)
 		if (pair.second != 0.0f && pair.second != 1.0f && pair.second != 0.5f)
 			out << pair.first << ' ' << pair.second << std::endl;
+
+	if (uint(out.tellp()) == 0)
+	{
+		out.close();
+		remove(fileName.c_str());
+	}
 }
 
 void Player::LoadPolicy(std::string fileName /*= "optimal_policy_"*/)
