@@ -32,7 +32,8 @@ private:
 private:
 	std::shared_ptr<Player> m_player1;
 	std::shared_ptr<Player> m_player2;
-	std::shared_ptr<AbstractHumanPlayer> m_humanPlayer;
+	std::shared_ptr<AbstractHumanPlayer> m_humanPlayer1;
+	std::shared_ptr<AbstractHumanPlayer> m_humanPlayer2;
 
 	std::shared_ptr<Piece> m_white;
 	std::shared_ptr<Piece> m_red;
