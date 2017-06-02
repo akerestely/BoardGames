@@ -21,6 +21,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 	{
 		std::uniform_int_distribution<uint> uniformDist(0, m_possibleNextStates.size() - 1);
 		nextState = m_possibleNextStates[uniformDist(m_randomEngine)];
+		getEstimation(nextState);
 	}
 	else
 	{
@@ -49,7 +50,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 	// clear work vector
 	m_possibleNextStates.clear();
 
-	// save state
+	// save chosen state
 	m_lastStates.push_back(nextState);
 
 	return nextState;
@@ -57,7 +58,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 
 void Player::FeedReward(IState::Winner winner)
 {
-	if (m_lastStates.size() == 0)
+	if (m_lastStates.empty())
 		return;
 
 	float target = 0.0f;
@@ -69,7 +70,7 @@ void Player::FeedReward(IState::Winner winner)
 	for (auto it = m_lastStates.rbegin(); it != m_lastStates.rend(); ++it)
 	{
 		auto &state = *it;
-		float &estimation = m_estimations[state->GetHash()];
+		float &estimation = getEstimation(state);
 		float value = estimation + m_stepSize * (target - estimation);
 		estimation = value;
 		target = value;
@@ -109,7 +110,7 @@ void Player::LoadPolicy(std::string fileName /*= "optimal_policy_"*/)
 	}
 }
 
-Player::TEstimation Player::getEstimation(const std::shared_ptr<IState> &state)
+Player::TEstimation& Player::getEstimation(const std::shared_ptr<IState> &state)
 {
 	auto &itMap = m_estimations.insert(std::make_pair(state->GetHash(), 0.f));
 	TEstimation &estimation = itMap.first->second;

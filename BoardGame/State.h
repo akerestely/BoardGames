@@ -2,6 +2,8 @@
 #include "IState.h"
 #include "Board.h"
 
+static const uint kInvalidChessmanValue = -1;
+
 struct Move
 {
 	Position from;
@@ -12,13 +14,13 @@ template<class TChessman>
 class State : public IState
 {
 public:
-	State(uint boardRows, uint boardCols, bool hashSymmetryDiagonal = true, bool hashSymmetryCardinal = true, bool hashRoatations = true) :
+	State(uint boardRows, uint boardCols, TChessman defaultBoardValues = TChessman::None, bool hashSymmetryDiagonal = true, bool hashSymmetryCardinal = true, bool hashRoatations = true) :
 		nextPlayer(Winner::FirstPlayer),
 		winner(Winner::None),
 		isEnd(false),
 		computedHash(false),
 		computedEnd(false),
-		board(boardRows, boardCols),
+		board(boardRows, boardCols, defaultBoardValues),
 		hashRoatations(hashRoatations),
 		hashSymmetryCardinal(hashSymmetryCardinal),
 		hashSymmetryDiagonal(hashSymmetryDiagonal)
@@ -46,8 +48,12 @@ public:
 				partialHash = 0;
 				for (uint j = 0; j < m; ++j)
 				{
-					partialHash *= chessmanCount;
-					partialHash += getChessmanValue(board[i][j]);
+					auto chessmanVal = getChessmanValue(board[i][j]);
+					if (chessmanVal != kInvalidChessmanValue)
+					{
+						partialHash *= chessmanCount;
+						partialHash += chessmanVal;
+					}
 				}
 				crtHash *= partialHashMultiplier;
 				crtHash += partialHash;
@@ -64,8 +70,12 @@ public:
 					partialHash = 0;
 					for (uint i = 0; i < n; ++i)
 					{
-						partialHash *= chessmanCount;
-						partialHash += getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(board[i][j]);
+						if (chessmanVal != kInvalidChessmanValue)
+						{
+							partialHash *= chessmanCount;
+							partialHash += chessmanVal;
+						}
 					}
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
@@ -80,8 +90,12 @@ public:
 					partialHash = 0;
 					for (uint j = m - 1; ~j; --j)
 					{
-						partialHash *= chessmanCount;
-						partialHash += getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(board[i][j]);
+						if (chessmanVal != kInvalidChessmanValue)
+						{
+							partialHash *= chessmanCount;
+							partialHash += chessmanVal;
+						}
 					}
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
@@ -96,8 +110,12 @@ public:
 					partialHash = 0;
 					for (uint i = n - 1; ~i; --i)
 					{
-						partialHash *= chessmanCount;
-						partialHash += getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(board[i][j]);
+						if (chessmanVal != kInvalidChessmanValue)
+						{
+							partialHash *= chessmanCount;
+							partialHash += chessmanVal;
+						}
 					}
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
@@ -115,8 +133,12 @@ public:
 					partialHash = 0;
 					for (uint j = m - 1; ~j; --j)
 					{
-						partialHash *= chessmanCount;
-						partialHash += getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(board[i][j]);
+						if (chessmanVal != kInvalidChessmanValue)
+						{
+							partialHash *= chessmanCount;
+							partialHash += chessmanVal;
+						}
 					}
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
@@ -131,8 +153,12 @@ public:
 					partialHash = 0;
 					for (uint j = 0; j < m; ++j)
 					{
-						partialHash *= chessmanCount;
-						partialHash += getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(board[i][j]);
+						if (chessmanVal != kInvalidChessmanValue)
+						{
+							partialHash *= chessmanCount;
+							partialHash += chessmanVal;
+						}
 					}
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
@@ -150,8 +176,12 @@ public:
 					partialHash = 0;
 					for (uint i = 0; i < n; ++i)
 					{
-						partialHash *= chessmanCount; 
-						partialHash += getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(board[i][j]);
+						if (chessmanVal != kInvalidChessmanValue)
+						{
+							partialHash *= chessmanCount;
+							partialHash += chessmanVal;
+						}
 					}
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
@@ -166,8 +196,12 @@ public:
 					partialHash = 0;
 					for (uint i = n - 1; ~i; --i)
 					{
-						partialHash *= chessmanCount;
-						partialHash += getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(board[i][j]);
+						if (chessmanVal != kInvalidChessmanValue)
+						{
+							partialHash *= chessmanCount;
+							partialHash += chessmanVal;
+						}
 					}
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
@@ -200,7 +234,7 @@ public:
 
 	virtual const Board<TChessman> &GetBoard() const { return board; }
 
-	std::shared_ptr<State<TChessman>> GetNextState(const Position &pos, TChessman chessman) const
+	virtual std::shared_ptr<State<TChessman>> GetNextState(const Position &pos, TChessman chessman) const
 	{
 		if (pos.Invalid())
 			return std::shared_ptr<State<TChessman>>();
@@ -217,7 +251,7 @@ public:
 		return nextState;
 	}
 
-	std::shared_ptr<State<TChessman>> GetNextState(const Move &move) const
+	virtual std::shared_ptr<State<TChessman>> GetNextState(const Move &move) const
 	{
 		if (move.from.Invalid() || move.to.Invalid())
 			return std::shared_ptr<State<TChessman>>();
@@ -241,6 +275,12 @@ public:
 			nextState->board[move.to] = chessman;
 		return nextState;
 	}
+
+	virtual Winner GetNextPlayer() override
+	{
+		return nextPlayer;
+	}
+
 protected:
 	virtual std::shared_ptr<State<TChessman>> Produce(const State<TChessman> &fromState) const = 0;
 

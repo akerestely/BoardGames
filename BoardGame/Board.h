@@ -25,9 +25,11 @@ template<class TComponents>
 class Board
 {
 public:
-	Board(uint nRows, uint nCols) : nRows(nRows), nCols(nCols)
+	Board(uint nRows, uint nCols, TComponents defaultValue) : 
+		nRows(nRows), 
+		nCols(nCols),
+		data(nRows * nCols, defaultValue)
 	{
-		data.resize(nRows * nCols, TComponents::None);
 	}
 
 	uint Rows() const { return nRows; }

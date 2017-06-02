@@ -22,7 +22,7 @@ private:
 	using TEstimations = std::map<IState::THash, TEstimation>;
 
 private:
-	TEstimation getEstimation(const std::shared_ptr<IState> &state);
+	TEstimation& getEstimation(const std::shared_ptr<IState> &state);
 
 private:
 	IState::Winner m_symbol;
@@ -31,7 +31,7 @@ private:
 	std::vector<std::shared_ptr<IState>> m_lastStates;
 
 	// RL parameters
-	const float m_stepSize = 0.1f;
+	const float m_stepSize = 0.1f;		// influences the rate of learning
 	const float m_exploreRate = 0.1f;
 
 	std::random_device m_randomDevice;

@@ -26,15 +26,18 @@ bool Judger::PlayTurn()
 	if (!nextState)
 		return false;
 
+	if (currentState->GetNextPlayer() != nextState->GetNextPlayer())
+		crtPlayer.swap(nextPlayer);
+
 	currentState = nextState;
 
 	// save state hash
-	lastStatesHashes.push_front(currentState->GetHash());
+	lastStatesHashes.push_front(nextState->GetHash());
 
 	// check winning condition
-	if (currentState->IsEnd())
+	if (nextState->IsEnd())
 	{
-		winner = currentState->GetWinner();
+		winner = nextState->GetWinner();
 		gameEnded = true;
 		return true;
 	}
@@ -47,7 +50,6 @@ bool Judger::PlayTurn()
 		return true;
 	}
 
-	crtPlayer.swap(nextPlayer);
 	return true;
 }
 
