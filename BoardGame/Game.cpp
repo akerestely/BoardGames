@@ -158,7 +158,8 @@ void Game::onKeyUp(void *pkey)
 				if (m_clickedTilePosIndex == releaseTilePosIndex)
 					pPlayer->BufferAction(releaseTilePosIndex);
 				else
-					pPlayer->BufferAction(m_clickedTilePosIndex, releaseTilePosIndex);
+					if(!m_clickedTilePosIndex.Invalid())
+						pPlayer->BufferAction(m_clickedTilePosIndex, releaseTilePosIndex);
 			}
 
 			m_clickedTilePosIndex = Position();

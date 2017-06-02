@@ -14,12 +14,12 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 			chessman = MillChessmans::Red;
 
 		// generate state
-		nextState = static_cast<MillState*>(crtState.get())->GetNextState(*m_bufferedAction, chessman);
+		nextState = static_cast<State<MillChessmans>*>(crtState.get())->GetNextState(*m_bufferedAction, chessman);
 	}
 	else if (m_bufferedMove)
 	{
 		// simple move
-		nextState = static_cast<MillState*>(crtState.get())->GetNextState(*m_bufferedMove);
+		nextState = static_cast<State<MillChessmans>*>(crtState.get())->GetNextState(*m_bufferedMove);
 	}
 	else
 		// no buffered move
@@ -32,7 +32,7 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 		crtState->GetPossibleNextStates(possibleNextStates);
 		bool bFound = false;
 		for (const auto &state : possibleNextStates)
-			if (state->GetHash() == nextState->GetHash())
+			if (static_cast<State<MillChessmans>*>(state.get())->GetBoard() == nextState->GetBoard())
 			{
 				bFound = true;
 				break;

@@ -49,6 +49,11 @@ public:
 		return data[pos.i * nCols + pos.j];
 	}
 
+	bool operator == (const Board<TComponents> &other) const
+	{
+		return nRows == other.nRows && nCols == other.nCols && data == other.data;
+	}
+
 	//const std::vector<TComponents>& Data() const { return data; }
 
 private:
