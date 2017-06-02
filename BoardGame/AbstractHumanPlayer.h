@@ -15,7 +15,7 @@ public:
 	void BufferAction(const Position &clickedTile, const Position &releasedTile);
 
 protected:
-	const IState::Winner &m_symbol;
+	const IState::Winner m_symbol;
 	std::shared_ptr<Position> m_bufferedAction;
 	std::shared_ptr<Move> m_bufferedMove;
 };
