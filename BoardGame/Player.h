@@ -13,9 +13,9 @@ public:
 
 	virtual void FeedReward(IState::Winner winner);
 
-	void SavePolicy(std::string fileName = "optimal_policy_");
+	void SavePolicy(std::string fileName = "policy_");
 
-	void LoadPolicy(std::string fileName = "optimal_policy_");
+	void LoadPolicy(std::string fileName = "policy_");
 
 private:
 	using TEstimation = float;
@@ -23,12 +23,17 @@ private:
 
 private:
 	TEstimation& getEstimation(const std::shared_ptr<IState> &state);
+	float getInitialValue(const std::shared_ptr<IState> &state);
+	void updateEstimation(const std::shared_ptr<IState> &state, const std::shared_ptr<IState> &nextState, float reward = 0);
 
 private:
 	IState::Winner m_symbol;
 	TEstimations m_estimations;
+	uint m_nGamesPlayed = 0;
+	uint m_nGamesWon = 0;
+	uint m_nGamesLost = 0;
 
-	std::vector<std::shared_ptr<IState>> m_lastStates;
+	std::shared_ptr<IState> m_prevState;
 
 	// RL parameters
 	const float m_stepSize = 0.1f;		// influences the rate of learning

@@ -38,6 +38,7 @@ void Game::onUpdate()
 		if (m_judger.HasGameEnded())
 		{
 			m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
+			m_boardConfig->Update(m_judger.GetCrtState());
 		}
 		else
 		{

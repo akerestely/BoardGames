@@ -21,7 +21,6 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 	{
 		std::uniform_int_distribution<uint> uniformDist(0, m_possibleNextStates.size() - 1);
 		nextState = m_possibleNextStates[uniformDist(m_randomEngine)];
-		getEstimation(nextState);
 	}
 	else
 	{
@@ -50,56 +49,67 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 	// clear work vector
 	m_possibleNextStates.clear();
 
-	// save chosen state
-	m_lastStates.push_back(nextState);
+	if (!nextState->IsEnd())
+	{
+		if (m_prevState)
+			updateEstimation(m_prevState, nextState);
+		// save chosen state
+		m_prevState = nextState;
+	}
 
 	return nextState;
 }
 
 void Player::FeedReward(IState::Winner winner)
 {
-	if (m_lastStates.empty())
+	if (!m_prevState)
 		return;
 
 	float target = 0.0f;
 	if (winner == m_symbol)
-		target = 1.0f;
-	else if (winner == IState::Winner::None)
-		target = 0.5f;
-
-	for (auto it = m_lastStates.rbegin(); it != m_lastStates.rend(); ++it)
 	{
-		auto &state = *it;
-		float &estimation = getEstimation(state);
-		float value = estimation + m_stepSize * (target - estimation);
-		estimation = value;
-		target = value;
+		target = 1.0f;
+		++m_nGamesWon;
+	}
+	else if (winner == IState::Winner::None)
+	{
+		target = 0.5f;
+	}
+	else
+	{
+		++m_nGamesLost;
 	}
 
-	m_lastStates.clear();
+	updateEstimation(m_prevState, std::shared_ptr<IState>(), target);
+
+	m_prevState.reset();
+
+	++m_nGamesPlayed;
 }
 
-void Player::SavePolicy(std::string fileName /*= "optimal_policy_"*/)
+void Player::SavePolicy(std::string fileName /*= "policy_"*/)
 {
+	if (m_nGamesPlayed == 0)
+		return;
+
 	fileName += std::to_string(int(m_symbol));
 	std::ofstream out(fileName);
+
+	out << m_nGamesPlayed << ' ' << m_nGamesWon << ' ' << m_nGamesLost << '\n';
+
 	for (auto &pair : m_estimations)
 		if (pair.second != 0.0f && pair.second != 1.0f && pair.second != 0.5f)
 			out << pair.first << ' ' << pair.second << std::endl;
-
-	if (uint(out.tellp()) == 0)
-	{
-		out.close();
-		remove(fileName.c_str());
-	}
 }
 
-void Player::LoadPolicy(std::string fileName /*= "optimal_policy_"*/)
+void Player::LoadPolicy(std::string fileName /*= "policy_"*/)
 {
 	fileName += std::to_string(int(m_symbol));
 	std::ifstream in(fileName);
 	if (in.fail())
 		return;
+
+	in >> m_nGamesPlayed >> m_nGamesWon >> m_nGamesLost;
 
 	while (!in.eof())
 	{
@@ -117,16 +127,32 @@ Player::TEstimation& Player::getEstimation(const std::shared_ptr<IState> &state)
 	if (itMap.second == true)
 	{
 		// newly inserted; initialize
-		if (state->IsEnd())
-		{
-			if (state->GetWinner() == m_symbol)
-				estimation = 1.0f;
-			else
-				estimation = 0.0f;
-		}
-		else
-			estimation = 0.5f;
+		estimation = getInitialValue(state);
 	}
 
 	return estimation;
+}
+
+float Player::getInitialValue(const std::shared_ptr<IState> &state)
+{
+	if (state->IsEnd())
+	{
+		if (state->GetWinner() == m_symbol)
+			return 1.0f;
+		else
+			return 0.0f;
+	}
+	else
+		return  0.5f;
+}
+
+void Player::updateEstimation(const std::shared_ptr<IState> &state, const std::shared_ptr<IState> &nextState, float reward /*= 0*/)
+{
+	float &estimation = getEstimation(state);
+	float nextStateEstimation = 0;
+	if (nextState)
+		// it's a non terminal state
+		nextStateEstimation = getEstimation(nextState);
+
+	estimation = estimation + m_stepSize * (reward + nextStateEstimation - estimation);
 }
