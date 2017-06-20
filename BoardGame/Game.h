@@ -32,6 +32,7 @@ private:
 	virtual std::shared_ptr<IPlayer> getPlayer(IState::Winner type) = 0;
 	virtual std::shared_ptr<IState> getStartingState() = 0;
 	virtual std::shared_ptr<IBoardConfiguration> getBoardConfiguration() = 0;
+	virtual void onRoundBegining() {};
 	virtual void onTurnBegining(std::shared_ptr<IPlayer> crtPlayer, std::shared_ptr<IState> crtState) {};
 	virtual void onTurnEnding(std::shared_ptr<IPlayer> crtPlayer, std::shared_ptr<IState> crtState) {};
 	virtual void onRoundEnded(const Judger &judger) {};

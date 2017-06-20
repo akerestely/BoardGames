@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="AbstractBoardConfiguration&lt;TChessman&gt;">
+    <Position X="2.25" Y="19.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>AbstractBoardConfiguration.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine::Camera2D">
+    <Position X="6.75" Y="16" Width="2.5" />
+    <Members>
+      <Method Name="~Camera2D" Hidden="true" />
+      <Method Name="Camera2D" Hidden="true" />
+      <Field Name="cameraMatrix" Hidden="true" />
+      <Method Name="ConvertScreenToWorld" Hidden="true" />
+      <Method Name="GetPosition" Hidden="true" />
+      <Method Name="GetScale" Hidden="true" />
+      <Method Name="Init" Hidden="true" />
+      <Field Name="needsUpdate" Hidden="true" />
+      <Field Name="orthoMatrix" Hidden="true" />
+      <Field Name="position" Hidden="true" />
+      <Field Name="scale" Hidden="true" />
+      <Field Name="screenHeight" Hidden="true" />
+      <Field Name="screenWidth" Hidden="true" />
+      <Method Name="SetPosition" Hidden="true" />
+      <Method Name="SetScale" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAQACBAAAAAAEAAIAACAAAEAiAAIAACQgIAAAg=</HashCode>
+      <FileName>d:\Facultate\Disertatie\BoardGames\Engine\Camera2D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IBoardConfiguration">
+    <Position X="2.25" Y="14.25" Width="3.25" />
+    <Members>
+      <Method Name="~IBoardConfiguration" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="IBoardConfiguration::BoardTile">
+        <Members>
+          <Method Name="BoardTile" Hidden="true" />
+        </Members>
+        <Compartments>
+          <Compartment Name="Methods" Collapsed="true" />
+        </Compartments>
+        <TypeIdentifier>
+          <NewMemberFileName>IBoardConfiguration.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EAQAAAAAAAACAAAAAAAABAAAAAAAAAAAABACAAAAAAA=</HashCode>
+      <FileName>IBoardConfiguration.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Board&lt;TComponents&gt;">
+    <Position X="3.5" Y="9.75" Width="2.25" />
+    <Members>
+      <Method Name="Board" Hidden="true" />
+      <Method Name="Cols" Hidden="true" />
+      <Method Name="operator[]" Hidden="true" />
+      <Method Name="operator==" Hidden="true" />
+      <Method Name="Rows" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAEAAAAAAAYAAAAEAAAEAAAAQACAAAAA=</HashCode>
+      <FileName>Board.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="State&lt;TChessman&gt;">
+    <Position X="1.5" Y="6.25" Width="6" />
+    <Members>
+      <Method Name="GetHash" Hidden="true" />
+      <Method Name="GetNextPlayer" Hidden="true" />
+      <Method Name="GetWinner" Hidden="true" />
+      <Method Name="Invalidate" Hidden="true" />
+      <Method Name="IsTerminal" Hidden="true" />
+      <Field Name="m_computedEnd" Hidden="true" />
+      <Field Name="m_computedHash" Hidden="true" />
+      <Field Name="m_hashRoatations" Hidden="true" />
+      <Field Name="m_hashSymmetryCardinal" Hidden="true" />
+      <Field Name="m_hashSymmetryDiagonal" Hidden="true" />
+      <Method Name="Produce" Hidden="true" />
+      <Method Name="State" Hidden="true" />
+    </Members>
+    <AssociationLine Name="m_board" Type="Board&lt;TComponents&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.5" Y="7.937" />
+        <Point X="1.125" Y="7.937" />
+        <Point X="1.125" Y="9.938" />
+        <Point X="3.5" Y="9.938" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>BAAAACAEgCAAEIAAgAAAAAQEAAQAAAICABQBRIwAAAA=</HashCode>
+      <FileName>State.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_board" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="AbstractHumanPlayer">
+    <Position X="7.75" Y="5" Width="5" />
+    <Members>
+      <Method Name="AbstractHumanPlayer" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="IPlayer" ManuallyRouted="true">
+      <Path>
+        <Point X="12.5" Y="2.103" />
+        <Point X="12.5" Y="3.144" />
+        <Point X="10.25" Y="3.144" />
+        <Point X="10.25" Y="5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAIAAAAAAAAAAEIAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>AbstractHumanPlayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player">
+    <Position X="13.25" Y="3.5" Width="6.75" />
+    <Members>
+      <Field Name="m_nGamesLost" Hidden="true" />
+      <Field Name="m_nGamesPlayed" Hidden="true" />
+      <Field Name="m_nGamesWon" Hidden="true" />
+      <Field Name="m_possibleNextStates" Hidden="true" />
+      <Field Name="m_randomDevice" Hidden="true" />
+      <Method Name="Player" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="IPlayer" ManuallyRouted="true">
+      <Path>
+        <Point X="12.5" Y="2.103" />
+        <Point X="12.5" Y="3.125" />
+        <Point X="16.625" Y="3.125" />
+        <Point X="16.625" Y="3.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>CCCQAIAAAAAAgAQoAAAAAAAAQAAAACgIEACAAQAxAAA=</HashCode>
+      <FileName>Player.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Judger">
+    <Position X="10.25" Y="7.75" Width="6.75" />
+    <Members>
+      <Method Name="Judger" Hidden="true" />
+      <Field Name="m_checkRepeatingRounds" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEAAACAAAgASAIAAAAAAQBAAAAIIAAAECAAARACAAAA=</HashCode>
+      <FileName>Judger.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Game">
+    <Position X="25.25" Y="11" Width="5.25" />
+    <Members>
+      <Method Name="canUpdate" Hidden="true" />
+      <Method Name="Game" Hidden="true" />
+      <Field Name="m_bPausedAutomatically" Hidden="true" />
+      <Field Name="m_bPausedManually" Hidden="true" />
+      <Field Name="m_delayNextTurn" Hidden="true" />
+      <Field Name="m_lastTurnTime" Hidden="true" />
+      <Method Name="onDestroy" Hidden="true" />
+      <Method Name="onInit" Hidden="true" />
+      <Method Name="onInitRendering" Hidden="true" />
+      <Method Name="onKeyDown" Hidden="true" />
+      <Method Name="onKeyUp" Hidden="true" />
+      <Method Name="onMouseMove" Hidden="true" />
+      <Method Name="onRender" Hidden="true" />
+      <Method Name="onUpdate" Hidden="true" />
+      <Method Name="processInput" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AQDAAEAAIiAAAYAAgAAAEiADBQgAAABgAAAQAAJAAQE=</HashCode>
+      <FileName>Game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine::IGame">
+    <Position X="22" Y="9.5" Width="2.5" />
+    <Members>
+      <Method Name="~IGame" Hidden="true" />
+      <Method Name="getTime" Hidden="true" />
+      <Field Name="m_bLimitFps" Hidden="true" />
+      <Field Name="m_bSkipRendering" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Engine::IGame::State">
+        <TypeIdentifier>
+          <NewMemberFileName>d:\Facultate\Disertatie\BoardGames\Engine\IGame.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CQAAAAIAEAACAAAAAAAACCEIRIIAQFAgAEAAAAkQQQI=</HashCode>
+      <FileName>d:\Facultate\Disertatie\BoardGames\Engine\IGame.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Position">
+    <Position X="1.75" Y="4.5" Width="1.5" />
+    <Members>
+      <Method Name="Invalid" Hidden="true" />
+      <Method Name="operator!=" Hidden="true" />
+      <Method Name="operator==" Hidden="true" />
+      <Method Name="Position" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAgAAAAAQAAAAAAAAAAIAEAAAAAAAA=</HashCode>
+      <FileName>Board.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IPlayer">
+    <Position X="10.25" Y="1" Width="4.5" />
+    <Members>
+      <Method Name="~IPlayer" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>IPlayer.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IState">
+    <Position X="2" Y="0.5" Width="4.5" />
+    <Members>
+      <Method Name="~IState" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="IState::Winner">
+        <TypeIdentifier>
+          <NewMemberFileName>IState.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAIAAAAgAAAAAAAAAAAACAAAAAIQAAAA=</HashCode>
+      <FileName>IState.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Move">
+    <Position X="5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>State.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IRenderable">
+    <Position X="5.75" Y="17.5" Width="4.25" />
+    <Members>
+      <Method Name="~IRenderable" Hidden="true" />
+      <Method Name="Init" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABACAAAAAAA=</HashCode>
+      <FileName>IRenderable.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

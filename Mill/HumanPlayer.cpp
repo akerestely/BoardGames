@@ -5,7 +5,7 @@
 std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &crtState)
 {
 	std::shared_ptr<State<MillChessmans>> nextState;
-	if (m_bufferedAction)
+	if (m_bufferedPositioning)
 	{
 		MillChessmans chessman;
 		if (m_symbol == IState::Winner::FirstPlayer)
@@ -14,7 +14,7 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 			chessman = MillChessmans::Red;
 
 		// generate state
-		nextState = static_cast<State<MillChessmans>*>(crtState.get())->GetNextState(*m_bufferedAction, chessman);
+		nextState = static_cast<State<MillChessmans>*>(crtState.get())->GetNextState(*m_bufferedPositioning, chessman);
 	}
 	else if (m_bufferedMove)
 	{
@@ -43,7 +43,7 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 	}
 
 	// set buffered actions as consumed
-	m_bufferedAction.reset();
+	m_bufferedPositioning.reset();
 	m_bufferedMove.reset();
 
 	return nextState;

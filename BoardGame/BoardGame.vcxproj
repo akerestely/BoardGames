@@ -41,6 +41,9 @@
   <ItemGroup>
     <Natvis Include="BoardGame.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EEB6890B-5024-48BA-A281-76D696A91442}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

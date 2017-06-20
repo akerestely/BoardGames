@@ -69,4 +69,7 @@
   <ItemGroup>
     <Natvis Include="BoardGame.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
 </Project>

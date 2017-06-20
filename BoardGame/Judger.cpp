@@ -2,51 +2,51 @@
 #include "Judger.h"
 
 Judger::Judger(bool checkRepeatingRounds /*= true*/) :
-	checkRepeatingRounds(checkRepeatingRounds)
+	m_checkRepeatingRounds(checkRepeatingRounds)
 {
 
 }
 
 void Judger::InitGame(std::shared_ptr<IPlayer> player1, std::shared_ptr<IPlayer> player2, std::shared_ptr<IState> startingState)
 {
-	crtPlayer = player1;
-	nextPlayer = player2;
+	m_crtPlayer = player1;
+	m_nextPlayer = player2;
 
-	currentState = startingState;
+	m_currentState = startingState;
 
-	gameEnded = false;
-	winner = IState::Winner::None;
+	m_gameEnded = false;
+	m_winner = IState::Winner::None;
 
-	lastStatesHashes.clear();
+	m_lastStatesHashes.clear();
 }
 
 bool Judger::PlayTurn()
 {
-	auto &nextState = crtPlayer->TakeAction(currentState);
+	auto &nextState = m_crtPlayer->TakeAction(m_currentState);
 	if (!nextState)
 		return false;
 
-	if (currentState->GetNextPlayer() != nextState->GetNextPlayer())
-		crtPlayer.swap(nextPlayer);
+	if (m_currentState->GetNextPlayer() != nextState->GetNextPlayer())
+		m_crtPlayer.swap(m_nextPlayer);
 
-	currentState = nextState;
+	m_currentState = nextState;
 
 	// save state hash
-	lastStatesHashes.push_front(nextState->GetHash());
+	m_lastStatesHashes.push_front(nextState->GetHash());
 
 	// check winning condition
-	if (nextState->IsEnd())
+	if (nextState->IsTerminal())
 	{
-		winner = nextState->GetWinner();
-		gameEnded = true;
+		m_winner = nextState->GetWinner();
+		m_gameEnded = true;
 		return true;
 	}
 
 	// check draw condition
-	if (checkRepeatingRounds && areLastRoundsRepeating())
+	if (m_checkRepeatingRounds && areLastRoundsRepeating())
 	{
-		winner = IState::Winner::None;
-		gameEnded = true;
+		m_winner = IState::Winner::None;
+		m_gameEnded = true;
 		return true;
 	}
 
@@ -55,36 +55,36 @@ bool Judger::PlayTurn()
 
 bool Judger::HasGameEnded() const
 {
-	return gameEnded;
+	return m_gameEnded;
 }
 
 IState::Winner Judger::GetWinner() const
 {
-	return winner;
+	return m_winner;
 }
 
-const std::shared_ptr<IPlayer>& Judger::GetCrtPlayer() const
+const std::shared_ptr<IPlayer>& Judger::GetCurrentPlayer() const
 {
-	return crtPlayer;
+	return m_crtPlayer;
 }
 
-const std::shared_ptr<IState>& Judger::GetCrtState() const
+const std::shared_ptr<IState>& Judger::GetCurrentState() const
 {
-	return currentState;
+	return m_currentState;
 }
 
 bool Judger::areLastRoundsRepeating()
 {
 	const uint kMinRequiredLastStates = 9;
 	const uint kFirstStageStates = 6;
-	if (lastStatesHashes.size() >= kFirstStageStates + kMinRequiredLastStates)
+	if (m_lastStatesHashes.size() >= kFirstStageStates + kMinRequiredLastStates)
 	{
 		const uint step = 4;
-		uint statesCount = lastStatesHashes.size() - kFirstStageStates;
+		uint statesCount = m_lastStatesHashes.size() - kFirstStageStates;
 		uint appearanceCount = 1;
 		for (uint i = step; i < statesCount; i += step)
 		{
-			if (lastStatesHashes[i] == lastStatesHashes.front())
+			if (m_lastStatesHashes[i] == m_lastStatesHashes.front())
 			{
 				if (++appearanceCount >= 3)
 				{

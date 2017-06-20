@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Engine/Engine.h"
-#include "Engine/Logger.h"
 #include "Engine/GLSLProgram.h"
 
 #include "IRenderable.h"
@@ -38,17 +37,17 @@ void Game::onUpdate()
 		if (m_judger.HasGameEnded())
 		{
 			m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
-			m_boardConfig->Update(m_judger.GetCrtState());
+			m_boardConfig->Update(m_judger.GetCurrentState());
 		}
 		else
 		{
-			auto crtPlayer = m_judger.GetCrtPlayer();
-			auto crtState = m_judger.GetCrtState();
+			auto crtPlayer = m_judger.GetCurrentPlayer();
+			auto crtState = m_judger.GetCurrentState();
 
 			onTurnBegining(crtPlayer, crtState);
 			if (m_judger.PlayTurn())
 			{
-				m_boardConfig->Update(m_judger.GetCrtState());
+				m_boardConfig->Update(m_judger.GetCurrentState());
 				onTurnEnding(crtPlayer, crtState);
 			}
 
@@ -130,10 +129,9 @@ void Game::onKeyDown(void *pkey)
 		break;
 	case Engine::Key::LeftMouseButton:
 		glm::vec2 wordPos = m_camera.ConvertScreenToWorld(m_inputManager.GetMouseCoords());
-		Engine::log("At scale %.2fx coords are: %.2f, %.2f", m_camera.GetScale(), wordPos.x, wordPos.y);
 
 		// get clicked box
-		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCrtPlayer().get());
+		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCurrentPlayer().get());
 		if (pPlayer)
 			m_clickedTilePosIndex = m_boardConfig->GetTilePosition(wordPos);
 
@@ -150,7 +148,7 @@ void Game::onKeyUp(void *pkey)
 	case Engine::Key::LeftMouseButton:
 		glm::vec2 wordPos = m_camera.ConvertScreenToWorld(m_inputManager.GetMouseCoords());
 
-		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCrtPlayer().get());
+		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCurrentPlayer().get());
 		if (pPlayer)
 		{
 			Position releaseTilePosIndex = m_boardConfig->GetTilePosition(wordPos);

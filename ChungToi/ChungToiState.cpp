@@ -11,7 +11,7 @@ ChungToiState::ChungToiState() : State(3, 3)
 void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &states) const
 {
 	ChungToiChessmans chessmans[2];
-	if (nextPlayer == Winner::FirstPlayer)
+	if (m_nextPlayer == Winner::FirstPlayer)
 	{
 		chessmans[0] = ChungToiChessmans::WhiteCardinal;
 		chessmans[1] = ChungToiChessmans::WhiteDiagonal;
@@ -22,14 +22,14 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 		chessmans[1] = ChungToiChessmans::RedDiagonal;
 	}
 
-	uint n = board.Rows();
-	uint m = board.Cols();
+	uint n = m_board.Rows();
+	uint m = m_board.Cols();
 
 	if (NextPlayerHasChessmans())
 	{
 		for (uint i = 0; i < n; ++i)
 			for (uint j = 0; j < m; ++j)
-				if (board[i][j] == ChungToiChessmans::None)
+				if (m_board[i][j] == ChungToiChessmans::None)
 					for (auto &chessman : chessmans)
 						states.push_back(GetNextState(Position(i, j), chessman));
 	}
@@ -37,12 +37,12 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 	{
 		for (uint i = 0; i < n; ++i)
 			for (uint j = 0; j < m; ++j)
-				if (nextPlayer == getChessmanPlayer(board[i][j]))
+				if (m_nextPlayer == getChessmanPlayer(m_board[i][j]))
 				{
 					Position crtPos = { i, j };
 					std::vector<Position> neighbors;
 
-					switch (board[crtPos])
+					switch (m_board[crtPos])
 					{
 					case ChungToiChessmans::WhiteCardinal:
 					case ChungToiChessmans::RedCardinal:
@@ -74,9 +74,9 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 
 					// rotate current chessman
 					ChungToiChessmans rotatedChessman;
-					if (board[crtPos] == chessmans[0])
+					if (m_board[crtPos] == chessmans[0])
 						rotatedChessman = chessmans[1];
-					if (board[crtPos] == chessmans[1])
+					if (m_board[crtPos] == chessmans[1])
 						rotatedChessman = chessmans[0];
 
 					states.push_back(GetNextState(crtPos, rotatedChessman));
@@ -87,11 +87,11 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 bool ChungToiState::NextPlayerHasChessmans() const
 {
 	uint sum = 0;
-	uint n = board.Rows();
-	uint m = board.Cols();
+	uint n = m_board.Rows();
+	uint m = m_board.Cols();
 	for (uint i = 0; i < n; ++i)
 		for (uint j = 0; j < m; ++j)
-			if (nextPlayer == getChessmanPlayer(board[i][j]))
+			if (m_nextPlayer == getChessmanPlayer(m_board[i][j]))
 				++sum;
 
 	assert(sum <= 3);
@@ -116,7 +116,7 @@ IState::Winner ChungToiState::getChessmanPlayer(ChungToiChessmans chessman) cons
 
 bool ChungToiState::canMoveTo(const Position &position) const
 {
-	return position.i >= 0 && position.i < board.Rows() && position.j >= 0 && position.j < board.Cols() && board[position] == ChungToiChessmans::None;
+	return position.i >= 0 && position.i < m_board.Rows() && position.j >= 0 && position.j < m_board.Cols() && m_board[position] == ChungToiChessmans::None;
 }
 
 std::shared_ptr<State<ChungToiChessmans>> ChungToiState::Produce(const State<ChungToiChessmans> &fromState) const
@@ -150,14 +150,14 @@ void ChungToiState::computeEnd()
 	std::vector<int> results(8, 0);
 
 	// check rows, cols, and diagonals
-	uint n = board.Rows();
-	uint m = board.Cols();
+	uint n = m_board.Rows();
+	uint m = m_board.Cols();
 	for (uint i = 0; i < n; ++i)
 	{
 		for (uint j = 0; j < m; ++j)
 		{
 			int sumVal = 0;
-			switch (board[i][j])
+			switch (m_board[i][j])
 			{
 			case ChungToiChessmans::WhiteCardinal:
 			case ChungToiChessmans::WhiteDiagonal:
@@ -188,17 +188,17 @@ void ChungToiState::computeEnd()
 	{
 		if (result == 3)
 		{
-			winner = Winner::FirstPlayer;
-			isEnd = true;
+			m_winner = Winner::FirstPlayer;
+			m_isEnd = true;
 			return;
 		}
 		if (result == -3)
 		{
-			winner = Winner::SecondPlayer;
-			isEnd = true;
+			m_winner = Winner::SecondPlayer;
+			m_isEnd = true;
 			return;
 		}
 	}
 
-	isEnd = false;
+	m_isEnd = false;
 }

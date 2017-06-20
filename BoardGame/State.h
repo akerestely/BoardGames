@@ -15,28 +15,28 @@ class State : public IState
 {
 public:
 	State(uint boardRows, uint boardCols, TChessman defaultBoardValues = TChessman::None, bool hashSymmetryDiagonal = true, bool hashSymmetryCardinal = true, bool hashRoatations = true) :
-		nextPlayer(Winner::FirstPlayer),
-		winner(Winner::None),
-		isEnd(false),
-		computedHash(false),
-		computedEnd(false),
-		board(boardRows, boardCols, defaultBoardValues),
-		hashRoatations(hashRoatations),
-		hashSymmetryCardinal(hashSymmetryCardinal),
-		hashSymmetryDiagonal(hashSymmetryDiagonal)
+		m_nextPlayer(Winner::FirstPlayer),
+		m_winner(Winner::None),
+		m_isEnd(false),
+		m_computedHash(false),
+		m_computedEnd(false),
+		m_board(boardRows, boardCols, defaultBoardValues),
+		m_hashRoatations(hashRoatations),
+		m_hashSymmetryCardinal(hashSymmetryCardinal),
+		m_hashSymmetryDiagonal(hashSymmetryDiagonal)
 	{
 		Invalidate();
 	}
 
 	virtual THash GetHash() override final
 	{
-		if (!computedHash)
+		if (!m_computedHash)
 		{
-			hash = 0;
+			m_hash = 0;
 
 			THash crtHash;
-			uint n = board.Rows();
-			uint m = board.Cols();
+			uint n = m_board.Rows();
+			uint m = m_board.Cols();
 			uint chessmanCount = getChessmanValue(TChessman::Count);
 			uint partialHash;
 			uint partialHashMultiplier = (uint)pow(chessmanCount, m);
@@ -48,7 +48,7 @@ public:
 				partialHash = 0;
 				for (uint j = 0; j < m; ++j)
 				{
-					auto chessmanVal = getChessmanValue(board[i][j]);
+					auto chessmanVal = getChessmanValue(m_board[i][j]);
 					if (chessmanVal != kInvalidChessmanValue)
 					{
 						partialHash *= chessmanCount;
@@ -58,10 +58,10 @@ public:
 				crtHash *= partialHashMultiplier;
 				crtHash += partialHash;
 			}
-			if (crtHash > hash)
-				hash = crtHash;
+			if (crtHash > m_hash)
+				m_hash = crtHash;
 
-			if (hashRoatations)
+			if (m_hashRoatations)
 			{
 				// rotated 90 deg
 				crtHash = 0;
@@ -70,7 +70,7 @@ public:
 					partialHash = 0;
 					for (uint i = 0; i < n; ++i)
 					{
-						auto chessmanVal = getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
 						{
 							partialHash *= chessmanCount;
@@ -80,8 +80,8 @@ public:
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
 				}
-				if (crtHash > hash)
-					hash = crtHash;
+				if (crtHash > m_hash)
+					m_hash = crtHash;
 
 				// rotated 180 deg
 				crtHash = 0;
@@ -90,7 +90,7 @@ public:
 					partialHash = 0;
 					for (uint j = m - 1; ~j; --j)
 					{
-						auto chessmanVal = getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
 						{
 							partialHash *= chessmanCount;
@@ -100,8 +100,8 @@ public:
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
 				}
-				if (crtHash > hash)
-					hash = crtHash;
+				if (crtHash > m_hash)
+					m_hash = crtHash;
 
 				// rotated 270(i.e. -90) deg
 				crtHash = 0;
@@ -110,7 +110,7 @@ public:
 					partialHash = 0;
 					for (uint i = n - 1; ~i; --i)
 					{
-						auto chessmanVal = getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
 						{
 							partialHash *= chessmanCount;
@@ -120,11 +120,11 @@ public:
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
 				}
-				if (crtHash > hash)
-					hash = crtHash;
+				if (crtHash > m_hash)
+					m_hash = crtHash;
 			}
 
-			if (hashSymmetryCardinal)
+			if (m_hashSymmetryCardinal)
 			{
 				// symmetry by vertical axis
 				crtHash = 0;
@@ -133,7 +133,7 @@ public:
 					partialHash = 0;
 					for (uint j = m - 1; ~j; --j)
 					{
-						auto chessmanVal = getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
 						{
 							partialHash *= chessmanCount;
@@ -143,8 +143,8 @@ public:
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
 				}
-				if (crtHash > hash)
-					hash = crtHash;
+				if (crtHash > m_hash)
+					m_hash = crtHash;
 
 				// symmetry by horizontal axis
 				crtHash = 0;
@@ -153,7 +153,7 @@ public:
 					partialHash = 0;
 					for (uint j = 0; j < m; ++j)
 					{
-						auto chessmanVal = getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
 						{
 							partialHash *= chessmanCount;
@@ -163,11 +163,11 @@ public:
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
 				}
-				if (crtHash > hash)
-					hash = crtHash;
+				if (crtHash > m_hash)
+					m_hash = crtHash;
 			}
 
-			if (hashSymmetryDiagonal)
+			if (m_hashSymmetryDiagonal)
 			{
 				// symmetry by primary diagonal
 				crtHash = 0;
@@ -176,7 +176,7 @@ public:
 					partialHash = 0;
 					for (uint i = 0; i < n; ++i)
 					{
-						auto chessmanVal = getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
 						{
 							partialHash *= chessmanCount;
@@ -186,8 +186,8 @@ public:
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
 				}
-				if (crtHash > hash)
-					hash = crtHash;
+				if (crtHash > m_hash)
+					m_hash = crtHash;
 
 				// symmetry by secondary diagonal
 				crtHash = 0;
@@ -196,7 +196,7 @@ public:
 					partialHash = 0;
 					for (uint i = n - 1; ~i; --i)
 					{
-						auto chessmanVal = getChessmanValue(board[i][j]);
+						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
 						{
 							partialHash *= chessmanCount;
@@ -206,33 +206,33 @@ public:
 					crtHash *= partialHashMultiplier;
 					crtHash += partialHash;
 				}
-				if (crtHash > hash)
-					hash = crtHash;
+				if (crtHash > m_hash)
+					m_hash = crtHash;
 			}
-			computedHash = true;
+			m_computedHash = true;
 		}
 
-		return hash;
+		return m_hash;
 	}
-	virtual bool IsEnd() override final
+	virtual bool IsTerminal() override final
 	{
-		if (!computedEnd)
+		if (!m_computedEnd)
 		{
 			computeEnd();
-			computedEnd = true;
+			m_computedEnd = true;
 		}
 
-		return isEnd;
+		return m_isEnd;
 	}
 	virtual Winner GetWinner() override final
 	{
-		if (!computedEnd)
-			IsEnd();
+		if (!m_computedEnd)
+			IsTerminal();
 
-		return winner;
+		return m_winner;
 	}
 
-	virtual const Board<TChessman> &GetBoard() const { return board; }
+	virtual const Board<TChessman> &GetBoard() const { return m_board; }
 
 	virtual std::shared_ptr<State<TChessman>> GetNextState(const Position &pos, TChessman chessman) const
 	{
@@ -240,11 +240,11 @@ public:
 			return std::shared_ptr<State<TChessman>>();
 
 		auto nextState = Produce(*this);
-		nextState->board[pos] = chessman;
-		if (nextPlayer == Winner::FirstPlayer)
-			nextState->nextPlayer = Winner::SecondPlayer;
+		nextState->m_board[pos] = chessman;
+		if (m_nextPlayer == Winner::FirstPlayer)
+			nextState->m_nextPlayer = Winner::SecondPlayer;
 		else
-			nextState->nextPlayer = Winner::FirstPlayer;
+			nextState->m_nextPlayer = Winner::FirstPlayer;
 
 		nextState->Invalidate();
 
@@ -257,11 +257,11 @@ public:
 			return std::shared_ptr<State<TChessman>>();
 
 		auto nextState = Produce(*this);
-		std::swap(nextState->board[move.from], nextState->board[move.to]);
-		if (nextPlayer == Winner::FirstPlayer)
-			nextState->nextPlayer = Winner::SecondPlayer;
+		std::swap(nextState->m_board[move.from], nextState->m_board[move.to]);
+		if (m_nextPlayer == Winner::FirstPlayer)
+			nextState->m_nextPlayer = Winner::SecondPlayer;
 		else
-			nextState->nextPlayer = Winner::FirstPlayer;
+			nextState->m_nextPlayer = Winner::FirstPlayer;
 
 		nextState->Invalidate();
 
@@ -272,13 +272,13 @@ public:
 	{
 		auto nextState = State<TChessman>::GetNextState(move);
 		if(nextState)
-			nextState->board[move.to] = chessman;
+			nextState->m_board[move.to] = chessman;
 		return nextState;
 	}
 
 	virtual Winner GetNextPlayer() override
 	{
-		return nextPlayer;
+		return m_nextPlayer;
 	}
 
 protected:
@@ -286,9 +286,9 @@ protected:
 
 	void Invalidate()
 	{
-		computedHash = false;
-		computedEnd = false;
-		winner = IState::Winner::None;
+		m_computedHash = false;
+		m_computedEnd = false;
+		m_winner = IState::Winner::None;
 	}
 
 private:
@@ -296,18 +296,18 @@ private:
 	virtual void computeEnd() = 0;
 
 protected:
-	Board<TChessman> board;
-	THash hash;
-	Winner winner;
-	Winner nextPlayer;
-	bool isEnd : 1;
+	Board<TChessman> m_board;
+	THash m_hash;
+	Winner m_winner;
+	Winner m_nextPlayer;
+	bool m_isEnd : 1;
 
 private:
-	bool computedHash : 1;
-	bool computedEnd : 1;
+	bool m_computedHash : 1;
+	bool m_computedEnd : 1;
 
-	bool hashRoatations : 1;
-	bool hashSymmetryCardinal : 1;	// vertical and horizontal symmetry
-	bool hashSymmetryDiagonal : 1;	// symmetry along primary and secondary diagonal
+	bool m_hashRoatations : 1;
+	bool m_hashSymmetryCardinal : 1;	// vertical and horizontal symmetry
+	bool m_hashSymmetryDiagonal : 1;	// symmetry along primary and secondary diagonal
 };
 

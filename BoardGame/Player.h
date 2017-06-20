@@ -27,7 +27,7 @@ private:
 	void updateEstimation(const std::shared_ptr<IState> &state, const std::shared_ptr<IState> &nextState, float reward = 0);
 
 private:
-	IState::Winner m_symbol;
+	const IState::Winner m_symbol;
 	TEstimations m_estimations;
 	uint m_nGamesPlayed = 0;
 	uint m_nGamesWon = 0;

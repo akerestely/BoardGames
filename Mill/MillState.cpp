@@ -26,7 +26,7 @@ MillState::MillState() :
 					continue;
 
 				pos.j = crtLayer + j * iLayer;
-				board[pos] = MillChessmans::None;
+				m_board[pos] = MillChessmans::None;
 			}
 		}
 	}
@@ -38,7 +38,7 @@ MillState::MillState() :
 void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &states) const
 {
 	MillChessmans chessman, enemyChessman;
-	if (nextPlayer == Winner::FirstPlayer)
+	if (m_nextPlayer == Winner::FirstPlayer)
 	{
 		chessman = MillChessmans::White;
 		enemyChessman = MillChessmans::Red;
@@ -52,7 +52,7 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 	if (m_bNeedToRemovePiece)
 	{
 		auto &mills = getMills();
-		uint nRows = board.Rows();
+		uint nRows = m_board.Rows();
 
 		Position pos;
 		for (uint iLayer = kLayers; iLayer > 0; --iLayer)
@@ -67,7 +67,7 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 						continue;
 
 					pos.j = crtLayer + j * iLayer;
-					if (board[pos] != enemyChessman)
+					if (m_board[pos] != enemyChessman)
 						continue;
 
 					if (mills[i != 1 || i > j ? pos.i : 14] == getCurrentPlayer())
@@ -95,7 +95,7 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 						continue;
 
 					pos.j = crtLayer + j * iLayer;
-					if (board[pos] != MillChessmans::None)
+					if (m_board[pos] != MillChessmans::None)
 						continue;
 
 					states.push_back(GetNextState(pos, chessman));
@@ -103,7 +103,7 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 			}
 		}
 	}
-	else if (const_cast<MillState*>(this)->getLostPieces(nextPlayer) < kMaxLoosablePieces)
+	else if (const_cast<MillState*>(this)->getLostPieces(m_nextPlayer) < kMaxLoosablePieces)
 	{
 		std::vector<Position> neighbors;
 
@@ -120,7 +120,7 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 						continue;
 
 					pos.j = crtLayer + j * iLayer;
-					if (board[pos] != chessman)
+					if (m_board[pos] != chessman)
 						continue;
 
 					neighbors.clear();
@@ -152,7 +152,7 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 			}
 		}
 	}
-	else if(getLostPieces(nextPlayer) == kMaxLoosablePieces)
+	else if(getLostPieces(m_nextPlayer) == kMaxLoosablePieces)
 	{
 		std::vector<Position> crtPieces;
 		crtPieces.reserve(3);
@@ -172,9 +172,9 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 						continue;
 
 					pos.j = crtLayer + j * iLayer;
-					if (board[pos] == chessman)
+					if (m_board[pos] == chessman)
 						crtPieces.push_back(pos);
-					else if (board[pos] == MillChessmans::None)
+					else if (m_board[pos] == MillChessmans::None)
 						emptyTiles.push_back(pos);
 				}
 			}
@@ -192,14 +192,14 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 	if (states.empty())
 	{
 		auto nextState = std::static_pointer_cast<MillState>(Produce(*this));
-		nextState->nextPlayer = getCurrentPlayer();
+		nextState->m_nextPlayer = getCurrentPlayer();
 		states.push_back(nextState);
 	}
 }
 
 bool MillState::NextPlayerHasChessmans() const
 {
-	return ((MillState*)this)->getPlacedPieces(nextPlayer) < kMaxPieces;
+	return ((MillState*)this)->getPlacedPieces(m_nextPlayer) < kMaxPieces;
 }
 
 IState::Winner MillState::getChessmanPlayer(MillChessmans chessman) const
@@ -215,13 +215,13 @@ IState::Winner MillState::getChessmanPlayer(MillChessmans chessman) const
 
 bool MillState::canMoveTo(const Position &position) const
 {
-	return position.i >= 0 && position.i < board.Rows() && position.j >= 0 && position.j < board.Cols() 
-		&& board[position] == MillChessmans::None;
+	return position.i >= 0 && position.i < m_board.Rows() && position.j >= 0 && position.j < m_board.Cols() 
+		&& m_board[position] == MillChessmans::None;
 }
 
 IState::Winner MillState::getCurrentPlayer() const
 {
-	switch (nextPlayer)
+	switch (m_nextPlayer)
 	{
 	case IState::Winner::FirstPlayer:	return Winner::SecondPlayer;
 	case IState::Winner::SecondPlayer:	return Winner::FirstPlayer;
@@ -268,8 +268,8 @@ const std::vector<IState::Winner>& MillState::getMills() const
 	if (!m_mills.empty())
 		return m_mills;
 
-	const uint n = board.Rows();
-	const uint m = board.Cols();
+	const uint n = m_board.Rows();
+	const uint m = m_board.Cols();
 
 	int results[kMaxMills] = {};
 	Position pos;
@@ -286,7 +286,7 @@ const std::vector<IState::Winner>& MillState::getMills() const
 
 				pos.j = crtLayer + j * iLayer;
 				int sumVal = 0;
-				switch (board[pos])
+				switch (m_board[pos])
 				{
 				case MillChessmans::White:
 					sumVal = 1; break;
@@ -340,18 +340,18 @@ std::shared_ptr<State<MillChessmans>> MillState::GetNextState(const Position &po
 
 	if (!m_bNeedToRemovePiece)
 	{
-		nextState->getPlacedPieces(nextPlayer)++;
+		nextState->getPlacedPieces(m_nextPlayer)++;
 
-		if (nextState->needToRemoveEnemyPiece(nextPlayer))
+		if (nextState->needToRemoveEnemyPiece(m_nextPlayer))
 		{
-			nextState->nextPlayer = nextPlayer;
+			nextState->m_nextPlayer = m_nextPlayer;
 			nextState->m_bNeedToRemovePiece = true;
 		}
 	}
 	else
 	{
 		nextState->getLostPieces(getCurrentPlayer())++;
-		nextState->board[pos] = MillChessmans::None;
+		nextState->m_board[pos] = MillChessmans::None;
 	}
 
 	return nextState;
@@ -365,9 +365,9 @@ std::shared_ptr<State<MillChessmans>> MillState::GetNextState(const Move &move) 
 	std::swap(nextState->m_previousStateMills, nextState->m_mills);
 	nextState->getMills();
 
-	if (nextState->needToRemoveEnemyPiece(nextPlayer))
+	if (nextState->needToRemoveEnemyPiece(m_nextPlayer))
 	{
-		nextState->nextPlayer = nextPlayer;
+		nextState->m_nextPlayer = m_nextPlayer;
 		nextState->m_bNeedToRemovePiece = true;
 	}
 
@@ -393,9 +393,9 @@ uint MillState::getChessmanValue(MillChessmans chessman)
 
 void MillState::computeEnd()
 {
-	if (getPlacedPieces(nextPlayer) < kMaxPieces || getLostPieces(nextPlayer) <= kMaxLoosablePieces)
+	if (getPlacedPieces(m_nextPlayer) < kMaxPieces || getLostPieces(m_nextPlayer) <= kMaxLoosablePieces)
 		return;		// it's not end game, and we don't have winner (default values)
 
-	isEnd = true;
-	winner = getCurrentPlayer();
+	m_isEnd = true;
+	m_winner = getCurrentPlayer();
 }

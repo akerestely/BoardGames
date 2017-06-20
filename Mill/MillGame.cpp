@@ -67,6 +67,19 @@ void MillGame::onRoundEnded(const Judger &judger)
 {
 	m_player1->FeedReward(judger.GetWinner());
 	m_player2->FeedReward(judger.GetWinner());
+
+	// HACK: to prevent memory allocation issues on training,
+	// flush the learned estimations once in a while
+	static uint kRounds = 0;
+	if (++kRounds % 5000 == 0)
+	{
+		m_player1->SavePolicy();
+		m_player2->SavePolicy();
+		m_player1 = std::make_shared<Player>(IState::Winner::FirstPlayer);
+		m_player1->LoadPolicy();
+		m_player2 = std::make_shared<Player>(IState::Winner::SecondPlayer);
+		m_player2->LoadPolicy();
+	}
 }
 
 void MillGame::onDestroy()

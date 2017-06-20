@@ -10,7 +10,7 @@ AbstractHumanPlayer::AbstractHumanPlayer(IState::Winner symbol) :
 
 void AbstractHumanPlayer::BufferAction(const Position &clickedTile)
 {
-	m_bufferedAction = std::make_shared<Position>(clickedTile);
+	m_bufferedPositioning = std::make_shared<Position>(clickedTile);
 }
 
 void AbstractHumanPlayer::BufferAction(const Position &clickedTile, const Position &releasedTile)

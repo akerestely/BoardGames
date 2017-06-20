@@ -26,7 +26,7 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 	ChungToiState *pCrtState = static_cast<ChungToiState*>(crtState.get());
 
 	std::shared_ptr<State<ChungToiChessmans>> nextState;
-	if (m_bufferedAction)
+	if (m_bufferedPositioning)
 	{
 		if (pCrtState->NextPlayerHasChessmans())
 		{
@@ -42,10 +42,10 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 		}
 		else
 			// rotate the current selected
-			chessman = rotatedChessman(pCrtState->GetBoard()[*m_bufferedAction]);
+			chessman = rotatedChessman(pCrtState->GetBoard()[*m_bufferedPositioning]);
 
 		// generate state
-		nextState = static_cast<ChungToiState*>(crtState.get())->GetNextState(*m_bufferedAction, chessman);
+		nextState = static_cast<ChungToiState*>(crtState.get())->GetNextState(*m_bufferedPositioning, chessman);
 	}
 	else if (m_bufferedMove)
 	{
@@ -81,7 +81,7 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 	}
 
 	// set buffered actions as consumed
-	m_bufferedAction.reset();
+	m_bufferedPositioning.reset();
 	m_bufferedMove.reset();
 	m_bBufferedRotation = false;
 

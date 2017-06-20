@@ -17,7 +17,7 @@ struct IState
 
 	virtual ~IState() = default;
 	virtual THash GetHash() = 0;
-	virtual bool IsEnd() = 0;
+	virtual bool IsTerminal() = 0;
 	virtual Winner GetWinner() = 0;
 	virtual Winner GetNextPlayer() = 0;
 

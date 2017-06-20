@@ -4,7 +4,7 @@
 
 std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &crtState)
 {
-	if (!m_bufferedAction)
+	if (!m_bufferedPositioning)
 		return std::shared_ptr<IState>();
 
 	TicTacToeChessmans chessman;
@@ -13,8 +13,8 @@ std::shared_ptr<IState> HumanPlayer::TakeAction(const std::shared_ptr<IState> &c
 	else
 		chessman = TicTacToeChessmans::Nought;
 
-	auto nextState = static_cast<TicTacToeState*>(crtState.get())->GetNextState(*m_bufferedAction, chessman);
-	m_bufferedAction.reset();
+	auto nextState = static_cast<TicTacToeState*>(crtState.get())->GetNextState(*m_bufferedPositioning, chessman);
+	m_bufferedPositioning.reset();
 
 	return nextState;
 }

@@ -15,21 +15,21 @@ public:
 
 	bool HasGameEnded() const;
 	IState::Winner GetWinner() const;
-	const std::shared_ptr<IPlayer>& GetCrtPlayer() const;
-	const std::shared_ptr<IState>& GetCrtState() const;
+	const std::shared_ptr<IPlayer>& GetCurrentPlayer() const;
+	const std::shared_ptr<IState>& GetCurrentState() const;
 
 private:
 	// check if 3 consecutive full rounds are the same
 	bool areLastRoundsRepeating();
 
 private:
-	std::shared_ptr<IPlayer> crtPlayer;
-	std::shared_ptr<IPlayer> nextPlayer;
-	std::shared_ptr<IState> currentState;
-	std::deque<IState::THash> lastStatesHashes;
+	std::shared_ptr<IPlayer> m_crtPlayer;
+	std::shared_ptr<IPlayer> m_nextPlayer;
+	std::shared_ptr<IState> m_currentState;
+	std::deque<IState::THash> m_lastStatesHashes;
 	
-	IState::Winner winner;
-	bool gameEnded : 1;
-	bool checkRepeatingRounds : 1;
+	IState::Winner m_winner;
+	bool m_gameEnded : 1;
+	bool m_checkRepeatingRounds : 1;
 };
 

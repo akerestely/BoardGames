@@ -9,16 +9,16 @@ TicTacToeState::TicTacToeState() : State(3, 3)
 void TicTacToeState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &states) const
 {
 	TicTacToeChessmans chessman;
-	if (nextPlayer == Winner::FirstPlayer)
+	if (m_nextPlayer == Winner::FirstPlayer)
 		chessman = TicTacToeChessmans::Cross;
 	else
 		chessman = TicTacToeChessmans::Nought;
 
-	uint n = board.Rows();
-	uint m = board.Cols();
+	uint n = m_board.Rows();
+	uint m = m_board.Cols();
 	for (uint i = 0; i < n; ++i)
 		for (uint j = 0; j < m; ++j)
-			if (board[i][j] == TicTacToeChessmans::None)
+			if (m_board[i][j] == TicTacToeChessmans::None)
 				states.push_back(this->GetNextState(Position(i, j), chessman));
 }
 
@@ -51,14 +51,14 @@ void TicTacToeState::computeEnd()
 	uint chessmanCount = 0;
 
 	// check rows, cols, and diagonals
-	uint n = board.Rows();
-	uint m = board.Cols();
+	uint n = m_board.Rows();
+	uint m = m_board.Cols();
 	for (uint i = 0; i < n; ++i)
 	{
 		for (uint j = 0; j < m; ++j)
 		{
 			int sumVal = 0;
-			switch (board[i][j])
+			switch (m_board[i][j])
 			{
 			case TicTacToeChessmans::Cross:
 				sumVal = 1; break;
@@ -89,14 +89,14 @@ void TicTacToeState::computeEnd()
 	{
 		if (result == 3)
 		{
-			winner = Winner::FirstPlayer;
-			isEnd = true;
+			m_winner = Winner::FirstPlayer;
+			m_isEnd = true;
 			return;
 		}
 		if (result == -3)
 		{
-			winner = Winner::SecondPlayer;
-			isEnd = true;
+			m_winner = Winner::SecondPlayer;
+			m_isEnd = true;
 			return;
 		}
 	}
@@ -104,10 +104,10 @@ void TicTacToeState::computeEnd()
 	// check if it's a tie
 	if (chessmanCount == n*m)
 	{
-		winner = Winner::None;
-		isEnd = true;
+		m_winner = Winner::None;
+		m_isEnd = true;
 		return;
 	}
 
-	isEnd = false;
+	m_isEnd = false;
 }

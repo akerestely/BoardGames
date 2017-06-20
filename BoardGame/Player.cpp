@@ -49,7 +49,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 	// clear work vector
 	m_possibleNextStates.clear();
 
-	if (!nextState->IsEnd())
+	if (!nextState->IsTerminal())
 	{
 		if (m_prevState)
 			updateEstimation(m_prevState, nextState);
@@ -122,7 +122,7 @@ void Player::LoadPolicy(std::string fileName /*= "policy_"*/)
 
 Player::TEstimation& Player::getEstimation(const std::shared_ptr<IState> &state)
 {
-	auto &itMap = m_estimations.insert(std::make_pair(state->GetHash(), 0.f));
+	auto itMap = m_estimations.insert(std::make_pair(state->GetHash(), 0.f));
 	TEstimation &estimation = itMap.first->second;
 	if (itMap.second == true)
 	{
@@ -135,7 +135,7 @@ Player::TEstimation& Player::getEstimation(const std::shared_ptr<IState> &state)
 
 float Player::getInitialValue(const std::shared_ptr<IState> &state)
 {
-	if (state->IsEnd())
+	if (state->IsTerminal())
 	{
 		if (state->GetWinner() == m_symbol)
 			return 1.0f;
