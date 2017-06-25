@@ -1,8 +1,9 @@
 #include "Engine/BaseTypes.h"
-#include "glm/glm.hpp"
+#include "glm.hpp"
 #include "MillBoard.h"
 
-#include "gl/glew.h"
+#include "glew.h"
+#include "gtc/matrix_transform.hpp"
 #include <vector>
 
 #include "Engine/GLSLProgram.h"
@@ -52,7 +53,7 @@ void MillBoard::buildModel()
 	vertices.emplace_back( 183, 177);
 	vertices.emplace_back(-183, 177);
 	// middle, and inner
-	uint nVertPerLayer = vertices.size();
+	uint nVertPerLayer = (uint)vertices.size();
 	const uint kWidth = 60;
 	for(uint i = 1; i <= 2; ++i)
 		for (uint j = 0; j < nVertPerLayer; ++j)
@@ -83,7 +84,7 @@ void MillBoard::buildModel()
 	for (uint i = 0, sIndex = 0; i < 16; ++i, sIndex += 4)
 		indices.insert(indices.end(), { sIndex, sIndex + 1, sIndex + 2, sIndex, sIndex + 2, sIndex + 3 });
 
-	m_iboSize = indices.size();
+	m_iboSize = (uint)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboId);

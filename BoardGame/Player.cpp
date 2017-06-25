@@ -19,7 +19,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 	std::binomial_distribution<> binDist(1, m_exploreRate);
 	if (binDist(m_randomEngine))
 	{
-		std::uniform_int_distribution<uint> uniformDist(0, m_possibleNextStates.size() - 1);
+		std::uniform_int_distribution<uint> uniformDist(0, (uint)m_possibleNextStates.size() - 1);
 		nextState = m_possibleNextStates[uniformDist(m_randomEngine)];
 	}
 	else
@@ -31,7 +31,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 				sorted.insert(std::make_pair(getEstimation(state), state));
 
 			auto bounds = sorted.equal_range(sorted.begin()->first);
-			uint count = std::distance(bounds.first, bounds.second);
+			uint count = (uint)std::distance(bounds.first, bounds.second);
 			std::uniform_int_distribution<uint> uniformDist(0, count - 1);
 			std::advance(bounds.first, uniformDist(m_randomEngine));
 			nextState = bounds.first->second;

@@ -80,7 +80,7 @@ bool Judger::areLastRoundsRepeating()
 	if (m_lastStatesHashes.size() >= kFirstStageStates + kMinRequiredLastStates)
 	{
 		const uint step = 4;
-		uint statesCount = m_lastStatesHashes.size() - kFirstStageStates;
+		uint statesCount = (uint)m_lastStatesHashes.size() - kFirstStageStates;
 		uint appearanceCount = 1;
 		for (uint i = step; i < statesCount; i += step)
 		{

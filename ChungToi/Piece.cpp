@@ -1,8 +1,9 @@
 #include "Engine/BaseTypes.h"
-#include "glm/glm.hpp"
+#include "glm.hpp"
 #include "Piece.h"
 
-#include "gl/glew.h"
+#include "glew.h"
+#include "gtc/matrix_transform.hpp"
 #include <vector>
 
 #include "Engine/GLSLProgram.h"
@@ -86,7 +87,7 @@ void Piece::buildModel()
 		indices.push_back(0);
 	}
 
-	m_iboSize = indices.size();
+	m_iboSize = (uint)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboId);
@@ -121,7 +122,7 @@ void Piece::buildModel()
 		8, 9, 10, 8, 10, 11
 	});
 
-	m_iboSizeCross = indices.size();
+	m_iboSizeCross = (uint)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboIdCross);

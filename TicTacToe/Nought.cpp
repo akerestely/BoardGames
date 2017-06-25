@@ -1,9 +1,10 @@
 #include "Engine/BaseTypes.h"
-#include "glm/glm.hpp"
+#include "glm.hpp"
 #include "Nought.h"
 
 #include <vector>
-#include "gl/glew.h"
+#include "gtc/matrix_transform.hpp"
+#include "glew.h"
 
 #include "Engine/GLSLProgram.h"
 #include "Engine/Camera2D.h"

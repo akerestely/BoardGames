@@ -1,8 +1,9 @@
 #include "Engine/BaseTypes.h"
-#include "glm/glm.hpp"
+#include "glm.hpp"
 #include "ChungToiBoard.h"
 
-#include "gl/glew.h"
+#include "glew.h"
+#include "gtc/matrix_transform.hpp"
 #include <vector>
 
 #include "Engine/GLSLProgram.h"
@@ -77,7 +78,7 @@ void ChungToiBoard::buildModel()
 		16, 17, 18, 16, 18, 19,
 		20, 21, 22, 20, 22, 23,
 	});
-	m_iboSize = indices.size();
+	m_iboSize = (uint)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboId);
