@@ -21,7 +21,7 @@ void Game::onInit()
  	m_inputManager.Register(Engine::EventType::ButtonUp, std::bind(&Game::onKeyUp, this, _1));
  	m_inputManager.Register(Engine::EventType::MouseMotion, std::bind(&Game::onMouseMove, this, _1));
 
-	m_camera.Init(m_screenWidth, m_screenHeight);
+	m_camera.Init(m_screenSize.width, m_screenSize.height);
 	m_judger.InitGame(getPlayer(IState::Winner::FirstPlayer), getPlayer(IState::Winner::SecondPlayer), getStartingState());
 	m_boardConfig = getBoardConfiguration();
 	m_boardConfig->Init();

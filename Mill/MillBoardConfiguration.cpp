@@ -15,7 +15,7 @@ void MillBoardConfiguration::Init()
 	const glm::vec2 kRef(-180, 180);
 	const float kWidth = 60;
 	rectf box;
-	box.Set(0, 0, kWidth, kWidth);
+	box.Set(posf{ 0, 0 }, sizef{ kWidth, kWidth });
 	const uint kLayers = 3;
 	for (uint iLayer = kLayers; iLayer > 0; --iLayer)
 	{

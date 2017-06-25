@@ -67,7 +67,7 @@ void Nought::buildModel()
 		indices.push_back(slices + i);
 	}
 
-	iboSize = indices.size();
+	iboSize = (uint)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &vboId);

@@ -64,7 +64,7 @@ void TicTacToeBoard::buildModel()
 		8, 9, 10, 8, 10, 11,
 		12, 13, 14, 12, 14, 15,
 	});
-	iboSize = indices.size();
+	iboSize = (uint)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &vboId);

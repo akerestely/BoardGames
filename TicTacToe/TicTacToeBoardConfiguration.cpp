@@ -14,7 +14,7 @@ void TicTacToeBoardConfig::Init()
 
 	m_boardTiles.reserve(9);
 	rectf box;
-	box.Set(0, 0, kTileWidth, kTileWidth);
+	box.Set(posf{ 0, 0 }, sizef{ kTileWidth, kTileWidth });
 	for (int i = -1; i <= 1; ++i)
 		for (int j = -1; j <= 1; ++j)
 			m_boardTiles.emplace_back(box.CenterOn(kDistBetweenTilesCenter * j, -kDistBetweenTilesCenter * i), Position(i + 1, j + 1));
