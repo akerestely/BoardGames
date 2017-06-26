@@ -6,6 +6,13 @@
 #include "Board.h"
 #include "Judger.h"
 
+namespace Engine
+{
+	class SpriteBatch;
+	class SpriteFont;
+	class GLSLProgram;
+}
+
 struct IRenderable;
 struct IPlayer;
 struct IState;
@@ -15,6 +22,7 @@ class Game : public Engine::IGame
 {
 public:
 	Game();
+	~Game();
 
 protected:
 	virtual void onKeyDown(void *pkey);
@@ -39,6 +47,8 @@ private:
 
 	void processInput();
 	bool canUpdate();
+	void updateHud();
+	void renderHud();
 
 private:
 	Engine::Camera2D m_camera;
@@ -53,5 +63,11 @@ private:
 	uint m_delayNextTurn = 0;	//ms
 
 	Position m_clickedTilePosIndex;
+
+	std::unique_ptr<Engine::SpriteBatch> m_fontSpriteBatchPtr;
+	std::unique_ptr<Engine::SpriteFont> m_fontsSpritePtr;
+	std::shared_ptr<Engine::GLSLProgram> m_textureProgramPtr;
+	glm::vec2 m_defaultFontScale;
+	Engine::Camera2D m_hudCamera;
 };
 

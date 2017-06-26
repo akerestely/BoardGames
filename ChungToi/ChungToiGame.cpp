@@ -11,7 +11,7 @@
 
 ChungToiGame::ChungToiGame()
 {
-	m_windowTitle = "ChungToiGame";
+	m_windowTitle = "Chung Toi";
 }
 
 void ChungToiGame::onInitRendering()
@@ -98,7 +98,7 @@ void ChungToiGame::onKeyUp(void *pkey)
 void ChungToiGame::initShaders()
 {
 	m_simpleProgram = std::make_shared<Engine::GLSLProgram>();
-	m_simpleProgram->CompileShaders("Shaders/simpleShading.vert", "Shaders/simpleShading.frag");
+	m_simpleProgram->CompileShaders("../Resources/Shaders/simpleShading.vert", "../Resources/Shaders/simpleShading.frag");
 	m_simpleProgram->AddAttribute("vertexPosition");
 	m_simpleProgram->LinkShader();
 }

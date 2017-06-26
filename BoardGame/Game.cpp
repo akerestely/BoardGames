@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "Engine/Engine.h"
 #include "Engine/GLSLProgram.h"
+#include "Engine/SpriteBatch.h"
+#include "Engine/SpriteFont.h"
 
 #include "IRenderable.h"
 #include "AbstractHumanPlayer.h"
@@ -11,8 +13,31 @@ Game::Game() : IGame()
 {
 }
 
+Game::~Game()
+{
+
+}
+
 void Game::onInit()
 {
+	m_fontSpriteBatchPtr = std::make_unique<Engine::SpriteBatch>();
+	m_fontSpriteBatchPtr->Init();
+
+	uint kFontRealSize = 64;
+	m_defaultFontScale = { 2.f / m_screenSize.width, 1.5f / m_screenSize.height };
+	m_fontsSpritePtr = std::make_unique<Engine::SpriteFont>("../Resources/Fonts/fast99.ttf", kFontRealSize);
+
+	m_textureProgramPtr = std::make_shared<Engine::GLSLProgram>();
+	m_textureProgramPtr->CompileShaders("../Resources/../Resources/Shaders/textureShading.vert", "../Resources/../Resources/Shaders/textureShading.frag");
+	m_textureProgramPtr->AddAttribute("vertexPosition");
+	m_textureProgramPtr->AddAttribute("vertexColor");
+	m_textureProgramPtr->AddAttribute("vertexUV");
+	m_textureProgramPtr->LinkShader();
+
+	m_hudCamera.SetScale({ m_screenSize.width/2, m_screenSize.height/2 });
+	m_hudCamera.Init(m_screenSize.width, m_screenSize.height);
+
+
 	onInitRendering();
 
 	using namespace std::placeholders;
@@ -47,6 +72,7 @@ void Game::onUpdate()
 			onTurnBegining(crtPlayer, crtState);
 			if (m_judger.PlayTurn())
 			{
+				updateHud();
 				m_boardConfig->Update(m_judger.GetCurrentState());
 				onTurnEnding(crtPlayer, crtState);
 			}
@@ -70,6 +96,8 @@ void Game::onRender()
 {
 	getBoard()->Render(m_camera);
 	m_boardConfig->Render(m_camera);
+
+	renderHud();
 }
 
 void Game::onDestroy()
@@ -98,6 +126,28 @@ void Game::processInput()
 bool Game::canUpdate()
 {
 	return !m_bPausedManually && !m_bPausedAutomatically;
+}
+
+void Game::updateHud()
+{
+	char buffer[256];
+	static int counter = 0;
+	//sprintf(buffer, "Turn: %d", counter++);
+
+	m_fontSpriteBatchPtr->Begin();
+	m_fontsSpritePtr->Draw(*m_fontSpriteBatchPtr, m_windowTitle.c_str(), glm::vec2(0, 0.7), m_defaultFontScale, 0, Engine::ColorRGBA8(85, 107, 47,255), Engine::Justification::Middle);
+	m_fontSpriteBatchPtr->End();
+}
+
+void Game::renderHud()
+{
+	m_textureProgramPtr->Use();
+	m_textureProgramPtr->UploadUniform("mySampler", 0);
+	m_textureProgramPtr->UploadUniform("P", m_hudCamera.GetCameraMatrix());
+
+	m_fontSpriteBatchPtr->RenderBatches();
+
+	m_textureProgramPtr->UnUse();
 }
 
 void Game::onKeyDown(void *pkey)
