@@ -13,6 +13,8 @@ namespace Engine
 	class GLSLProgram;
 }
 
+class Graph;
+
 struct IRenderable;
 struct IPlayer;
 struct IState;
@@ -45,10 +47,18 @@ private:
 	virtual void onTurnEnding(std::shared_ptr<IPlayer> crtPlayer, std::shared_ptr<IState> crtState) {};
 	virtual void onRoundEnded(const Judger &judger) {};
 
+	void initShaders();
+	void loadSettings();
 	void processInput();
 	bool canUpdate();
 	void updateHud();
 	void renderHud();
+
+protected:
+	std::shared_ptr<Engine::GLSLProgram> m_simpleProgramPtr;
+	std::shared_ptr<Engine::GLSLProgram> m_textureProgramPtr;
+	float m_scoreHeight = 0.4f;
+	std::map<std::string, std::string> m_settings;
 
 private:
 	Engine::Camera2D m_camera;
@@ -64,10 +74,19 @@ private:
 
 	Position m_clickedTilePosIndex;
 
-	std::unique_ptr<Engine::SpriteBatch> m_fontSpriteBatchPtr;
 	std::unique_ptr<Engine::SpriteFont> m_fontsSpritePtr;
-	std::shared_ptr<Engine::GLSLProgram> m_textureProgramPtr;
+	std::unique_ptr<Engine::SpriteBatch> m_hudFontSpriteBatchPtr;
 	glm::vec2 m_defaultFontScale;
 	Engine::Camera2D m_hudCamera;
+
+	bool m_bShowGraph = false;
+	std::unique_ptr<Graph> m_graph;
+
+	// player 1 perspective
+	uint m_gamesWon = 0;
+	uint m_gamesLost = 0;
+	uint m_gamesTotal = 0;
+	std::vector<float> m_winingsStats;
+	std::vector<float> m_loosingStats;
 };
 

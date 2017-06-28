@@ -24,8 +24,6 @@ private:
 	virtual void onRoundEnded(const Judger &judger) override;
 	virtual void onDestroy() override;
 
-	void initShaders();
-
 private:
 	std::shared_ptr<Player> m_player1;
 	std::shared_ptr<Player> m_player2;
@@ -34,6 +32,5 @@ private:
 	std::shared_ptr<IRenderable> m_cross;
 	std::shared_ptr<IRenderable> m_nought;
 	std::shared_ptr<TicTacToeBoard> m_board;
-	std::shared_ptr<Engine::GLSLProgram> m_simpleProgram;
 };
 

@@ -8,6 +8,7 @@
 
 Player::Player(IState::Winner symbol) :
 	m_symbol(symbol),
+	m_policyDb("policy_"),
 	m_randomEngine(m_randomDevice())
 {
 }
@@ -62,7 +63,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 
 void Player::FeedReward(IState::Winner winner)
 {
-	if (!m_prevState)
+	if (!m_bCollectFeedback || !m_prevState)
 		return;
 
 	float target = 0.0f;
@@ -87,13 +88,32 @@ void Player::FeedReward(IState::Winner winner)
 	++m_nGamesPlayed;
 }
 
-void Player::SavePolicy(std::string fileName /*= "policy_"*/)
+void Player::SetLearningRate(float learningRate)
+{
+	m_stepSize = learningRate;
+}
+
+void Player::SetExploreRate(float exploreRate)
+{
+	m_exploreRate = exploreRate;
+}
+
+void Player::SetPolicy(const std::string &fileName)
+{
+	m_policyDb = fileName;
+}
+
+void Player::SetCollectFeedback(bool value)
+{
+	m_bCollectFeedback = value;
+}
+
+void Player::SavePolicy()
 {
 	if (m_nGamesPlayed == 0)
 		return;
 
-	fileName += std::to_string(int(m_symbol));
-	std::ofstream out(fileName);
+	std::ofstream out(m_policyDb + std::to_string(int(m_symbol)));
 
 	out << m_nGamesPlayed << ' ' << m_nGamesWon << ' ' << m_nGamesLost << '\n';
 
@@ -102,10 +122,9 @@ void Player::SavePolicy(std::string fileName /*= "policy_"*/)
 			out << pair.first << ' ' << pair.second << std::endl;
 }
 
-void Player::LoadPolicy(std::string fileName /*= "policy_"*/)
+void Player::LoadPolicy()
 {
-	fileName += std::to_string(int(m_symbol));
-	std::ifstream in(fileName);
+	std::ifstream in(m_policyDb + std::to_string(int(m_symbol)));
 	if (in.fail())
 		return;
 

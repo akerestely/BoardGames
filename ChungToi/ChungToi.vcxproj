@@ -178,10 +178,6 @@
     <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="Piece.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\simpleShading.frag" />
-    <None Include="Shaders\simpleShading.vert" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -172,10 +172,6 @@
     <ClCompile Include="TicTacToeState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\simpleShading.frag" />
-    <None Include="Shaders\simpleShading.vert" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="TicTacToeBoard.h" />
     <ClInclude Include="Cross.h" />

@@ -27,8 +27,6 @@ private:
 	virtual void onRoundEnded(const Judger &judger) override;
 	virtual void onDestroy() override;
 
-	void initShaders();
-
 private:
 	std::shared_ptr<Player> m_player1;
 	std::shared_ptr<Player> m_player2;
@@ -38,5 +36,4 @@ private:
 	std::shared_ptr<Piece> m_white;
 	std::shared_ptr<Piece> m_red;
 	std::shared_ptr<MillBoard> m_board;
-	std::shared_ptr<Engine::GLSLProgram> m_simpleProgram;
 };

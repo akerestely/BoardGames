@@ -8,6 +8,7 @@
 #include "ChungToiBoardConfiguration.h"
 #include "HumanPlayer.h"
 #include "Piece.h"
+#include <string>
 
 ChungToiGame::ChungToiGame()
 {
@@ -16,15 +17,13 @@ ChungToiGame::ChungToiGame()
 
 void ChungToiGame::onInitRendering()
 {
-	initShaders();
-
 	m_board = std::make_shared<ChungToiBoard>();
-	m_board->Init(m_simpleProgram);
+	m_board->Init(m_simpleProgramPtr);
 
 	for (auto &piece : m_pieces)
 	{
 		piece = std::make_shared<Piece>();
-		piece->Init(m_simpleProgram);
+		piece->Init(m_simpleProgramPtr);
 	}
 	m_pieces[0]->SetColor(Piece::Color::White);
 	m_pieces[0]->SetOrientation(Piece::Orientation::Cardinal);
@@ -36,9 +35,34 @@ void ChungToiGame::onInitRendering()
 	m_pieces[3]->SetOrientation(Piece::Orientation::Diagonal);
 
 	m_player1 = std::make_shared<Player>(IState::Winner::FirstPlayer);
-	m_player1->LoadPolicy();
+	if (m_settings["player1"] == "RL")
+	{
+		if (m_settings.find("RL1_explore_rate") != m_settings.end())
+			m_player1->SetExploreRate(std::stof(m_settings["RL1_explore_rate"]));
+		if (m_settings.find("RL1_learning_rate") != m_settings.end())
+			m_player1->SetLearningRate(std::stof(m_settings["RL1_learning_rate"]));
+		if (m_settings.find("RL1_policy_db") != m_settings.end())
+			m_player1->SetPolicy(m_settings["RL1_policy_db"]);
+		if (m_settings.find("RL1_collect_feedback") != m_settings.end())
+			m_player1->SetCollectFeedback(m_settings["RL1_collect_feedback"] == "true");
+
+		m_player1->LoadPolicy();
+	}
+
 	m_player2 = std::make_shared<Player>(IState::Winner::SecondPlayer);
-	m_player2->LoadPolicy();
+	if (m_settings["player2"] == "RL")
+	{
+		if (m_settings.find("RL2_explore_rate") != m_settings.end())
+			m_player2->SetExploreRate(std::stof(m_settings["RL2_explore_rate"]));
+		if (m_settings.find("RL2_learning_rate") != m_settings.end())
+			m_player2->SetLearningRate(std::stof(m_settings["RL2_learning_rate"]));
+		if (m_settings.find("RL2_policy_db") != m_settings.end())
+			m_player2->SetPolicy(m_settings["RL2_policy_db"]);
+		if (m_settings.find("RL2_collect_feedback") != m_settings.end())
+			m_player2->SetCollectFeedback(m_settings["RL2_collect_feedback"] == "true");
+
+		m_player2->LoadPolicy();
+	}
 
 	m_humanPlayer1 = std::make_shared<HumanPlayer>(IState::Winner::FirstPlayer);
 	m_humanPlayer2 = std::make_shared<HumanPlayer>(IState::Winner::SecondPlayer);
@@ -53,10 +77,19 @@ std::shared_ptr<IPlayer> ChungToiGame::getPlayer(IState::Winner type)
 {
 	switch (type)
 	{
-	case IState::Winner::FirstPlayer:	return m_player1;
-	case IState::Winner::SecondPlayer:	return m_humanPlayer2;
+	case IState::Winner::FirstPlayer:
+		if (m_settings["player1"] != "RL")
+			return m_humanPlayer1;
+		else
+			return m_player1;
+	case IState::Winner::SecondPlayer:
+		if (m_settings["player2"] != "RL")
+			return m_humanPlayer2;
+		else
+			return m_player2;
 
-	default:							return std::shared_ptr<IPlayer>();
+	default:
+		return std::shared_ptr<IPlayer>();
 	}
 }
 
@@ -93,12 +126,4 @@ void ChungToiGame::onKeyUp(void *pkey)
 		m_humanPlayer1->BufferRotation();
 		m_humanPlayer2->BufferRotation();
 	}
-}
-
-void ChungToiGame::initShaders()
-{
-	m_simpleProgram = std::make_shared<Engine::GLSLProgram>();
-	m_simpleProgram->CompileShaders("../Resources/Shaders/simpleShading.vert", "../Resources/Shaders/simpleShading.frag");
-	m_simpleProgram->AddAttribute("vertexPosition");
-	m_simpleProgram->LinkShader();
 }

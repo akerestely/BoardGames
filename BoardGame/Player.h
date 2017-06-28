@@ -13,9 +13,13 @@ public:
 
 	virtual void FeedReward(IState::Winner winner);
 
-	void SavePolicy(std::string fileName = "policy_");
+	void SetLearningRate(float learningRate);
+	void SetExploreRate(float exploreRate);
+	void SetPolicy(const std::string &fileName);
+	void SetCollectFeedback(bool value);
 
-	void LoadPolicy(std::string fileName = "policy_");
+	void SavePolicy();
+	void LoadPolicy();
 
 private:
 	using TEstimation = float;
@@ -36,8 +40,10 @@ private:
 	std::shared_ptr<IState> m_prevState;
 
 	// RL parameters
-	const float m_stepSize = 0.1f;		// influences the rate of learning
-	const float m_exploreRate = 0.1f;
+	bool m_bCollectFeedback = true;
+	float m_stepSize = 0.1f;		// influences the rate of learning
+	float m_exploreRate = 0.1f;
+	std::string m_policyDb;
 
 	std::random_device m_randomDevice;
 	std::mt19937 m_randomEngine;

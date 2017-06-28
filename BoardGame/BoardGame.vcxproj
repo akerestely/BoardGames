@@ -23,6 +23,7 @@
     <ClInclude Include="AbstractBoardConfiguration.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="AbstractHumanPlayer.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="IBoardConfiguration.h" />
     <ClInclude Include="InfInt.h" />
     <ClInclude Include="IPlayer.h" />
@@ -35,6 +36,7 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="AbstractHumanPlayer.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Judger.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
@@ -118,7 +120,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\gl;$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,7 +133,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\gl;$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,7 +148,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\gl;$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,7 +165,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\ExternalDependencies\include\gl;$(SolutionDir)Engine\ExternalDependencies\include\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

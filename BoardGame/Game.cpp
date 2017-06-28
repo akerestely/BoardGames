@@ -1,10 +1,13 @@
 #include "Game.h"
+
+#include <fstream>
+
 #include "Engine/Engine.h"
 #include "Engine/GLSLProgram.h"
 #include "Engine/SpriteBatch.h"
 #include "Engine/SpriteFont.h"
 
-#include "IRenderable.h"
+#include "Graph.h"
 #include "AbstractHumanPlayer.h"
 #include "IBoardConfiguration.h"
 #include "State.h"
@@ -20,23 +23,28 @@ Game::~Game()
 
 void Game::onInit()
 {
-	m_fontSpriteBatchPtr = std::make_unique<Engine::SpriteBatch>();
-	m_fontSpriteBatchPtr->Init();
+	initShaders();
+	loadSettings();
+
+	m_hudFontSpriteBatchPtr = std::make_unique<Engine::SpriteBatch>();
+	m_hudFontSpriteBatchPtr->Init();
 
 	uint kFontRealSize = 64;
 	m_defaultFontScale = { 2.f / m_screenSize.width, 1.5f / m_screenSize.height };
 	m_fontsSpritePtr = std::make_unique<Engine::SpriteFont>("../Resources/Fonts/fast99.ttf", kFontRealSize);
 
-	m_textureProgramPtr = std::make_shared<Engine::GLSLProgram>();
-	m_textureProgramPtr->CompileShaders("../Resources/../Resources/Shaders/textureShading.vert", "../Resources/../Resources/Shaders/textureShading.frag");
-	m_textureProgramPtr->AddAttribute("vertexPosition");
-	m_textureProgramPtr->AddAttribute("vertexColor");
-	m_textureProgramPtr->AddAttribute("vertexUV");
-	m_textureProgramPtr->LinkShader();
-
 	m_hudCamera.SetScale({ m_screenSize.width/2, m_screenSize.height/2 });
 	m_hudCamera.Init(m_screenSize.width, m_screenSize.height);
 
+	m_graph = std::make_unique<Graph>();
+	m_graph->Init(m_simpleProgramPtr);
+
+	if (m_bShowGraph)
+		m_camera.SetPosition({ -m_screenSize.width / 4.f,0 });
+	else
+		m_camera.SetPosition({});
+
+	updateHud();
 
 	onInitRendering();
 
@@ -72,7 +80,6 @@ void Game::onUpdate()
 			onTurnBegining(crtPlayer, crtState);
 			if (m_judger.PlayTurn())
 			{
-				updateHud();
 				m_boardConfig->Update(m_judger.GetCurrentState());
 				onTurnEnding(crtPlayer, crtState);
 			}
@@ -83,6 +90,17 @@ void Game::onUpdate()
 				if (dynamic_cast<AbstractHumanPlayer*>(getPlayer(IState::Winner::FirstPlayer).get()) ||
 					dynamic_cast<AbstractHumanPlayer*>(getPlayer(IState::Winner::SecondPlayer).get()))
 					m_bPausedAutomatically = true;
+
+				if (m_judger.GetWinner() == IState::Winner::FirstPlayer)
+					++m_gamesWon;
+				else if(m_judger.GetWinner() == IState::Winner::SecondPlayer)
+					++m_gamesLost;
+
+				++m_gamesTotal;
+
+				m_winingsStats.emplace_back(float(m_gamesWon) / m_gamesTotal);
+				m_loosingStats.emplace_back(float(m_gamesLost) / m_gamesTotal);
+				updateHud();
 
 				onRoundEnded(m_judger);
 			}
@@ -102,6 +120,34 @@ void Game::onRender()
 
 void Game::onDestroy()
 {
+}
+
+void Game::initShaders()
+{
+	m_simpleProgramPtr = std::make_shared<Engine::GLSLProgram>();
+	m_simpleProgramPtr->CompileShaders("../Resources/Shaders/simpleShading.vert", "../Resources/Shaders/simpleShading.frag");
+	m_simpleProgramPtr->AddAttribute("vertexPosition");
+	m_simpleProgramPtr->LinkShader();
+
+	m_textureProgramPtr = std::make_shared<Engine::GLSLProgram>();
+	m_textureProgramPtr->CompileShaders("../Resources/../Resources/Shaders/textureShading.vert", "../Resources/../Resources/Shaders/textureShading.frag");
+	m_textureProgramPtr->AddAttribute("vertexPosition");
+	m_textureProgramPtr->AddAttribute("vertexColor");
+	m_textureProgramPtr->AddAttribute("vertexUV");
+	m_textureProgramPtr->LinkShader();
+}
+
+void Game::loadSettings()
+{
+	std::ifstream in("settings.ini");
+	char key[100], equal[100], value[100];
+	while (!in.fail() && !in.eof())
+	{
+		in >> key >> equal >> value;
+		if (strlen(key) == 0 || strchr(key, '#') || equal[0] != '=')
+			continue;
+		m_settings[key] = value;
+	}
 }
 
 void Game::processInput()
@@ -131,12 +177,26 @@ bool Game::canUpdate()
 void Game::updateHud()
 {
 	char buffer[256];
-	static int counter = 0;
-	//sprintf(buffer, "Turn: %d", counter++);
 
-	m_fontSpriteBatchPtr->Begin();
-	m_fontsSpritePtr->Draw(*m_fontSpriteBatchPtr, m_windowTitle.c_str(), glm::vec2(0, 0.7), m_defaultFontScale, 0, Engine::ColorRGBA8(85, 107, 47,255), Engine::Justification::Middle);
-	m_fontSpriteBatchPtr->End();
+	m_hudFontSpriteBatchPtr->Begin();
+	m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, m_windowTitle.c_str(), glm::vec2(0, 0.7f), m_defaultFontScale, 0.f, Engine::ColorRGBA8(85, 47, 107), Engine::Justification::Middle);
+	glm::vec2 scorePos(0, m_scoreHeight);
+	if (m_bShowGraph)
+	{
+		scorePos.x = 0.5;
+		sprintf(buffer, "%d%%", 100);
+		m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, glm::vec2(-0.8, 0.45f), m_defaultFontScale * 0.5f, 0.f, Engine::ColorRGBA8(0, 0, 0), Engine::Justification::Middle);
+		sprintf(buffer, "%d", 0);
+		m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, glm::vec2(-0.8, -0.55f), m_defaultFontScale * 0.5f, 0.f, Engine::ColorRGBA8(0, 0, 0), Engine::Justification::Right);
+		sprintf(buffer, "%d", m_gamesTotal);
+		m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, glm::vec2(-0.075, -0.55f), m_defaultFontScale * 0.5f, 0.f, Engine::ColorRGBA8(0, 0, 0), Engine::Justification::Right);
+	}
+	sprintf(buffer, "%d : %d", m_gamesWon, m_gamesLost);
+	m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, scorePos, m_defaultFontScale, 0.f, Engine::ColorRGBA8(255, 127, 80), Engine::Justification::Middle);
+	m_hudFontSpriteBatchPtr->End();
+
+	if(m_bShowGraph)
+		m_graph->SetValues(m_winingsStats, m_loosingStats);
 }
 
 void Game::renderHud()
@@ -144,10 +204,11 @@ void Game::renderHud()
 	m_textureProgramPtr->Use();
 	m_textureProgramPtr->UploadUniform("mySampler", 0);
 	m_textureProgramPtr->UploadUniform("P", m_hudCamera.GetCameraMatrix());
-
-	m_fontSpriteBatchPtr->RenderBatches();
-
+	m_hudFontSpriteBatchPtr->RenderBatches();
 	m_textureProgramPtr->UnUse();
+
+	if (m_bShowGraph)
+		m_graph->Render(m_hudCamera);
 }
 
 void Game::onKeyDown(void *pkey)
@@ -196,6 +257,7 @@ void Game::onKeyUp(void *pkey)
 	switch (key)
 	{
 	case Engine::Key::LeftMouseButton:
+	{
 		glm::vec2 wordPos = m_camera.ConvertScreenToWorld(m_inputManager.GetMouseCoords());
 
 		AbstractHumanPlayer *pPlayer = dynamic_cast<AbstractHumanPlayer*>(m_judger.GetCurrentPlayer().get());
@@ -207,12 +269,22 @@ void Game::onKeyUp(void *pkey)
 				if (m_clickedTilePosIndex == releaseTilePosIndex)
 					pPlayer->BufferAction(releaseTilePosIndex);
 				else
-					if(!m_clickedTilePosIndex.Invalid())
+					if (!m_clickedTilePosIndex.Invalid())
 						pPlayer->BufferAction(m_clickedTilePosIndex, releaseTilePosIndex);
 			}
 
 			m_clickedTilePosIndex = Position();
 		}
+	}
+		break;
+	case Engine::Key::F2:
+		m_bShowGraph = !m_bShowGraph;
+		if (m_bShowGraph)
+			m_camera.SetPosition({ -m_screenSize.width / 4.f,0 });
+		else
+			m_camera.SetPosition({});
+		updateHud();
+		break;
 	}
 }
 

@@ -37,5 +37,4 @@ private:
 
 	std::shared_ptr<ChungToiBoard> m_board;
 	std::shared_ptr<Piece> m_pieces[4];
-	std::shared_ptr<Engine::GLSLProgram> m_simpleProgram;
 };
