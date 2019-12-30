@@ -14,7 +14,7 @@ MillGame::MillGame()
 {
 	m_windowTitle = "Mill";
 	m_screenSize = { 1024, 768 };
-	m_scoreHeight = 0.55;
+	m_scoreHeight = 0.55f;
 }
 
 void MillGame::onInitRendering()

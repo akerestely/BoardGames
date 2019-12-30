@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "glm.hpp"
 #include "ChungToiBoard.h"
 
@@ -66,7 +65,7 @@ void ChungToiBoard::buildModel()
 	vertices.emplace_back(-95, 35);
 
 	//assign triangle indices
-	std::vector<uint> indices;
+	std::vector<uint32_t> indices;
 	indices.insert(indices.begin(), {
 		0, 1, 5, 0, 5, 4,
 		1, 2, 6, 1, 6, 5,
@@ -78,7 +77,7 @@ void ChungToiBoard::buildModel()
 		16, 17, 18, 16, 18, 19,
 		20, 21, 22, 20, 22, 23,
 	});
-	m_iboSize = (uint)indices.size();
+	m_iboSize = (uint32_t)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboId);
@@ -88,6 +87,6 @@ void ChungToiBoard::buildModel()
 
 	glGenBuffers(1, &m_iboId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_iboSize, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * m_iboSize, &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

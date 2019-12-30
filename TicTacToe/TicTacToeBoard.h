@@ -12,7 +12,7 @@ private:
 
 private:
 	std::shared_ptr<Engine::GLSLProgram> program;
-	uint vboId, iboId;
-	uint iboSize;
+	uint32_t vboId, iboId;
+	uint32_t iboSize;
 };
 

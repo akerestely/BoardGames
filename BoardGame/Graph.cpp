@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "Graph.h"
 
 #include <algorithm>
@@ -31,33 +30,33 @@ void Graph::SetValues(const std::vector<float> &values1, const std::vector<float
 	vertices.emplace_back(-0.85f, -0.4f);
 	vertices.emplace_back(-0.1f, -0.4f);
 
-	float sizeX = 0.6 / (values1.size() - 1);
-	for (uint i = 0; i < values1.size(); ++i)
+	float sizeX = 0.6f / (values1.size() - 1);
+	for (uint32_t i = 0; i < values1.size(); ++i)
 	{
 		vertices.emplace_back(-0.75f + i * sizeX, values1[i] * 0.78f - 0.39f);
 	}
-	for (uint i = 0; i < values2.size(); ++i)
+	for (uint32_t i = 0; i < values2.size(); ++i)
 	{
 		vertices.emplace_back(-0.75f + i * sizeX, values2[i] * 0.78f - 0.39f);
 	}
 
 	//assign triangle indices
-	std::vector<uint> indices;
+	std::vector<uint32_t> indices;
 	indices.insert(indices.end(), {
 		0, 1,
 		2, 3
 	});
-	m_nIboSize = (uint)indices.size();
+	m_nIboSize = (uint32_t)indices.size();
 
-	uint lastVal = indices.back() + 1;
-	for (uint i = 1; i < values1.size(); ++i)
+	uint32_t lastVal = indices.back() + 1;
+	for (uint32_t i = 1; i < values1.size(); ++i)
 		indices.insert(indices.end(), { lastVal, ++lastVal });
-	m_nIboSize1 = (uint)indices.size();
+	m_nIboSize1 = (uint32_t)indices.size();
 
 	lastVal = indices.back() + 1;
-	for (uint i = 1; i < values2.size(); ++i)
+	for (uint32_t i = 1; i < values2.size(); ++i)
 		indices.insert(indices.end(), { lastVal, ++lastVal });
-	m_nIboSize2 = (uint)indices.size();
+	m_nIboSize2 = (uint32_t)indices.size();
 
 	//upload to GPU
 	glBindBuffer(GL_ARRAY_BUFFER, m_nVboId);
@@ -65,7 +64,7 @@ void Graph::SetValues(const std::vector<float> &values1, const std::vector<float
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_nIboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_nIboSize2, &indices[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * m_nIboSize2, &indices[0], GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -87,10 +86,10 @@ void Graph::Render(const Engine::Camera2D &camera, const glm::vec2 &position /*=
 
 	glUniform4f(m_program->GetUniformLocation("color"), 34 / 255.f, 139 / 255.f, 34 / 255.f, 1.0f);
 	glLineWidth(3);
-	glDrawElements(GL_LINES, m_nIboSize1 - m_nIboSize, GL_UNSIGNED_INT, (void*)(m_nIboSize * sizeof(uint)));
+	glDrawElements(GL_LINES, m_nIboSize1 - m_nIboSize, GL_UNSIGNED_INT, (void*)(m_nIboSize * sizeof(uint32_t)));
 
 	glUniform4f(m_program->GetUniformLocation("color"), 255 / 255.f, 69 / 255.f, 0 / 255.f, 1.0f);
 	glLineWidth(3);
-	glDrawElements(GL_LINES, m_nIboSize2 - m_nIboSize1, GL_UNSIGNED_INT, (void*)(m_nIboSize1 * sizeof(uint)));
+	glDrawElements(GL_LINES, m_nIboSize2 - m_nIboSize1, GL_UNSIGNED_INT, (void*)(m_nIboSize1 * sizeof(uint32_t)));
 	m_program->UnUse();
 }

@@ -8,8 +8,8 @@ class AbstractBoardConfiguration : public IBoardConfiguration
 	{
 		const State<TChessman>* pState = static_cast<State<TChessman>*>(state.get());
 		auto &board = pState->GetBoard();
-		for (uint i = 0; i < board.Rows(); ++i)
-			for (uint j = 0; j < board.Cols(); ++j)
+		for (uint32_t i = 0; i < board.Rows(); ++i)
+			for (uint32_t j = 0; j < board.Cols(); ++j)
 			{
 				BoardTile *pBoard = nullptr;
 				Position searchedPosition = { i, j };

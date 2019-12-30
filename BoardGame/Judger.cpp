@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "Judger.h"
 
 Judger::Judger(bool checkRepeatingRounds /*= true*/) :
@@ -75,14 +74,14 @@ const std::shared_ptr<IState>& Judger::GetCurrentState() const
 
 bool Judger::areLastRoundsRepeating()
 {
-	const uint kMinRequiredLastStates = 9;
-	const uint kFirstStageStates = 6;
+	const uint32_t kMinRequiredLastStates = 9;
+	const uint32_t kFirstStageStates = 6;
 	if (m_lastStatesHashes.size() >= kFirstStageStates + kMinRequiredLastStates)
 	{
-		const uint step = 4;
-		uint statesCount = (uint)m_lastStatesHashes.size() - kFirstStageStates;
-		uint appearanceCount = 1;
-		for (uint i = step; i < statesCount; i += step)
+		const uint32_t step = 4;
+		uint32_t statesCount = (uint32_t)m_lastStatesHashes.size() - kFirstStageStates;
+		uint32_t appearanceCount = 1;
+		for (uint32_t i = step; i < statesCount; i += step)
 		{
 			if (m_lastStatesHashes[i] == m_lastStatesHashes.front())
 			{

@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "ChungToiState.h"
 
 #include <assert.h>
@@ -22,21 +21,21 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 		chessmans[1] = ChungToiChessmans::RedDiagonal;
 	}
 
-	uint n = m_board.Rows();
-	uint m = m_board.Cols();
+	uint32_t n = m_board.Rows();
+	uint32_t m = m_board.Cols();
 
 	if (NextPlayerHasChessmans())
 	{
-		for (uint i = 0; i < n; ++i)
-			for (uint j = 0; j < m; ++j)
+		for (uint32_t i = 0; i < n; ++i)
+			for (uint32_t j = 0; j < m; ++j)
 				if (m_board[i][j] == ChungToiChessmans::None)
 					for (auto &chessman : chessmans)
 						states.push_back(GetNextState(Position(i, j), chessman));
 	}
 	else
 	{
-		for (uint i = 0; i < n; ++i)
-			for (uint j = 0; j < m; ++j)
+		for (uint32_t i = 0; i < n; ++i)
+			for (uint32_t j = 0; j < m; ++j)
 				if (m_nextPlayer == getChessmanPlayer(m_board[i][j]))
 				{
 					Position crtPos = { i, j };
@@ -86,11 +85,11 @@ void ChungToiState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &
 
 bool ChungToiState::NextPlayerHasChessmans() const
 {
-	uint sum = 0;
-	uint n = m_board.Rows();
-	uint m = m_board.Cols();
-	for (uint i = 0; i < n; ++i)
-		for (uint j = 0; j < m; ++j)
+	uint32_t sum = 0;
+	uint32_t n = m_board.Rows();
+	uint32_t m = m_board.Cols();
+	for (uint32_t i = 0; i < n; ++i)
+		for (uint32_t j = 0; j < m; ++j)
 			if (m_nextPlayer == getChessmanPlayer(m_board[i][j]))
 				++sum;
 
@@ -124,7 +123,7 @@ std::shared_ptr<State<ChungToiChessmans>> ChungToiState::Produce(const State<Chu
 	return std::make_shared<ChungToiState>(static_cast<const ChungToiState&>(fromState));
 }
 
-uint ChungToiState::getChessmanValue(ChungToiChessmans chessman)
+uint32_t ChungToiState::getChessmanValue(ChungToiChessmans chessman)
 {
 	switch (chessman)
 	{
@@ -150,11 +149,11 @@ void ChungToiState::computeEnd()
 	std::vector<int> results(8, 0);
 
 	// check rows, cols, and diagonals
-	uint n = m_board.Rows();
-	uint m = m_board.Cols();
-	for (uint i = 0; i < n; ++i)
+	uint32_t n = m_board.Rows();
+	uint32_t m = m_board.Cols();
+	for (uint32_t i = 0; i < n; ++i)
 	{
-		for (uint j = 0; j < m; ++j)
+		for (uint32_t j = 0; j < m; ++j)
 		{
 			int sumVal = 0;
 			switch (m_board[i][j])

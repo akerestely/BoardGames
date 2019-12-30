@@ -1,10 +1,9 @@
-#include "Engine/BaseTypes.h"
 #include "Player.h"
 
 #include <algorithm>
 #include <string>
 #include <fstream>
-#include <xfunctional>
+#include <functional>
 
 Player::Player(IState::Winner symbol) :
 	m_symbol(symbol),
@@ -20,7 +19,7 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 	std::binomial_distribution<> binDist(1, m_exploreRate);
 	if (binDist(m_randomEngine))
 	{
-		std::uniform_int_distribution<uint> uniformDist(0, (uint)m_possibleNextStates.size() - 1);
+		std::uniform_int_distribution<uint32_t> uniformDist(0, (uint32_t)m_possibleNextStates.size() - 1);
 		nextState = m_possibleNextStates[uniformDist(m_randomEngine)];
 	}
 	else
@@ -32,8 +31,8 @@ std::shared_ptr<IState> Player::TakeAction(const std::shared_ptr<IState> &crtSta
 				sorted.insert(std::make_pair(getEstimation(state), state));
 
 			auto bounds = sorted.equal_range(sorted.begin()->first);
-			uint count = (uint)std::distance(bounds.first, bounds.second);
-			std::uniform_int_distribution<uint> uniformDist(0, count - 1);
+			uint32_t count = (uint32_t)std::distance(bounds.first, bounds.second);
+			std::uniform_int_distribution<uint32_t> uniformDist(0, count - 1);
 			std::advance(bounds.first, uniformDist(m_randomEngine));
 			nextState = bounds.first->second;
 		}

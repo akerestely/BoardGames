@@ -3,11 +3,11 @@
 
 struct Position
 {
-	uint i = -1;
-	uint j = -1;
+	uint32_t i = -1;
+	uint32_t j = -1;
 	
 	Position() = default;
-	Position(uint i, uint j) : i(i), j(j) {}
+	Position(uint32_t i, uint32_t j) : i(i), j(j) {}
 
 	bool operator == (Position &other) const
 	{
@@ -25,20 +25,20 @@ template<class TComponents>
 class Board
 {
 public:
-	Board(uint nRows, uint nCols, TComponents defaultValue) : 
+	Board(uint32_t nRows, uint32_t nCols, TComponents defaultValue) : 
 		nRows(nRows), 
 		nCols(nCols),
 		data(nRows * nCols, defaultValue)
 	{
 	}
 
-	uint Rows() const { return nRows; }
-	uint Cols() const { return nCols; }
-	TComponents* operator [] (uint rowIndex)
+	uint32_t Rows() const { return nRows; }
+	uint32_t Cols() const { return nCols; }
+	TComponents* operator [] (uint32_t rowIndex)
 	{
 		return &data[0] + rowIndex * nCols;
 	}
-	const TComponents* operator [] (uint rowIndex) const
+	const TComponents* operator [] (uint32_t rowIndex) const
 	{
 		return &data[0] + rowIndex * nCols;
 	}
@@ -59,8 +59,8 @@ public:
 	//const std::vector<TComponents>& Data() const { return data; }
 
 private:
-	const uint nRows;
-	const uint nCols;
+	const uint32_t nRows;
+	const uint32_t nCols;
 	std::vector<TComponents> data;
 };
 

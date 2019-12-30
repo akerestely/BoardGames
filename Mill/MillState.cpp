@@ -1,12 +1,11 @@
-#include "Engine/BaseTypes.h"
 #include "MillState.h"
 
 #include <assert.h>
 
-const uint kMaxMills = 16;
-const byte kMaxPieces = 9;
-const byte kMaxLoosablePieces = 6;
-const uint kLayers = 3;
+const uint32_t kMaxMills = 16;
+const uint8_t kMaxPieces = 9;
+const uint8_t kMaxLoosablePieces = 6;
+const uint32_t kLayers = 3;
 
 MillState::MillState() : 
 	State(7, 7, MillChessmans::Skip),
@@ -14,13 +13,13 @@ MillState::MillState() :
 {
 	// setup board
 	Position pos;
-	for (uint iLayer = kLayers; iLayer > 0; --iLayer)
+	for (uint32_t iLayer = kLayers; iLayer > 0; --iLayer)
 	{
-		uint crtLayer = kLayers - iLayer;
-		for (uint i = 0; i < 3; ++i)
+		uint32_t crtLayer = kLayers - iLayer;
+		for (uint32_t i = 0; i < 3; ++i)
 		{
 			pos.i = crtLayer + i * iLayer;
-			for (uint j = 0; j < 3; ++j)
+			for (uint32_t j = 0; j < 3; ++j)
 			{
 				if (i == j && j == 1)
 					continue;
@@ -52,16 +51,16 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 	if (m_bNeedToRemovePiece)
 	{
 		auto &mills = getMills();
-		uint nRows = m_board.Rows();
+		uint32_t nRows = m_board.Rows();
 
 		Position pos;
-		for (uint iLayer = kLayers; iLayer > 0; --iLayer)
+		for (uint32_t iLayer = kLayers; iLayer > 0; --iLayer)
 		{
-			uint crtLayer = kLayers - iLayer;
-			for (uint i = 0; i < 3; ++i)
+			uint32_t crtLayer = kLayers - iLayer;
+			for (uint32_t i = 0; i < 3; ++i)
 			{
 				pos.i = crtLayer + i * iLayer;
-				for (uint j = 0; j < 3; ++j)
+				for (uint32_t j = 0; j < 3; ++j)
 				{
 					if (i == j && j == 1)
 						continue;
@@ -83,13 +82,13 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 	else if (NextPlayerHasChessmans())
 	{
 		Position pos;
-		for (uint iLayer = kLayers; iLayer > 0; --iLayer)
+		for (uint32_t iLayer = kLayers; iLayer > 0; --iLayer)
 		{
-			uint crtLayer = kLayers - iLayer;
-			for (uint i = 0; i < 3; ++i)
+			uint32_t crtLayer = kLayers - iLayer;
+			for (uint32_t i = 0; i < 3; ++i)
 			{
 				pos.i = crtLayer + i * iLayer;
-				for (uint j = 0; j < 3; ++j)
+				for (uint32_t j = 0; j < 3; ++j)
 				{
 					if (i == j && j == 1)
 						continue;
@@ -108,13 +107,13 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 		std::vector<Position> neighbors;
 
 		Position pos;
-		for (uint iLayer = kLayers; iLayer > 0; --iLayer)
+		for (uint32_t iLayer = kLayers; iLayer > 0; --iLayer)
 		{
-			uint crtLayer = kLayers - iLayer;
-			for (uint i = 0; i < 3; ++i)
+			uint32_t crtLayer = kLayers - iLayer;
+			for (uint32_t i = 0; i < 3; ++i)
 			{
 				pos.i = crtLayer + i * iLayer;
-				for (uint j = 0; j < 3; ++j)
+				for (uint32_t j = 0; j < 3; ++j)
 				{
 					if (i == j && j == 1)
 						continue;
@@ -160,13 +159,13 @@ void MillState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> &stat
 		emptyTiles.reserve(6 + getLostPieces(Winner::FirstPlayer) + getLostPieces(Winner::SecondPlayer));
 
 		Position pos;
-		for (uint iLayer = kLayers; iLayer > 0; --iLayer)
+		for (uint32_t iLayer = kLayers; iLayer > 0; --iLayer)
 		{
-			uint crtLayer = kLayers - iLayer;
-			for (uint i = 0; i < 3; ++i)
+			uint32_t crtLayer = kLayers - iLayer;
+			for (uint32_t i = 0; i < 3; ++i)
 			{
 				pos.i = crtLayer + i * iLayer;
-				for (uint j = 0; j < 3; ++j)
+				for (uint32_t j = 0; j < 3; ++j)
 				{
 					if (i == j && j == 1)
 						continue;
@@ -230,7 +229,7 @@ IState::Winner MillState::getCurrentPlayer() const
 	throw "Unhandled case";
 }
 
-byte& MillState::getPlacedPieces(Winner player)
+uint8_t& MillState::getPlacedPieces(Winner player)
 {
 	switch (player)
 	{
@@ -241,7 +240,7 @@ byte& MillState::getPlacedPieces(Winner player)
 	throw "Unhandled case";
 }
 
-byte& MillState::getLostPieces(Winner player)
+uint8_t& MillState::getLostPieces(Winner player)
 {
 	switch (player)
 	{
@@ -252,7 +251,7 @@ byte& MillState::getLostPieces(Winner player)
 	throw "Unhandled case";
 }
 
-byte MillState::getLostPieces(Winner player) const
+uint8_t MillState::getLostPieces(Winner player) const
 {
 	switch (player)
 	{
@@ -268,18 +267,18 @@ const std::vector<IState::Winner>& MillState::getMills() const
 	if (!m_mills.empty())
 		return m_mills;
 
-	const uint n = m_board.Rows();
-	const uint m = m_board.Cols();
+	const uint32_t n = m_board.Rows();
+	const uint32_t m = m_board.Cols();
 
 	int results[kMaxMills] = {};
 	Position pos;
-	for (uint iLayer = kLayers; iLayer > 0; --iLayer)
+	for (uint32_t iLayer = kLayers; iLayer > 0; --iLayer)
 	{
-		uint crtLayer = kLayers - iLayer;
-		for (uint i = 0; i < 3; ++i)
+		uint32_t crtLayer = kLayers - iLayer;
+		for (uint32_t i = 0; i < 3; ++i)
 		{
 			pos.i = crtLayer + i * iLayer;
-			for (uint j = 0; j < 3; ++j)
+			for (uint32_t j = 0; j < 3; ++j)
 			{
 				if (i == j && j == 1)
 					continue;
@@ -318,7 +317,7 @@ bool MillState::needToRemoveEnemyPiece(const IState::Winner crtPlayer) const
 	if (m_previousStateMills.empty())
 		return false;
 
-	for (uint i = 0; i < kMaxMills; ++i)
+	for (uint32_t i = 0; i < kMaxMills; ++i)
 		if (m_mills[i] == crtPlayer && m_previousStateMills[i] != crtPlayer)
 			return true;
 
@@ -374,7 +373,7 @@ std::shared_ptr<State<MillChessmans>> MillState::GetNextState(const Move &move) 
 	return nextState;
 }
 
-uint MillState::getChessmanValue(MillChessmans chessman)
+uint32_t MillState::getChessmanValue(MillChessmans chessman)
 {
 	switch (chessman)
 	{

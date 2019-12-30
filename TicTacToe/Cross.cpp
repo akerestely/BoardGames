@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "glm.hpp"
 #include "Cross.h"
 
@@ -54,12 +53,12 @@ void Cross::buildModel()
 	vertices.emplace_back(-16, 19);
 
 	//assign triangle indices
-	std::vector<uint> indices;
+	std::vector<uint32_t> indices;
 	indices.insert(indices.begin(), {
 		0, 1, 2, 0, 2, 3,
 		4, 5, 6, 4, 6, 7
 	});
-	iboSize = (uint)indices.size();
+	iboSize = (uint32_t)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &vboId);
@@ -69,6 +68,6 @@ void Cross::buildModel()
 
 	glGenBuffers(1, &iboId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * iboSize, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * iboSize, &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

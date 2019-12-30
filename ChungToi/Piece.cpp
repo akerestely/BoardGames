@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "glm.hpp"
 #include "Piece.h"
 
@@ -67,7 +66,7 @@ void Piece::SetColor(Color color)
 void Piece::buildModel()
 {
 	const float PI = 3.141592653589793f;
-	const uint slices = 8;
+	const uint32_t slices = 8;
 	float alpha0 = glm::radians(22.5f);
 	float step = 2 * PI / (slices);
 	const float radius = 20;
@@ -75,19 +74,19 @@ void Piece::buildModel()
 
 	std::vector<glm::vec2> vertices;
 	vertices.reserve(slices * 2);
-	for (uint i = 0; i < slices; ++i)
+	for (uint32_t i = 0; i < slices; ++i)
 		vertices.emplace_back(radius * cos(alpha0 + i * step), radius * sin(alpha0 + i * step));
 
 	//assign triangle indices
-	std::vector<uint> indices;
-	for (uint i = 0; i < slices; ++i)
+	std::vector<uint32_t> indices;
+	for (uint32_t i = 0; i < slices; ++i)
 	{
 		indices.push_back(i);
 		indices.push_back((i + 1) % slices);
 		indices.push_back(0);
 	}
 
-	m_iboSize = (uint)indices.size();
+	m_iboSize = (uint32_t)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboId);
@@ -97,7 +96,7 @@ void Piece::buildModel()
 
 	glGenBuffers(1, &m_iboId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_iboSize, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * m_iboSize, &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	vertices.clear();
@@ -122,7 +121,7 @@ void Piece::buildModel()
 		8, 9, 10, 8, 10, 11
 	});
 
-	m_iboSizeCross = (uint)indices.size();
+	m_iboSizeCross = (uint32_t)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboIdCross);
@@ -132,6 +131,6 @@ void Piece::buildModel()
 
 	glGenBuffers(1, &m_iboIdCross);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboIdCross);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_iboSizeCross, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * m_iboSizeCross, &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

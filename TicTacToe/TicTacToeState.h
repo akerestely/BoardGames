@@ -18,7 +18,7 @@ public:
 
 private:
 	virtual std::shared_ptr<State<TicTacToeChessmans>> Produce(const State<TicTacToeChessmans> &fromState) const override;
-	virtual uint getChessmanValue(TicTacToeChessmans chessman) override;
+	virtual uint32_t getChessmanValue(TicTacToeChessmans chessman) override;
 	virtual void computeEnd() override;
 };
 

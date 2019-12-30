@@ -33,9 +33,9 @@ private:
 private:
 	const IState::Winner m_symbol;
 	TEstimations m_estimations;
-	uint m_nGamesPlayed = 0;
-	uint m_nGamesWon = 0;
-	uint m_nGamesLost = 0;
+	uint32_t m_nGamesPlayed = 0;
+	uint32_t m_nGamesWon = 0;
+	uint32_t m_nGamesLost = 0;
 
 	std::shared_ptr<IState> m_prevState;
 

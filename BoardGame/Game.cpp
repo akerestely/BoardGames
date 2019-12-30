@@ -29,7 +29,7 @@ void Game::onInit()
 	m_hudFontSpriteBatchPtr = std::make_unique<Engine::SpriteBatch>();
 	m_hudFontSpriteBatchPtr->Init();
 
-	uint kFontRealSize = 64;
+	uint32_t kFontRealSize = 64;
 	m_defaultFontScale = { 2.f / m_screenSize.width, 1.5f / m_screenSize.height };
 	m_fontsSpritePtr = std::make_unique<Engine::SpriteFont>("../Resources/Fonts/fast99.ttf", kFontRealSize);
 
@@ -184,14 +184,14 @@ void Game::updateHud()
 	if (m_bShowGraph)
 	{
 		scorePos.x = 0.5;
-		sprintf(buffer, "%d%%", 100);
+		sprintf_s(buffer, "%d%%", 100);
 		m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, glm::vec2(-0.8, 0.45f), m_defaultFontScale * 0.5f, 0.f, Engine::ColorRGBA8(0, 0, 0), Engine::Justification::Middle);
-		sprintf(buffer, "%d", 0);
+		sprintf_s(buffer, "%d", 0);
 		m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, glm::vec2(-0.8, -0.55f), m_defaultFontScale * 0.5f, 0.f, Engine::ColorRGBA8(0, 0, 0), Engine::Justification::Right);
-		sprintf(buffer, "%d", m_gamesTotal);
+		sprintf_s(buffer, "%d", m_gamesTotal);
 		m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, glm::vec2(-0.075, -0.55f), m_defaultFontScale * 0.5f, 0.f, Engine::ColorRGBA8(0, 0, 0), Engine::Justification::Right);
 	}
-	sprintf(buffer, "%d : %d", m_gamesWon, m_gamesLost);
+	sprintf_s(buffer, "%d : %d", m_gamesWon, m_gamesLost);
 	m_fontsSpritePtr->Draw(*m_hudFontSpriteBatchPtr, buffer, scorePos, m_defaultFontScale, 0.f, Engine::ColorRGBA8(255, 127, 80), Engine::Justification::Middle);
 	m_hudFontSpriteBatchPtr->End();
 
@@ -222,7 +222,7 @@ void Game::onKeyDown(void *pkey)
 		return;
 	}
 
-	const uint kDelayIncrement = 25;
+	const uint32_t kDelayIncrement = 25;
 
 	switch (key)
 	{

@@ -32,9 +32,9 @@ private:
 	glm::vec4 m_color;
 
 	std::shared_ptr<Engine::GLSLProgram> m_program;
-	uint m_vboId, m_iboId;
-	uint m_iboSize;
+	uint32_t m_vboId, m_iboId;
+	uint32_t m_iboSize;
 
-	uint m_vboIdCross, m_iboIdCross;
-	uint m_iboSizeCross;
+	uint32_t m_vboIdCross, m_iboIdCross;
+	uint32_t m_iboSizeCross;
 };

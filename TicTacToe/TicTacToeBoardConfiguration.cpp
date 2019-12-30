@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "TicTacToeBoardConfiguration.h"
 
 TicTacToeBoardConfig::TicTacToeBoardConfig(std::shared_ptr<IRenderable> cross, std::shared_ptr<IRenderable> nought) :

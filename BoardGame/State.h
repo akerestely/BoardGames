@@ -2,7 +2,7 @@
 #include "IState.h"
 #include "Board.h"
 
-static const uint kInvalidChessmanValue = -1;
+static const uint32_t kInvalidChessmanValue = -1;
 
 struct Move
 {
@@ -14,7 +14,7 @@ template<class TChessman>
 class State : public IState
 {
 public:
-	State(uint boardRows, uint boardCols, TChessman defaultBoardValues = TChessman::None, bool hashSymmetryDiagonal = true, bool hashSymmetryCardinal = true, bool hashRoatations = true) :
+	State(uint32_t boardRows, uint32_t boardCols, TChessman defaultBoardValues = TChessman::None, bool hashSymmetryDiagonal = true, bool hashSymmetryCardinal = true, bool hashRoatations = true) :
 		m_nextPlayer(Winner::FirstPlayer),
 		m_winner(Winner::None),
 		m_isEnd(false),
@@ -35,18 +35,18 @@ public:
 			m_hash = 0;
 
 			THash crtHash;
-			uint n = m_board.Rows();
-			uint m = m_board.Cols();
-			uint chessmanCount = getChessmanValue(TChessman::Count);
-			uint partialHash;
-			uint partialHashMultiplier = (uint)pow(chessmanCount, m);
+			uint32_t n = m_board.Rows();
+			uint32_t m = m_board.Cols();
+			uint32_t chessmanCount = getChessmanValue(TChessman::Count);
+			uint32_t partialHash;
+			uint32_t partialHashMultiplier = (uint32_t)pow(chessmanCount, m);
 
 			// normal traversal
 			crtHash = 0;
-			for (uint i = 0; i < n; ++i)
+			for (uint32_t i = 0; i < n; ++i)
 			{
 				partialHash = 0;
-				for (uint j = 0; j < m; ++j)
+				for (uint32_t j = 0; j < m; ++j)
 				{
 					auto chessmanVal = getChessmanValue(m_board[i][j]);
 					if (chessmanVal != kInvalidChessmanValue)
@@ -65,10 +65,10 @@ public:
 			{
 				// rotated 90 deg
 				crtHash = 0;
-				for (uint j = m - 1; ~j; --j)
+				for (uint32_t j = m - 1; ~j; --j)
 				{
 					partialHash = 0;
-					for (uint i = 0; i < n; ++i)
+					for (uint32_t i = 0; i < n; ++i)
 					{
 						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
@@ -85,10 +85,10 @@ public:
 
 				// rotated 180 deg
 				crtHash = 0;
-				for (uint i = n - 1; ~i; --i)
+				for (uint32_t i = n - 1; ~i; --i)
 				{
 					partialHash = 0;
-					for (uint j = m - 1; ~j; --j)
+					for (uint32_t j = m - 1; ~j; --j)
 					{
 						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
@@ -105,10 +105,10 @@ public:
 
 				// rotated 270(i.e. -90) deg
 				crtHash = 0;
-				for (uint j = 0; j < m; ++j)
+				for (uint32_t j = 0; j < m; ++j)
 				{
 					partialHash = 0;
-					for (uint i = n - 1; ~i; --i)
+					for (uint32_t i = n - 1; ~i; --i)
 					{
 						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
@@ -128,10 +128,10 @@ public:
 			{
 				// symmetry by vertical axis
 				crtHash = 0;
-				for (uint i = 0; i < n; ++i)
+				for (uint32_t i = 0; i < n; ++i)
 				{
 					partialHash = 0;
-					for (uint j = m - 1; ~j; --j)
+					for (uint32_t j = m - 1; ~j; --j)
 					{
 						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
@@ -148,10 +148,10 @@ public:
 
 				// symmetry by horizontal axis
 				crtHash = 0;
-				for (uint i = n - 1; ~i; --i)
+				for (uint32_t i = n - 1; ~i; --i)
 				{
 					partialHash = 0;
-					for (uint j = 0; j < m; ++j)
+					for (uint32_t j = 0; j < m; ++j)
 					{
 						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
@@ -171,10 +171,10 @@ public:
 			{
 				// symmetry by primary diagonal
 				crtHash = 0;
-				for (uint j = 0; j < m; ++j)
+				for (uint32_t j = 0; j < m; ++j)
 				{
 					partialHash = 0;
-					for (uint i = 0; i < n; ++i)
+					for (uint32_t i = 0; i < n; ++i)
 					{
 						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
@@ -191,10 +191,10 @@ public:
 
 				// symmetry by secondary diagonal
 				crtHash = 0;
-				for (uint j = m - 1; ~j; --j)
+				for (uint32_t j = m - 1; ~j; --j)
 				{
 					partialHash = 0;
-					for (uint i = n - 1; ~i; --i)
+					for (uint32_t i = n - 1; ~i; --i)
 					{
 						auto chessmanVal = getChessmanValue(m_board[i][j]);
 						if (chessmanVal != kInvalidChessmanValue)
@@ -292,7 +292,7 @@ protected:
 	}
 
 private:
-	virtual uint getChessmanValue(TChessman chessman) = 0;
+	virtual uint32_t getChessmanValue(TChessman chessman) = 0;
 	virtual void computeEnd() = 0;
 
 protected:

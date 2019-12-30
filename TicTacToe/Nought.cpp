@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "glm.hpp"
 #include "Nought.h"
 
@@ -43,7 +42,7 @@ void Nought::buildModel()
 {
 	//construct vertex data
 	const float PI = 3.141592653589793f;
-	const uint slices = 40;
+	const uint32_t slices = 40;
 	float step = 2 * PI / (slices);
 	const float radius = 20;
 	const float width = 4;
@@ -56,8 +55,8 @@ void Nought::buildModel()
 		vertices.emplace_back((radius - width) * cos(alpha), (radius - width) * sin(alpha));
 
 	//assign triangle indices
-	std::vector<uint> indices;
-	for (uint i = 0; i < slices; ++i)
+	std::vector<uint32_t> indices;
+	for (uint32_t i = 0; i < slices; ++i)
 	{
 		indices.push_back(i);
 		indices.push_back((i + 1) % slices);
@@ -67,7 +66,7 @@ void Nought::buildModel()
 		indices.push_back(slices + i);
 	}
 
-	iboSize = (uint)indices.size();
+	iboSize = (uint32_t)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &vboId);
@@ -77,6 +76,6 @@ void Nought::buildModel()
 
 	glGenBuffers(1, &iboId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * iboSize, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * iboSize, &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "glm.hpp"
 #include "TicTacToeBoard.h"
 
@@ -57,14 +56,14 @@ void TicTacToeBoard::buildModel()
 	vertices.emplace_back(-95, 35);
 
 	//assign triangle indices
-	std::vector<uint> indices;
+	std::vector<uint32_t> indices;
 	indices.insert(indices.begin(), {
 		0, 1, 2, 0, 2, 3,
 		4, 5, 6, 4, 6, 7,
 		8, 9, 10, 8, 10, 11,
 		12, 13, 14, 12, 14, 15,
 	});
-	iboSize = (uint)indices.size();
+	iboSize = (uint32_t)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &vboId);
@@ -74,6 +73,6 @@ void TicTacToeBoard::buildModel()
 
 	glGenBuffers(1, &iboId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * iboSize, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * iboSize, &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

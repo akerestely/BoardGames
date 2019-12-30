@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "ChungToiBoardConfiguration.h"
 
 ChungToiBoardConfiguration::ChungToiBoardConfiguration(std::shared_ptr<IRenderable> whiteCardinal, std::shared_ptr<IRenderable> whiteDiagonal, std::shared_ptr<IRenderable> redCardinal, std::shared_ptr<IRenderable> redDiagonal) :

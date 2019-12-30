@@ -69,8 +69,8 @@ private:
 
 	std::shared_ptr<IBoardConfiguration> m_boardConfig;
 
-	uint m_lastTurnTime = 0;	//ms
-	uint m_delayNextTurn = 0;	//ms
+	uint32_t m_lastTurnTime = 0;	//ms
+	uint32_t m_delayNextTurn = 0;	//ms
 
 	Position m_clickedTilePosIndex;
 
@@ -83,9 +83,9 @@ private:
 	std::unique_ptr<Graph> m_graph;
 
 	// player 1 perspective
-	uint m_gamesWon = 0;
-	uint m_gamesLost = 0;
-	uint m_gamesTotal = 0;
+	uint32_t m_gamesWon = 0;
+	uint32_t m_gamesLost = 0;
+	uint32_t m_gamesTotal = 0;
 	std::vector<float> m_winingsStats;
 	std::vector<float> m_loosingStats;
 };

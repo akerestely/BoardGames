@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "TicTacToeState.h"
 
 TicTacToeState::TicTacToeState() : State(3, 3)
@@ -14,10 +13,10 @@ void TicTacToeState::GetPossibleNextStates(std::vector<std::shared_ptr<IState>> 
 	else
 		chessman = TicTacToeChessmans::Nought;
 
-	uint n = m_board.Rows();
-	uint m = m_board.Cols();
-	for (uint i = 0; i < n; ++i)
-		for (uint j = 0; j < m; ++j)
+	uint32_t n = m_board.Rows();
+	uint32_t m = m_board.Cols();
+	for (uint32_t i = 0; i < n; ++i)
+		for (uint32_t j = 0; j < m; ++j)
 			if (m_board[i][j] == TicTacToeChessmans::None)
 				states.push_back(this->GetNextState(Position(i, j), chessman));
 }
@@ -27,7 +26,7 @@ std::shared_ptr<State<TicTacToeChessmans>> TicTacToeState::Produce(const State<T
 	return std::make_shared<TicTacToeState>(static_cast<const TicTacToeState&>(fromState));
 }
 
-uint TicTacToeState::getChessmanValue(TicTacToeChessmans chessman)
+uint32_t TicTacToeState::getChessmanValue(TicTacToeChessmans chessman)
 {
 	switch (chessman)
 	{
@@ -48,14 +47,14 @@ uint TicTacToeState::getChessmanValue(TicTacToeChessmans chessman)
 void TicTacToeState::computeEnd()
 {
 	std::vector<int> results(8, 0);
-	uint chessmanCount = 0;
+	uint32_t chessmanCount = 0;
 
 	// check rows, cols, and diagonals
-	uint n = m_board.Rows();
-	uint m = m_board.Cols();
-	for (uint i = 0; i < n; ++i)
+	uint32_t n = m_board.Rows();
+	uint32_t m = m_board.Cols();
+	for (uint32_t i = 0; i < n; ++i)
 	{
-		for (uint j = 0; j < m; ++j)
+		for (uint32_t j = 0; j < m; ++j)
 		{
 			int sumVal = 0;
 			switch (m_board[i][j])

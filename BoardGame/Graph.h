@@ -8,6 +8,7 @@
 class Graph : public IRenderable
 {
 public:
+	Graph() = default;
 	virtual ~Graph();
 
 	virtual void Init(const std::shared_ptr<Engine::GLSLProgram> &program) override;
@@ -17,9 +18,9 @@ public:
 
 private:
 	std::shared_ptr<Engine::GLSLProgram> m_program;
-	uint m_nVboId;
-	uint m_nIboId;
-	uint m_nIboSize;
-	uint m_nIboSize1;
-	uint m_nIboSize2;
+	uint32_t m_nVboId;
+	uint32_t m_nIboId;
+	uint32_t m_nIboSize;
+	uint32_t m_nIboSize1;
+	uint32_t m_nIboSize2;
 };

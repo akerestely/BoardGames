@@ -1,4 +1,3 @@
-#include "Engine/BaseTypes.h"
 #include "glm.hpp"
 #include "MillBoard.h"
 
@@ -53,10 +52,10 @@ void MillBoard::buildModel()
 	vertices.emplace_back( 183, 177);
 	vertices.emplace_back(-183, 177);
 	// middle, and inner
-	uint nVertPerLayer = (uint)vertices.size();
-	const uint kWidth = 60;
-	for(uint i = 1; i <= 2; ++i)
-		for (uint j = 0; j < nVertPerLayer; ++j)
+	uint32_t nVertPerLayer = (uint32_t)vertices.size();
+	const uint32_t kWidth = 60;
+	for(uint32_t i = 1; i <= 2; ++i)
+		for (uint32_t j = 0; j < nVertPerLayer; ++j)
 		{
 			auto &vert = vertices[j];
 			vertices.emplace_back(vert.x - glm::sign(vert.x) * kWidth * i, vert.y - glm::sign(vert.y) * kWidth * i);
@@ -80,11 +79,11 @@ void MillBoard::buildModel()
 	vertices.emplace_back(3, -63);
 
 	//assign triangle indices
-	std::vector<uint> indices;	
-	for (uint i = 0, sIndex = 0; i < 16; ++i, sIndex += 4)
+	std::vector<uint32_t> indices;	
+	for (uint32_t i = 0, sIndex = 0; i < 16; ++i, sIndex += 4)
 		indices.insert(indices.end(), { sIndex, sIndex + 1, sIndex + 2, sIndex, sIndex + 2, sIndex + 3 });
 
-	m_iboSize = (uint)indices.size();
+	m_iboSize = (uint32_t)indices.size();
 
 	//upload to GPU
 	glGenBuffers(1, &m_vboId);
@@ -94,6 +93,6 @@ void MillBoard::buildModel()
 
 	glGenBuffers(1, &m_iboId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_iboSize, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * m_iboSize, &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

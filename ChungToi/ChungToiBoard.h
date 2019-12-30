@@ -12,6 +12,6 @@ private:
 
 private:
 	std::shared_ptr<Engine::GLSLProgram> m_program;
-	uint m_vboId, m_iboId;
-	uint m_iboSize;
+	uint32_t m_vboId, m_iboId;
+	uint32_t m_iboSize;
 };
